@@ -1,0 +1,5 @@
+displayName = Divergency
+author = Team Brise
+version = 0.1
+modReferences = ParticleLibrary
+version = 0.1
