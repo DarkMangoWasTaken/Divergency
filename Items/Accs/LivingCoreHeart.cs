@@ -48,7 +48,7 @@ namespace DivergencyMod.Items.Accs
 	{
 		public bool AuraSpawn;
 		public int increasedLifeRegen;
-		public int AuraCooldown = 72;
+		public int AuraCooldown = 7200;
 		public override void ResetEffects()
 		{
 			// Reset our equipped flag. If the accessory is equipped somewhere, ExampleShield.UpdateAccessory will be called and set the flag before PreUpdateMovement
@@ -64,7 +64,7 @@ namespace DivergencyMod.Items.Accs
 
 
 				Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Player.velocity, ModContent.ProjectileType<AuraProj>(), 0, 1f, Player.whoAmI);
-				AuraCooldown = 72;
+				AuraCooldown = 7200;
 
 			}
 		}
@@ -78,7 +78,7 @@ namespace DivergencyMod.Items.Accs
 
 				
 					Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Player.velocity, ModContent.ProjectileType<AuraProj>(), 0, 1f, Player.whoAmI);
-				    AuraCooldown = 72;
+				    AuraCooldown = 7200;
 
 			}
 		}
