@@ -30,7 +30,7 @@ namespace DivergencyMod.Dusts
                 dust.active = false;
             }
             if (dust.scale < 0.75f)
-                dust.active = false;
+                dust.active = false;    
 
             return false;
         }
