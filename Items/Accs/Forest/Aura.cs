@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace DivergencyMod.Items.Accs
+namespace DivergencyMod.Items.Accs.Forest
 
 {
     public class AuraProj : ModProjectile

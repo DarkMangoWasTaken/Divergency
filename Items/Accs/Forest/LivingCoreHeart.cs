@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 using DivergencyMod.Items.Weapons.Melee.RootBreaker;
 using DivergencyMod.Items.Weapons.Melee.LivingWoodGuitar;
 
-namespace DivergencyMod.Items.Accs
+namespace DivergencyMod.Items.Accs.Forest
 {
 	public class LivingCoreHeart : ModItem
 	{
