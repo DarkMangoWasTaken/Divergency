@@ -162,7 +162,7 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
             ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreParticle>(), Color.Purple, 1);
 
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, Vector2.Zero, ProjectileType<LivingExplosion>(), Projectile.damage + player.ownedProjectileCounts[Projectile.type] * 2,
-                Projectile.knockBack * player.ownedProjectileCounts[Projectile.type], Projectile.owner);
+                Projectile.knockBack, Projectile.owner);
 
             int numberDust = 5;
 
@@ -190,11 +190,11 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
             Projectile.width = Projectile.height = 120;
             Projectile.scale = 1f;
             Projectile.alpha = 255;
-
+            Projectile.penetrate = -1;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
 
-            Projectile.aiStyle = 0;
+            
             Projectile.timeLeft = 5;
         }
     }
