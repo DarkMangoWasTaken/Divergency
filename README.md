@@ -1,1 +1,1 @@
-# DivergencyMod
+# Divergency
