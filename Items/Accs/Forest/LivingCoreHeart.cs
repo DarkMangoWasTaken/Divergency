@@ -65,7 +65,7 @@ namespace DivergencyMod.Items.Accs.Forest
 
 				Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Player.velocity, ModContent.ProjectileType<AuraProj>(), 0, 1f, Player.whoAmI);
 				AuraCooldown = 7200;
-
+				
 			}
 		}
 
