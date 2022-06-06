@@ -33,13 +33,14 @@ namespace DivergencyMod.Items.Accs.Forest
         public override void OnSpawn(IEntitySource source)
         {
             Projectile.velocity = Vector2.Zero;
-            Projectile.velocity.Y = 2f;          //change this to increase the fall speed of the projectile
+            Projectile.velocity.Y = 2f;
         }
 
         public override void AI()
         {
             base.AI();
-
+            Player player = Main.player[Projectile.owner];
+           
             if (++Projectile.frameCounter >= 6)
             {
                 Projectile.frameCounter = 0;

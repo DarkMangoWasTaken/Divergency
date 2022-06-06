@@ -74,7 +74,7 @@ namespace DivergencyMod.Items.Accs.Forest
 
                 for (int i = 0; i < Main.rand.Next(3, 4); i++)
                 {
-                    Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, new Vector2(Main.rand.Next(-3, 3) * 0.2f, Main.rand.Next(-15, -10)) * 0.2f, ModContent.ProjectileType<HealLeafProjectile>(), target.damage, 1f, Player.whoAmI);
+                    Projectile.NewProjectile(target.GetSource_FromThis(), new Vector2(Main.rand.Next(-3, 3) * 0.2f), new Vector2(Main.rand.Next(-3, 3) * 0.2f, Main.rand.Next(-15, -10)) * 0.2f, ModContent.ProjectileType<HealLeafProjectile>(), target.damage, 1f, Player.whoAmI);
                 }
 
             }
