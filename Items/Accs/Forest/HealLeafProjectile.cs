@@ -38,6 +38,7 @@ namespace DivergencyMod.Items.Accs.Forest
 
         public override void AI()
         {
+            Projectile.damage = 0;
             base.AI();
             Player player = Main.player[Projectile.owner];
            
