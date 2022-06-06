@@ -48,7 +48,7 @@ namespace DivergencyMod.Items.Accs.Forest
             // Reset our equipped flag. If the accessory is equipped somewhere, ExampleShield.UpdateAccessory will be called and set the flag before PreUpdateMovement
             HeartHeal = false;
         }
-
+            
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
             if (Player.HeldItem.DamageType == DamageClass.Magic && HeartHeal)
@@ -58,7 +58,7 @@ namespace DivergencyMod.Items.Accs.Forest
 
                     for (int i = 0; i < Main.rand.Next(3, 4); i++)
                     {
-                        Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, new Vector2(Main.rand.Next(-3, 3), Main.rand.Next(-15, -10)), ModContent.ProjectileType<LivingStone>(), target.damage, 1f, Player.whoAmI);
+                        Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, new Vector2(Main.rand.Next(-3, 3) * 0.2f, Main.rand.Next(-15, -10) * 0.2f), ModContent.ProjectileType<HealLeafProjectile>(), target.damage, 1f, Player.whoAmI);
                     }
 
                 }
@@ -74,7 +74,7 @@ namespace DivergencyMod.Items.Accs.Forest
 
                 for (int i = 0; i < Main.rand.Next(3, 4); i++)
                 {
-                    Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, new Vector2(Main.rand.Next(-3, 3) * 1.4f, Main.rand.Next(-15, -10)) * 1.4f, ModContent.ProjectileType<LivingStone>(), target.damage, 1f, Player.whoAmI);
+                    Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, new Vector2(Main.rand.Next(-3, 3) * 0.2f, Main.rand.Next(-15, -10)) * 0.2f, ModContent.ProjectileType<HealLeafProjectile>(), target.damage, 1f, Player.whoAmI);
                 }
 
             }
