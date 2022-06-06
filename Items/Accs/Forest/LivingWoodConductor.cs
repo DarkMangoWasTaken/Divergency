@@ -31,7 +31,7 @@ namespace DivergencyMod.Items.Accs.Forest
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
             player.GetModPlayer<HeartDrop>().HeartHeal = true;
-            player.GetDamage(DamageClass.Magic) *= 0.9f; // Increase ALL player damage by 100%
+            //player.GetDamage(DamageClass.Magic) *= 0.9f; // Increase ALL player damage by 100%
 
         }
 
@@ -58,7 +58,7 @@ namespace DivergencyMod.Items.Accs.Forest
 
                     for (int i = 0; i < Main.rand.Next(3, 4); i++)
                     {
-                        Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, new Vector2(Main.rand.Next(-3, 3) * 0.2f, Main.rand.Next(-15, -10) * 0.2f), ModContent.ProjectileType<HealLeafProjectile>(), target.damage, 1f, Player.whoAmI);
+                        Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, new Vector2(Main.rand.Next(-3, 3) * 0.7f, Main.rand.Next(-15, -10) * 0.7f), ModContent.ProjectileType<HealLeafProjectile>(), target.damage, 1f, Player.whoAmI);
                     }
 
                 }
@@ -72,9 +72,9 @@ namespace DivergencyMod.Items.Accs.Forest
             if (Player.HeldItem.DamageType == DamageClass.Magic && HeartHeal)
             {
 
-                for (int i = 0; i < Main.rand.Next(3, 4); i++)
+                for (int i = 0; i < Main.rand.Next(0, 5); i++)
                 {
-                    Projectile.NewProjectile(target.GetSource_FromThis(), new Vector2(Main.rand.Next(-3, 3) * 0.2f), new Vector2(Main.rand.Next(-3, 3) * 0.2f, Main.rand.Next(-15, -10)) * 0.2f, ModContent.ProjectileType<HealLeafProjectile>(), target.damage, 1f, Player.whoAmI);
+                    Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, new Vector2(Main.rand.Next(-20, 20) * 0.7f, Main.rand.Next(-10, 30)) * 0.7f, ModContent.ProjectileType<HealLeafProjectile>(), target.damage, 1f, Player.whoAmI);
                 }
 
             }
