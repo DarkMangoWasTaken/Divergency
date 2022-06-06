@@ -35,9 +35,9 @@ namespace DivergencyMod.Items.Accs.Forest
 
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            player.GetModPlayer<ShardDrop>().ShardSpawn = true;
-            player.GetModPlayer<ShardDrop>().ShardCooldown--;
-            Main.NewText(player.GetModPlayer<ShardDrop>().ShardCooldown); 
+                player.GetModPlayer<ShardDrop>().ShardSpawn = true;
+                player.GetModPlayer<ShardDrop>().ShardCooldown--;
+            
 
 
             player.statDefense += 1;

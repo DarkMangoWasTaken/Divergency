@@ -34,7 +34,6 @@ namespace DivergencyMod.Items.Accs.Forest
 			player.GetModPlayer<Aura>().AuraSpawn = true;
 			player.GetDamage(DamageClass.Magic) *= 0.8f; // Increase ALL player damage by 100%
 			player.GetModPlayer<Aura>().AuraCooldown--;
-			Main.NewText(player.GetModPlayer<Aura>().AuraCooldown); 
 
 
 		}
