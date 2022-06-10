@@ -260,7 +260,7 @@ namespace DivergencyMod.Items.Accs.Forest
              origin.Y = (float)(Projectile.spriteDirection == 1 ? sourceRectangle.Height - offsetY : offsetY);
 
             // Applying lighting and draw current frame
-            Color drawColor = Projectile.GetAlpha(lightColor);
+            Color drawColor = Projectile.GetAlpha(Color.White);
             Main.EntitySpriteDraw(texture,
                 Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
                 sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
