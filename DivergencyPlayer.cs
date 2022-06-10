@@ -31,6 +31,7 @@ namespace DivergencyMod
         public int BranchCooldown = 300;
         public int BranchReload = 0;
         public bool Slowed = false;
+     
 
         public override void PostUpdateRunSpeeds()
         {
