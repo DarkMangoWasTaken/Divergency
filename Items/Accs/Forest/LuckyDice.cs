@@ -1,4 +1,4 @@
-
+﻿
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -76,7 +76,7 @@ namespace DivergencyMod.Items.Accs.Forest
         public bool offsetyRaise = false;
         public override void SetStaticDefaults()
         {
-            Main.projFrames[Projectile.type] = 6;
+            Main.projFrames[Projectile.type] = 7;
         }
         public override void SetDefaults()  //currently a damaging projectile
         {
@@ -164,7 +164,14 @@ namespace DivergencyMod.Items.Accs.Forest
             }
             if (Timer == 10 && Timer2 < 200)
             {
-                Projectile.frame = Main.rand.Next(6);
+                if (Main.rand.NextBool(1000))
+                {
+                    Projectile.frame = 6;
+}
+                else
+                {
+                    Projectile.frame = Main.rand.Next(6); // 0-5
+                }
                 SoundEngine.PlaySound(SoundID.MenuTick);
 
                 Timer = 0;
@@ -223,6 +230,11 @@ namespace DivergencyMod.Items.Accs.Forest
                 player.AddBuff(ModContent.BuffType<Dice6>(), 600);
 
             }
+            if (Projectile.frame == 6)
+            {
+                player.dead = true;
+                CombatText.NewText(player.getRect(), Color.White, "get fucked pleb lmao", true, false);
+            }
 
 
         }
@@ -279,12 +291,84 @@ namespace DivergencyMod.Items.Accs.Forest
         public bool Dice1 = false;
         public bool Dice6 = false;
         public bool DiceSpeed = false;
+        public bool Text = false;
+        public int TextCooldown = 0;
+        public byte TextCounter = 0;
+        public int Timer;
+        
        
         public override void ResetEffects()
         {
+            Timer++;
+           
             Dice1 = false;
             Dice6 = false;
             DiceSpeed = false;
+            Text = false;
+            
+        }
+        public override void PreUpdate()
+        {
+            
+            if (Timer >= 3000)
+            {
+                TextCounter = 0;
+                Timer = 0;
+
+            }
+            if (Text && TextCooldown <= 0)
+            {
+                TextCounter++;
+                if (TextCounter == 1)
+                {
+                    CombatText.NewText(Player.getRect(), Color.Red, "BETTER LUCK NEXT TIME!", true, false);
+                   
+                }
+                if(TextCounter == 2)
+                {
+                    CombatText.NewText(Player.getRect(), Color.Red, "Not your day, huh?", true, false);
+                    
+                    
+                }
+                if (TextCounter == 3)
+                {
+                    CombatText.NewText(Player.getRect(), Color.White,
+"\n⣀ ⣠ ⣤ ⣤ ⣤ ⣤ ⢤ ⣤ ⣄ ⣀ ⣀ ⣀ ⣀ ⡀⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄" +
+"\n⠄⠉⠹⣾ ⣿ ⣛ ⣿ ⣿ ⣞ ⣿ ⣛ ⣺ ⣻ ⢾ ⣾ ⣿ ⣿ ⣿ ⣶ ⣶ ⣶ ⣄ ⡀ ⠄  ⠄" +
+"\n⠄⠄⠠⣿ ⣷⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣯ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣆ ⠄⠄" +
+"\n⠄ ⠄ ⠘ ⠛ ⠛ ⠛ ⠛ ⠋ ⠿ ⣷ ⣿ ⣿ ⡿ ⣿ ⢿ ⠟ ⠟ ⠟ ⠻ ⠻ ⣿ ⣿ ⣿ ⣿⡀⠄" +
+"\n⠄ ⢀ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⢛ ⣿ ⣁⠄ ⠒ ⠂ ⠄ ⠄ ⣀ ⣰ ⣿ ⣿ ⣿ ⣿ ⡀" +
+"\n⠄⠉ ⠛ ⠺ ⢶ ⣷ ⡶ ⠃ ⠄ ⠄ ⠨ ⣿ ⣿ ⡇ ⠄ ⡺ ⣾ ⣾ ⣾ ⣿ ⣿ ⣿ ⣿ ⣽ ⣿ ⣿" +
+"\n⠄ ⠄ ⠄ ⠄ ⠄ ⠛ ⠁ ⠄ ⠄ ⠄ ⢀ ⣿ ⣿ ⣧ ⡀ ⠄ ⠹ ⣿ ⣿ ⣿ ⣿ ⣿ ⡿ ⣿ ⣻ ⣿" +
+"\n⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠉ ⠛ ⠟ ⠇ ⢀ ⢰ ⣿ ⣿ ⣿ ⣏ ⠉ ⢿ ⣽ ⢿ ⡏" +
+"\n⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠠ ⠤ ⣤ ⣴ ⣾ ⣿ ⣿ ⣾ ⣿ ⣿ ⣦ ⠄ ⢹ ⡿ ⠄" +
+"\n⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠒ ⣳ ⣶ ⣤ ⣤ ⣄ ⣀ ⣀ ⡈ ⣀ ⢁  ⢁ ⢁ ⣈ ⣄ ⢐ ⠃ ⠄" +
+"\n⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⣰ ⣿ ⣛ ⣻ ⡿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⡯ ⠄ ⠄" +
+"\n ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⣬ ⣽ ⣿ ⣻ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⠁ ⠄ ⠄" +
+"\n⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⢘ ⣿ ⣿ ⣻ ⣛ ⣿ ⡿ ⣟ ⣻ ⣿ ⣿ ⣿ ⣿ ⡟ ⠄ ⠄ ⠄" +
+"\n⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠛ ⢛ ⢿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣿ ⣷ ⡿ ⠁ ⠄ ⠄ ⠄" +
+"\n⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄ ⠉ ⠉ ⠉ ⠉ ⠈ ⠄ ⠄ ⠄ ⠄ ⠄ ⠄"+
+"\n"+
+"\n" +
+"\n" + 
+"\n" +
+"\n" +
+"\n" +
+"\n" +
+"\n" +
+"\n" +
+"\n" +
+"\n"
+, true, false);
+                    TextCounter = 0;
+                }
+
+
+                TextCooldown = 600;
+               
+                
+            }
+            TextCooldown--;
         }
         public override void PostUpdateRunSpeeds()
         {
@@ -315,32 +399,41 @@ namespace DivergencyMod.Items.Accs.Forest
     public class Dice1 : ModBuff
     {
         public bool Text = false;
+       
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Elegance");
-            Description.SetDefault("You're as elegant as a Petal");
+            DisplayName.SetDefault("BAD LUCK");
+            Description.SetDefault("Decreased ranged damage, crit chance, attack speed, movement speed and projectile speed");
            
             Main.buffNoSave[Type] = true; // This buff won't save when you exit the world
         }
         public override void Update(Player player, ref int buffIndex)
         {
-            player.GetDamage(DamageClass.Ranged) *= 0.7f; // Increase ALL player damage by 100%
-            player.AddBuff(BuffID.Slow, 180, false);
+            player.GetDamage(DamageClass.Ranged) *= 0.5f; // Increase ALL player damage by 100%
+            player.AddBuff(BuffID.Slow, 1, true, true);
             player.GetAttackSpeed(DamageClass.Ranged) *= 0.5f;
-            player.GetCritChance(DamageClass.Ranged) = 0;
+            player.GetCritChance(DamageClass.Ranged) *= 0;
             player.GetModPlayer<DicePlayer>().Dice1 = true;
 
-            if (!Text)
-            {
-                CombatText.NewText(player.getRect(), Color.Red, "BAD LUCK!", true, false);
-                Text = true;
-            }
+            
+            
+
+                player.GetModPlayer<DicePlayer>().Text = true;
+            
+            
 
         }
        
     }
     public class Dice2 : ModBuff
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("2");
+            Description.SetDefault("Increased ranged damage");
+
+            Main.buffNoSave[Type] = true; // This buff won't save when you exit the world
+        }
         public override void Update(Player player, ref int buffIndex)
         {
             player.GetDamage(DamageClass.Ranged) *= 1.3f; // Increase ALL player damage by 100%
@@ -349,22 +442,43 @@ namespace DivergencyMod.Items.Accs.Forest
     }
     public class Dice3 : ModBuff
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("3");
+            Description.SetDefault("Increased ranged attack speed");
+
+            Main.buffNoSave[Type] = true; // This buff won't save when you exit the world
+        }
         public override void Update(Player player, ref int buffIndex)
         {
-            player.GetAttackSpeed(DamageClass.Ranged) *= 1.5f;
+            player.GetAttackSpeed(DamageClass.Ranged) *= 1.8f;
             
         }
     }
     public class Dice4 : ModBuff
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("4");
+            Description.SetDefault("Increased ranged crit chance");
+
+            Main.buffNoSave[Type] = true; // This buff won't save when you exit the world
+        }
         public override void Update(Player player, ref int buffIndex)
         {
-            player.GetCritChance(DamageClass.Ranged) += 20;
+            player.GetCritChance(DamageClass.Ranged) += 40;
            
         }
     }
     public class Dice5 : ModBuff
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("5");
+            Description.SetDefault("Increased movement speed");
+
+            Main.buffNoSave[Type] = true; // This buff won't save when you exit the world
+        }
         public override void Update(Player player, ref int buffIndex)
         {
             player.GetModPlayer<DicePlayer>().DiceSpeed = true;
@@ -373,6 +487,13 @@ namespace DivergencyMod.Items.Accs.Forest
     }
     public class Dice6 : ModBuff
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("6");
+            Description.SetDefault("Increased ranged projectile speed");
+
+            Main.buffNoSave[Type] = true; // This buff won't save when you exit the world
+        }
         public override void Update(Player player, ref int buffIndex)
         {
             
