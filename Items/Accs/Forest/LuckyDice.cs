@@ -182,9 +182,49 @@ namespace DivergencyMod.Items.Accs.Forest
                 RollStop = true;
                 SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/DiceSound")
                 {
+
                     Volume = 0.9f,
                     MaxInstances = 5,
                 });
+                
+
+                if (Projectile.frame == 0)
+                {
+                    player.AddBuff(ModContent.BuffType<Dice1>(), 600);
+
+                }
+                if (Projectile.frame == 1)
+                {
+                    player.AddBuff(ModContent.BuffType<Dice2>(), 600);
+
+                }
+                if (Projectile.frame == 2)
+                {
+                    player.AddBuff(ModContent.BuffType<Dice3>(), 600);
+
+                }
+                if (Projectile.frame == 3)
+                {
+                    player.AddBuff(ModContent.BuffType<Dice4>(), 600);
+
+                }
+                if (Projectile.frame == 4)
+                {
+                    player.AddBuff(ModContent.BuffType<Dice5>(), 600);
+
+                }
+                if (Projectile.frame == 5)
+                {
+                    player.AddBuff(ModContent.BuffType<Dice6>(), 600);
+
+                }
+                if (Projectile.frame == 6)
+                {
+                    player.dead = true;
+                    CombatText.NewText(player.getRect(), Color.White, "get fucked pleb lmao", true, false);
+                }
+
+
             }
             if (Projectile.timeLeft < 10)
             {
@@ -198,45 +238,7 @@ namespace DivergencyMod.Items.Accs.Forest
         }
         public override void Kill(int timeLeft)
         {
-            Player player = Main.player[Projectile.owner];
-
-            if (Projectile.frame == 0)
-            {
-                player.AddBuff(ModContent.BuffType<Dice1>(), 600);
-
-            }
-            if (Projectile.frame == 1)
-            {
-                player.AddBuff(ModContent.BuffType<Dice2>(), 600);
-
-            }
-            if (Projectile.frame == 2)
-            {
-                player.AddBuff(ModContent.BuffType<Dice3>(), 600);
-
-            }
-            if (Projectile.frame == 3)
-            {
-                player.AddBuff(ModContent.BuffType<Dice4>(), 600);
-
-            }
-            if (Projectile.frame == 4)
-            {
-                player.AddBuff(ModContent.BuffType<Dice5>(), 600);
-
-            }
-            if (Projectile.frame == 5)
-            {
-                player.AddBuff(ModContent.BuffType<Dice6>(), 600);
-
-            }
-            if (Projectile.frame == 6)
-            {
-                player.dead = true;
-                CombatText.NewText(player.getRect(), Color.White, "get fucked pleb lmao", true, false);
-            }
-
-
+            
         }
        
                public override bool PreDraw(ref Color lightColor)
