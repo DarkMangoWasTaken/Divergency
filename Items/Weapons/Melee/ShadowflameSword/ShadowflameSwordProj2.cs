@@ -11,7 +11,7 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
     {
         public static bool swung = false;
         public int SwingTime = 40;
-        public float holdOffset = 50f;
+        public float holdOffset = 70f;
         public int combowombo;
 
         public override void SetDefaults()

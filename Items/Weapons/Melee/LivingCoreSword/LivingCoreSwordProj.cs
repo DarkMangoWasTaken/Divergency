@@ -10,7 +10,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
     public class LivingCoreSwordProj : ModProjectile
     {
         public static bool swung = false;
-        public int SwingTime = 40;
+        public int SwingTime = 30;
         public float holdOffset = 60f;
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSword/LivingCoreSword";
 

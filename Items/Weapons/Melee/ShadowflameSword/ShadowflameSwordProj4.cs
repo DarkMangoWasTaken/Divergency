@@ -11,8 +11,8 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
     public class ShadowflameSwordProj4 : ModProjectile
     {
         public static bool swung = false;
-        public int SwingTime = 20;
-        public float holdOffset = 50f;
+        public int SwingTime = 25;
+        public float holdOffset = 70f;
         public int combowombo;
 
         public override void SetDefaults()
@@ -77,6 +77,7 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
             {
                 return;
             }
+            player.statDefense -= 10;
 
             int dir = (int)Projectile.ai[1];
             float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
@@ -102,6 +103,11 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
             player.itemTime = 2;
             player.itemAnimation = 2;
             Projectile.netUpdate = true;
+        }
+        public override void Kill(int timeLeft)
+        {
+            Player player = Main.player[Projectile.owner];
+            player.statDefense += 10;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

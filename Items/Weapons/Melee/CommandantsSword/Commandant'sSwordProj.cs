@@ -13,8 +13,8 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
 
         public int combowombo;
         public static bool swung = false;
-        public int SwingTime = 80;
-        public float holdOffset = 75f;
+        public int SwingTime = 48;
+        public float holdOffset = 80f;
 
         public override void SetDefaults()
         {
@@ -59,6 +59,7 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
                 return;
             }
             player.moveSpeed = player.moveSpeed / 10;
+            player.statDefense += 5;
 
             int dir = (int)Projectile.ai[1];
             float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
@@ -106,7 +107,7 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
         public override void Kill(int timeLeft)
         {
             Player player = Main.player[Projectile.owner];
-
+            player.statDefense -= 5;
             player.GetModPlayer<DivergencyPlayer>().Slowed = false;
         }
 

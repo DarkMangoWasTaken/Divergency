@@ -12,7 +12,7 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
         public int combowombo;
         public static bool swung = false;
         public int SwingTime = 50;
-        public float holdOffset = 50f;
+        public float holdOffset = 70f;
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/ShadowflameSword/ShadowflameSword";
 
         public override void SetDefaults()

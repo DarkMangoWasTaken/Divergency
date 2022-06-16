@@ -18,7 +18,7 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
 
         public override void SetDefaults()
         {
-            Item.damage = 50;
+            Item.damage = 60;
             Item.DamageType = DamageClass.Melee;
             Item.width = 0;
             Item.height = 0;

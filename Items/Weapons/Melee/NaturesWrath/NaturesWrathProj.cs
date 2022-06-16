@@ -142,7 +142,6 @@ namespace DivergencyMod.Items.Weapons.Melee.NaturesWrath
             Projectile.DamageType = DamageClass.Ranged; // Is the Projectile shoot by a ranged weapon?
             Projectile.penetrate = 1; // How many monsters the Projectile can penetrate. (OnTileCollide below also decrements penetrate for bounces as well)
             Projectile.timeLeft = 1200; // The live time for the Projectile (60 = 1 second, so 600 is 10 seconds)
-            Projectile.light = 0; // How much light emit around the Projectile
             Projectile.ignoreWater = false; // Does the Projectile's speed be influenced by water?
             Projectile.tileCollide = true; // Can the Projectile collide with tiles?
             Projectile.penetrate = -1;

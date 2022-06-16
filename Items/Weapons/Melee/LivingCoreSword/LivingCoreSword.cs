@@ -31,7 +31,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
 
         public override void SetDefaults()
         {
-            Item.damage = 22;
+            Item.damage = 30;
             Item.DamageType = DamageClass.Melee;
             Item.width = 0;
             Item.height = 0;
