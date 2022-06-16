@@ -11,7 +11,7 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
     public class ShadowflameSwordProj4 : ModProjectile
     {
         public static bool swung = false;
-        public int SwingTime = 50;
+        public int SwingTime = 20;
         public float holdOffset = 50f;
         public int combowombo;
 
