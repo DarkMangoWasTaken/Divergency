@@ -1,5 +1,7 @@
+using DivergencyMod.Dusts.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ParticleLibrary;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -14,6 +16,7 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
         public int SwingTime = 25;
         public float holdOffset = 70f;
         public int combowombo;
+        private bool ParticleSpawned;
 
         public override void SetDefaults()
         {
@@ -23,8 +26,8 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.height = 74;
-            Projectile.width = 74;
+            Projectile.height = 90;
+            Projectile.width = 90;
             Projectile.friendly = true;
             Projectile.scale = 1f;
         }
@@ -42,6 +45,9 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
 
         public override void AI()
         {
+
+            Player player = Main.player[Projectile.owner];
+
             Vector3 RGB = new Vector3(1.28f, 0f, 1.28f);
             float multiplier = 1;
             float max = 2.25f;
@@ -58,6 +64,14 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
             Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10000;
+
+            if (!ParticleSpawned)
+            {
+                ParticleManager.NewParticle(player.Center, player.DirectionTo(Main.MouseWorld), ParticleManager.NewInstance<ShadowSlash>(), Color.Purple, 0.7f, Projectile.whoAmI, Projectile.whoAmI);
+                ParticleSpawned = true;
+            }
+
+
             for (int i = 0; i < 5; i++)
             {
                 Dust dust = Dust.NewDustDirect(Projectile.position - Projectile.velocity, Projectile.width, Projectile.height, DustID.Shadowflame, 0, 0, 100, Color.Violet, 1f);
@@ -66,17 +80,20 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
                 dust = Dust.NewDustDirect(Projectile.position - Projectile.velocity, Projectile.width, Projectile.height, DustID.Shadowflame, 0f, 0f, 1000, Color.Violet, 1f);
             }
             AttachToPlayer();
+
         }
 
         public override bool ShouldUpdatePosition() => false;
 
         public void AttachToPlayer()
         {
+
             Player player = Main.player[Projectile.owner];
             if (!player.active || player.dead || player.CCed || player.noItems)
             {
                 return;
             }
+
             player.statDefense -= 10;
 
             int dir = (int)Projectile.ai[1];
@@ -136,5 +153,5 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
 
             return false;
         }
-    }
+    } 
 }

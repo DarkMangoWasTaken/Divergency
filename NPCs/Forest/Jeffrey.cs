@@ -19,9 +19,12 @@ namespace DivergencyMod.NPCs.Forest
             Spin,
             Dizzy
         }
-        public ref float AI_State => ref NPC.ai[0];
-        public ref float AI_Timer => ref NPC.ai[1];
-        public ref float AI_S => ref NPC.ai[2];
+        public  float AI_StateDiv = 0;
+
+        public float AI_Timer;
+        public float AI_Timer2;
+        public float AI_Timer3;
+        public float AI_Idk =>  NPC.ai[2];
         public override void SetStaticDefaults()
         {
             // DisplayName.SetDefault("Flutter Slime"); // Automatic from localization files
@@ -30,8 +33,8 @@ namespace DivergencyMod.NPCs.Forest
         }
         public override void SetDefaults()
         {
-            NPC.width = 40; // The width of the NPC's hitbox (in pixels)
-            NPC.height = 40; // The height of the NPC's hitbox (in pixels)
+            NPC.width = 43; // The width of the NPC's hitbox (in pixels)
+            NPC.height = 43; // The height of the NPC's hitbox (in pixels)
             NPC.aiStyle = -1; // This NPC has a completely unique AI, so we set this to -1. The default aiStyle 0 will face the player, which might conflict with custom AI code.
             NPC.damage = 30; // The amount of damage that this NPC deals
             NPC.defense = 2; // The amount of defense that this NPC has
@@ -39,6 +42,7 @@ namespace DivergencyMod.NPCs.Forest
             NPC.HitSound = SoundID.NPCHit1; // The sound the NPC will make when being hit.
             NPC.DeathSound = SoundID.NPCDeath1; // The sound the NPC will make when it dies.
             NPC.value = 25f; // How many copper coins the NPC will drop when killed.
+            NPC.knockBackResist = 1f;
         }
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
@@ -47,11 +51,13 @@ namespace DivergencyMod.NPCs.Forest
         }
         public override void AI()
         {
-
             
+            NPC.TargetClosest(true);
+
+            Main.NewText(AI_Timer);
            
             // The NPC starts in the asleep state, waiting for a player to enter range
-            switch (AI_State)
+            switch (AI_StateDiv)
             {
                 case (float)Phase.Walking:
                     Walking();
@@ -66,7 +72,7 @@ namespace DivergencyMod.NPCs.Forest
                     Dizzy();
                     break;
             }
-     
+
 
         }
         public override void FindFrame(int frameHeight)
@@ -84,18 +90,68 @@ namespace DivergencyMod.NPCs.Forest
         }
         private void Walking()
         {
-            NPC.aiStyle = NPCID.Skeleton;
+            NPC.aiStyle =3;
+           
+            if (Main.player[NPC.target].Distance(NPC.Center) < 250f)
+            {
+
+                AI_Timer++;
+
+                if (AI_Timer >= 3)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.White, "Notice", true, false);
+                    AI_StateDiv = (float)Phase.Notice;
+                    AI_Timer = 0;
+                }
+
+            }
         }
         private void Notice()
         {
-            
+
+            AI_Timer++;
+            NPC.aiStyle = 0;
+            if (AI_Timer >= 180)
+            {
+
+                CombatText.NewText(NPC.getRect(), Color.White, "Spin", true, false);
+
+                AI_StateDiv = (float)Phase.Spin;
+                AI_Timer = 0;
+            }
+
         }
         private void Spin()
         {
+            AI_Timer++;
+            NPC.aiStyle = 26;
+
+
+            NPC.knockBackResist = -1;
+
+            if (AI_Timer >= 180)
+            {
+                CombatText.NewText(NPC.getRect(), Color.White, "Dizzy", true, false);
+
+                AI_StateDiv = (float)Phase.Dizzy;
+                AI_Timer = 0;
+
+                NPC.knockBackResist = 1f;
+            }
         }
         private void Dizzy()
         {
+            AI_Timer++;
+            NPC.aiStyle = 0;
+            if (AI_Timer >= 120)
+            {
+                CombatText.NewText(NPC.getRect(), Color.White, "Walking", true, false);
+
+                AI_StateDiv = (float)Phase.Walking;
+                AI_Timer = 0;
+            }
         }
+
     }
 }
 

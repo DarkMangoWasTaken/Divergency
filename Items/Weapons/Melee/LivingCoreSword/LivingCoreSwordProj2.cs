@@ -94,7 +94,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
                 Spawned++;
             }
 
-            ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreSwordTrail>(), Color.Purple, Main.rand.NextFloat(0.2f, 0.8f));
+            ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreSwordTrail>(), Color.Purple, 1f);
 
             Projectile.damage = 25;
             Vector2 oldMouseWorld = Main.MouseWorld;
