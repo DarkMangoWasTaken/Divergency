@@ -124,7 +124,7 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
             float mult = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
             float alpha = (float)Math.Sin(mult * Math.PI);
             Vector2 pos = player.Center + Projectile.velocity * (40f - mult * 30f);
-            Main.EntitySpriteDraw(slash, pos - Main.screenPosition, null, Color.White * alpha, Projectile.velocity.ToRotation() - MathHelper.PiOver2, slash.Size() / 2, Projectile.scale / 2, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(slash, pos - Main.screenPosition, null, Color.AntiqueWhite * alpha, Projectile.velocity.ToRotation() - MathHelper.PiOver2, slash.Size() / 2, Projectile.scale / 2, SpriteEffects.None, 0);
            // NORMAL DRAWCODE
             if (dir == 1)
             {
@@ -140,6 +140,7 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
             Rectangle sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
             Vector2 origin = sourceRectangle.Size() / 2f;
             Color drawColor = Projectile.GetAlpha(lightColor);
+            
 
             Main.EntitySpriteDraw(texture,
                 Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),

@@ -1,3 +1,4 @@
+using DivergencyMod.Dusts.Particles;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -14,8 +15,8 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
 
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Doorlauncher"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
-            Tooltip.SetDefault("'Hitting enemies heats the weapon up'");
+            DisplayName.SetDefault("Shadow Brand"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
+            Tooltip.SetDefault("'Hitting enemies heats the weapon up, increasing its appeareance, damage and attack speed'");
         }
 
         public override void SetDefaults()
@@ -68,10 +69,20 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+        
             int dir = AttackCounter;
+            if (player.direction == 1)
+            {
+                player.GetModPlayer<CorrectSwing>().SwingChange = (int)AttackCounter;
+            }
+            else
+            {
+                player.GetModPlayer<CorrectSwing>().SwingChange = (int)AttackCounter * -1;
+
+            }
             AttackCounter = -AttackCounter;
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 1, dir);
-
+          
             return false;
         }
 
