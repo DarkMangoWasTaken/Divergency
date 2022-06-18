@@ -145,7 +145,7 @@ namespace DivergencyMod.Items.Weapons.Melee.NaturesWrath
             Projectile.ignoreWater = false; // Does the Projectile's speed be influenced by water?
             Projectile.tileCollide = true; // Can the Projectile collide with tiles?
             Projectile.penetrate = -1;
-            Projectile.hide = true;
+            Projectile.hide = false;
             Projectile.timeLeft = 10000000;
         }
 
@@ -289,7 +289,7 @@ namespace DivergencyMod.Items.Weapons.Melee.NaturesWrath
             return true;
         }
 
-        
+
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -323,6 +323,7 @@ namespace DivergencyMod.Items.Weapons.Melee.NaturesWrath
             // float offsetY = 20f;
             // origin.Y = (float)(Projectile.spriteDirection == 1 ? sourceRectangle.Height - offsetY : offsetY);
 
+
             // Applying lighting and draw current frame
             Color drawColor = Projectile.GetAlpha(lightColor);
             Main.EntitySpriteDraw(texture,
@@ -332,5 +333,6 @@ namespace DivergencyMod.Items.Weapons.Melee.NaturesWrath
             // It's important to return false, otherwise we also draw the original texture.
             return false;
         }
+
     }
 }
