@@ -320,8 +320,8 @@ namespace DivergencyMod.Items.Weapons.Melee.NaturesWrath
             origin.X = (float)(Projectile.spriteDirection == 1 ? sourceRectangle.Width - offsetX : offsetX);
 
             // If sprite is vertical
-            // float offsetY = 20f;
-            // origin.Y = (float)(Projectile.spriteDirection == 1 ? sourceRectangle.Height - offsetY : offsetY);
+            float offsetY = 20f;
+             origin.Y = (float)(Projectile.spriteDirection == 1 ? sourceRectangle.Height - offsetY : offsetY);
 
             // Applying lighting and draw current frame
             Color drawColor = Projectile.GetAlpha(lightColor);
