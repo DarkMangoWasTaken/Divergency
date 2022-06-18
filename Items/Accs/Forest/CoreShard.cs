@@ -55,8 +55,9 @@ namespace DivergencyMod.Items.Accs.Forest
         public bool OffsetYRaise;
         public override void SetDefaults()
         {
+            Projectile.damage = 30;
             Projectile.penetrate = -1;
-            Projectile.DamageType = DamageClass.Generic;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.hide = true;

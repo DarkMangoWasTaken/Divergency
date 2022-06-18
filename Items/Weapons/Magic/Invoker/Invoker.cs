@@ -407,7 +407,7 @@ namespace DivergencyMod.Items.Weapons.Magic.Invoker
                 }
                 if (Timer == 1)
                 {
-                    Projectile.damage = 0;
+                    Projectile.height = Projectile.width = 0;
                 }
                 if (Timer == 50)
                 {

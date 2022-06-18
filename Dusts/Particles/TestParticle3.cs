@@ -17,7 +17,7 @@ namespace DivergencyMod.Dusts.Particles
             width = 34;
             height = 34;
             scale = 1f;
-            timeLeft = 40;
+            timeLeft = 20;
         }
 
         public override void AI()

@@ -12,10 +12,11 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
     public class LivingCoreSwordProj2 : ModProjectile
     {
         public static bool swung = false;
-        public int SwingTime = 30;
+        public int SwingTime = 15;
         public float holdOffset = 60f;
         public bool bounced = false;
         public int Spawned = 0;
+        private bool DamageRose;
 
         public override void SetStaticDefaults()
         {
@@ -82,26 +83,29 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             }
 
             {
-                Vector2 newVelocity = Main.rand.NextVector2Circular(1f, 1f);
+                
 
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 10; i++)
                 {
-                    if (Spawned == 1 || Spawned == 3 || Spawned == 5 || Spawned == 7 || Spawned == 8 || Spawned == 10)
-                    {
-                        ParticleManager.NewParticle(Projectile.Center, newVelocity * 5f, ParticleManager.NewInstance<TestParticle3>(), Color.Purple, Main.rand.NextFloat(0.2f, 0.8f));
-                    }
+                    
+                       // ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<TestParticle3>(), Color.Purple, Main.rand.NextFloat(0.2f, 0.5f));
+                    
                 }
                 Spawned++;
             }
 
-            ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreSwordTrail>(), Color.Purple, 1f);
-
-            Projectile.damage = 25;
+            if (Spawned == 1)
+            {
+                ParticleManager.NewParticle(player.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreSwordTrail>(), Color.Purple, 1f);
+            }
+ 
             Vector2 oldMouseWorld = Main.MouseWorld;
             Timer++;
-            if (Timer < 5)
-                player.velocity = Projectile.DirectionTo(oldMouseWorld) * 5f;
-
+            if (!DamageRose)
+            {
+                Projectile.damage *= 2;
+                DamageRose = true;
+            }
             int dir = (int)Projectile.ai[1];
             float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
             // the actual rotation it should have
@@ -127,7 +131,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             player.itemTime = 2;
             player.itemAnimation = 2;
             Projectile.netUpdate = true;
-        }
+            }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
@@ -137,13 +141,12 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             {
                 Vector2 newVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(15));
                 newVelocity *= 1f - Main.rand.NextFloat(0.6f);
-                ParticleManager.NewParticle(Projectile.Center, newVelocity, ParticleManager.NewInstance<TestParticle3>(), Color.Purple, 1);
+                //ParticleManager.NewParticle(Projectile.Center, newVelocity, ParticleManager.NewInstance<TestParticle3>(), Color.Purple, 1);
             }
 
             Vector2 oldMouseWorld = Main.MouseWorld;
             if (!bounced)
             {
-                player.velocity = Projectile.DirectionTo(oldMouseWorld) * -10f;
                 bounced = true;
             }
             else

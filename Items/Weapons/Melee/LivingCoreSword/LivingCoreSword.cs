@@ -58,7 +58,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             int dir = AttackCounter;
             AttackCounter = -AttackCounter;
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 1, dir);
-            if (player.GetModPlayer<DivergencyPlayer>().itemCombo == 3 || player.GetModPlayer<DivergencyPlayer>().itemCombo == 3)
+            if (player.GetModPlayer<DivergencyPlayer>().itemCombo == 4 || player.GetModPlayer<DivergencyPlayer>().itemCombo == 4)
             {
                 Item.knockBack = 9;
             }
@@ -77,7 +77,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
                 Item.shoot = ModContent.ProjectileType<LivingCoreSwordProj>();
                 Item.UseSound = SoundID.Item1;
             }
-            if (combowombo == 3)
+            if (combowombo == 1)
             {
                 combowombo = 0;
                 player.GetModPlayer<DivergencyPlayer>().itemCombo = 0;

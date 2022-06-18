@@ -20,7 +20,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
             Projectile.height = 20;
             Projectile.aiStyle = 595;
             Projectile.friendly = true;
-            Projectile.DamageType = DamageClass.Melee;
+            Projectile.DamageType = DamageClass.Generic;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
 

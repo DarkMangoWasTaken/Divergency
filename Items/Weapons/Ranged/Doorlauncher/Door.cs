@@ -484,7 +484,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
                     float scale = 1f - (Main.rand.NextFloat() * .3f);
 
                     Vector2 velocity = perturbedSpeed * scale;
-                    Projectile.damage = 15;
+                    Projectile.damage /= 2;
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, velocity, ProjectileType<ShadowDoorPro>(), 15, Projectile.knockBack, Projectile.owner);
                 }
 
@@ -643,7 +643,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
 
         public override void Behavior()
         {
-            Projectile.damage = 15;
+            Projectile.damage /= 2;
             if (initialize)
             {
                 SoundEngine.PlaySound(SoundID.Item63, Projectile.position);
