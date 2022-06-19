@@ -51,7 +51,7 @@ namespace DivergencyMod.Dusts.Particles
             if (alpha < 0f) alpha = 0f;
             Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), alpha);
             //spriteBatch.Draw(tex2, position - Main.screenPosition, new Rectangle(0, 0, tex2.Width, tex2.Height), color, ai[1].InRadians().AngleLerp((ai[1] * 180f).InRadians(), (120f - timeLeft) / 120f), new Vector2(tex2.Width / 2f, tex2.Height / 2f), 0.05f * scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(tex3, Bottom - Main.screenPosition, tex3.AnimationFrame(ref frameCount, ref frameTick, 2, 3, true), color, velocity.ToRotation() + 180, new Vector2(270f, 249f) * 0.5f, 1.2f * scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex3, Bottom - Main.screenPosition, tex3.AnimationFrame(ref frameCount, ref frameTick, 2, 3, true), color, velocity.ToRotation() + 180, new Vector2(270f, 249f) * 0.5f, 1.35f * scale, SpriteEffects.None, 0f);
             //spriteBatch.Draw(tex, position - Main.screenPosition, tex.AnimationFrame(ref frameCount, ref frameTick, 4, 7, true), color, 0f, new Vector2(width / 2, height / 2), 0.5f, SpriteEffects.None, 0f);
             return false;
         }

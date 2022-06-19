@@ -113,11 +113,6 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
 
         public override bool PreDraw(ref Color lightColor)
         {
-            int dir = (int)Projectile.ai[1];
-            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
-            SpriteEffects spriteEffects = SpriteEffects.None;
-            float rotation = Projectile.rotation;
-
             Player player = Main.player[Projectile.owner];
             // ONLY FOR DRAWING THE SLASH
             Texture2D slash = ModContent.Request<Texture2D>("DivergencyMod/Dusts/Particles/SlashPartic").Value;
@@ -125,6 +120,12 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
             float alpha = (float)Math.Sin(mult * Math.PI);
             Vector2 pos = player.Center + Projectile.velocity * (40f - mult * 30f);
             Main.EntitySpriteDraw(slash, pos - Main.screenPosition, null, Color.Yellow * alpha, Projectile.velocity.ToRotation() - MathHelper.PiOver2, slash.Size() / 2, Projectile.scale / 2, SpriteEffects.None, 0);
+            int dir = (int)Projectile.ai[1];
+            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+            SpriteEffects spriteEffects = SpriteEffects.None;
+            float rotation = Projectile.rotation;
+
+    
            // NORMAL DRAWCODE
             if (dir == 1)
             {

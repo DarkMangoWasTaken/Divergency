@@ -34,8 +34,8 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.height = 100;
-            Projectile.width = 100;
+            Projectile.height = 110;
+            Projectile.width = 110;
             Projectile.friendly = true;
             Projectile.scale = 1f;
         }

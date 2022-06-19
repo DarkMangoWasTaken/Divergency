@@ -12,7 +12,7 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
 
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Doorlauncher"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
+            DisplayName.SetDefault("Commandant's Blade"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
             Tooltip.SetDefault("'Now you know how Cloud feels'");
         }
 
@@ -40,7 +40,7 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
         }
-
+        
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             int dir = AttackCounter;
