@@ -17,6 +17,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
         public bool bounced = false;
         public int Spawned = 0;
         private bool DamageRose;
+        private bool Healed;
 
         public override void SetStaticDefaults()
         {
@@ -136,7 +137,12 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             Player player = Main.player[Projectile.owner];
-
+            if (!Healed)
+            {
+                player.statLife += 3;
+                player.HealEffect(3);
+                Healed = true;
+            }
             for (int i = 0; i < 4; i++)
             {
                 Vector2 newVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(15));
@@ -144,15 +150,8 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
                 //ParticleManager.NewParticle(Projectile.Center, newVelocity, ParticleManager.NewInstance<TestParticle3>(), Color.Purple, 1);
             }
 
-            Vector2 oldMouseWorld = Main.MouseWorld;
-            if (!bounced)
-            {
-                bounced = true;
-            }
-            else
-            {
-                player.velocity = player.velocity;
-            }
+
+
 
             if (target.lifeMax <= 500)
             {
