@@ -200,7 +200,7 @@ namespace DivergencyMod.NPCs.Forest
                         if (Timer == 3)
 
                         {
-                            Gore.NewGore(null, NPC.Bottom, NPC.velocity, GoreID.TreeLeaf_Normal, 1f);
+                            Gore.NewGore(null, NPC.Center, NPC.velocity, GoreID.TreeLeaf_Normal, 1f);
                             Timer = 0;
                         }
                     }
