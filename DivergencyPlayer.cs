@@ -5,20 +5,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Terraria;
-using Terraria.Audio;
-using Terraria.DataStructures;
-using Terraria.GameInput;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
-using static Terraria.ModLoader.ModContent;
+using DivergencyMod.NPCs.Forest;
 
 namespace DivergencyMod
 {
@@ -31,8 +18,44 @@ namespace DivergencyMod
         public int BranchCooldown = 300;
         public int BranchReload = 0;
         public bool Slowed = false;
-     
 
+        public override void PreUpdate()
+        {
+
+           
+            if (Main.rand.NextBool(5))
+            {
+                int x = (int)(Player.Center.X / 16);
+                int y = (int)(Player.Center.Y / 16);
+
+                for (int i = -4; i < 5; i++)
+                {
+                    int checkX = x + i;
+                    int checkY = y;
+                    Main.NewText(Main.tile[checkX, checkY].TileFrameX > 50);
+
+                    for (int b = 0; b < 5;)
+                    { if (WorldGen.InWorld(checkX, y))
+                        {
+                            if (Main.tile[checkX, checkY].TileType == TileID.Trees)
+                            {
+                                checkY--;
+                            }
+                            else
+                            {
+                                checkY++;
+                                if (Main.tile[checkX, checkY].TileFrameX > 50)
+                                {
+                                    NPC.NewNPC(null, checkX * 16, checkY * 16, ModContent.NPCType<Acorn>());
+                                }
+                                Main.NewText(Main.tile[checkX, checkY].TileFrameX);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public override void PostUpdateRunSpeeds()
         {
             if (Slowed)

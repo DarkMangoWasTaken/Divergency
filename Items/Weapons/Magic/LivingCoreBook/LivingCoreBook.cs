@@ -27,6 +27,7 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
                 + "\nRight click to detonate instantly");
 
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
+
         }
 
         public override void SetDefaults()
@@ -41,7 +42,6 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
             Item.mana = 10;
             Item.width = Item.height = 16;
             Item.scale = 1f;
-
             Item.useTime = Item.useAnimation = 10;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = SoundID.DD2_LightningAuraZap;

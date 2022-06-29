@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -25,6 +26,7 @@ namespace DivergencyMod.NPCs.Forest
 
         public float AI_Timer;
         public float Timer;
+        private bool SoundPlayed;
 
         public override void SetStaticDefaults()
         {
@@ -53,7 +55,7 @@ namespace DivergencyMod.NPCs.Forest
             NPC.DeathSound = SoundID.LucyTheAxeTalk; // The sound the NPC will make when it dies.
             NPC.value = 90f; // How many copper coins the NPC will drop when killed.
             NPC.knockBackResist = 1f;
-            NPC.scale = 0.9f;
+            NPC.scale = 0.93f;
         }
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
         {
@@ -109,18 +111,34 @@ namespace DivergencyMod.NPCs.Forest
                     }
                     break;
                 case (float)Phase.Scream:
-                    NPC.frameCounter++;
-                    if (NPC.frameCounter >= 6)
+       
+                    
+                        NPC.frameCounter++;
+
+                    if (!SoundPlayed)
+                    {
+                        SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/screm")
+
+                        {
+                            Volume = 1f,
+                            MaxInstances = 5,
+                            
+                        });
+                        SoundPlayed = true;
+                    }
+
+                    if (NPC.frameCounter >= 8)
                     {
                         NPC.frameCounter = 0;
                        
                         NPC.frame.Y += frameHeight;
 
                             if (NPC.frame.Y >= frameHeight * 22)
-                        {
+                            { 
                             NPC.frame.Y = 0;
                             State = (float)Phase.Walking;
-                        }
+                            SoundPlayed = false;
+                            }
                     }
                     break;
 
@@ -140,7 +158,7 @@ namespace DivergencyMod.NPCs.Forest
 
                 if (AI_Timer >= 300)
                 {
-                    CombatText.NewText(NPC.getRect(), Color.White, "AAAAAAAAA", true, false);
+                    //CombatText.NewText(NPC.getRect(), Color.White, "AAAAAAAAA", true, false);
                     State = (float)Phase.Scream;
                     AI_Timer = 0;
                 }
