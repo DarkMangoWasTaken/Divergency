@@ -51,9 +51,8 @@ namespace DivergencyMod.NPCs.Forest
             NPC.aiStyle = -1; // This NPC has a completely unique AI, so we set this to -1. The default aiStyle 0 will face the player, which might conflict with custom AI code.
             NPC.damage = 30; // The amount of damage that this NPC deals
             NPC.defense = 2; // The amount of defense that this NPC has
-            NPC.lifeMax = 15; // The amount of health that this NPC has
+            NPC.lifeMax = 12; // The amount of health that this NPC has
             NPC.HitSound = SoundID.NPCHit2; // The sound the NPC will make when being hit.
-            NPC.DeathSound = SoundID.LucyTheAxeTalk; // The sound the NPC will make when it dies.
             NPC.value = 90f; // How many copper coins the NPC will drop when killed.
             NPC.knockBackResist = 0.7f;
             NPC.scale = 0.93f;
@@ -73,6 +72,7 @@ namespace DivergencyMod.NPCs.Forest
 
         public override void AI()
         {
+
 
             NPC.TargetClosest(true);
 
@@ -102,31 +102,34 @@ namespace DivergencyMod.NPCs.Forest
             {
                 case (float)Phase.Walking:
                     NPC.frameCounter++;
+
+
                     if (NPC.frameCounter >= 5)
                     {
-                        NPC.frameCounter = 0;
-                        NPC.frame.Y += frameHeight;
-                        if (NPC.frame.Y >= frameHeight * 10)
-                            NPC.frame.Y = 0;
+                        if (Main.player[NPC.target].Distance(NPC.Center) < 200f && AI_Timer >= 300)
+                        {
+                            State = (float)Phase.Scream;
+                            AI_Timer = 0;
+                        }
+                        else
+                        {
+                 
+                            NPC.frameCounter = 0;
+                            NPC.frame.Y += frameHeight;
+                            if (NPC.frame.Y >= frameHeight * 10)
+                                NPC.frame.Y = 0;
+                            
+                        }
                     }
                     break;
+
+
+
                 case (float)Phase.Scream:
        
                     
                         NPC.frameCounter++;
 
-                    if (!SoundPlayed)
-                    {
-                        SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/screm")
-
-                        {
-                            Pitch = Main.rand.NextFloat(0.3f, 0.5f),
-                            Volume = 1f,
-                            MaxInstances = 5,
-                            
-                        });
-                        SoundPlayed = true;
-                    }
 
                     if (NPC.frameCounter >= 6)
                     {
@@ -134,7 +137,7 @@ namespace DivergencyMod.NPCs.Forest
                        
                         NPC.frame.Y += frameHeight;
 
-                            if (NPC.frame.Y >= frameHeight * 22)
+                            if (NPC.frame.Y >= frameHeight * 22)    
                             { 
                             NPC.frame.Y = 0;
                             State = (float)Phase.Walking;
@@ -183,32 +186,37 @@ namespace DivergencyMod.NPCs.Forest
             NPC.aiStyle = 3;
             AIType = NPCID.DesertGhoul;
 
-            if (Main.player[NPC.target].Distance(NPC.Center) < 200f)
-            {
-
-
-
-                if (AI_Timer >= 300)
-                {
-                    //CombatText.NewText(NPC.getRect(), Color.White, "AAAAAAAAA", true, false);
-                    State = (float)Phase.Scream;
-                    AI_Timer = 0;
-                }
-
-            }
+    
         }
 
         private void Scream()
         {
-
+   
             NPC.aiStyle = 0;
             AI_Timer++;
             if (AI_Timer == 20)
             {
                 for (int i = 0; i < 2; i++)
-                { 
+                {
+               
+                        if (!SoundPlayed)
+                        {
+                            //SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/screm")
 
-                        Vector2 pos = NPC.position;
+                            //{
+                            //    Pitch = Main.rand.NextFloat(0.3f, 0.5f),
+                            //   Volume = 1f,
+                            // MaxInstances = 5,
+
+                            // });
+
+                            SoundEngine.PlaySound(SoundID.DeerclopsScream with { Volume = 0.75f, Pitch = 1.3f });
+
+                            SoundPlayed = true;
+                        }
+
+                    
+                    Vector2 pos = NPC.position;
                         for (i = -5; i <= 5; i++)
                         {
                             bool success = TryFindTreeTop(pos + new Vector2(i * 16f, 0f), out Vector2 result);
@@ -235,13 +243,15 @@ namespace DivergencyMod.NPCs.Forest
         }
         public override void OnKill()
         {
-            int goreType = Mod.Find<ModGore>("JeffreyGoreBack").Type;
-            int goreTypeAlt = Mod.Find<ModGore>("JeffreyGoreFront").Type;
+            SoundEngine.PlaySound(SoundID.DeerclopsHit with { Volume = 0.75f, Pitch = 1.3f });
+
+            int goreType = Mod.Find<ModGore>("AcornGoreBack").Type;
+            int goreTypeAlt = Mod.Find<ModGore>("AcornGoreFront").Type;
 
             if (Main.netMode != NetmodeID.Server)
             {
-                //Gore.NewGore(null, NPC.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType);
-                //Gore.NewGore(null, NPC.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreTypeAlt);
+                Gore.NewGore(null, NPC.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType);
+                Gore.NewGore(null, NPC.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreTypeAlt);
             }
         }
         public bool TryFindTreeTop(Vector2 position, out Vector2 result)
