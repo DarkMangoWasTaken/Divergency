@@ -120,6 +120,7 @@ namespace DivergencyMod.NPCs.Forest
                         SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/screm")
 
                         {
+                            Pitch = Main.rand.NextFloat(0.3f, 0.5f),
                             Volume = 1f,
                             MaxInstances = 5,
                             
@@ -127,7 +128,7 @@ namespace DivergencyMod.NPCs.Forest
                         SoundPlayed = true;
                     }
 
-                    if (NPC.frameCounter >= 8)
+                    if (NPC.frameCounter >= 6)
                     {
                         NPC.frameCounter = 0;
                        
@@ -150,7 +151,7 @@ namespace DivergencyMod.NPCs.Forest
             AI_Timer++;
 
             NPC.aiStyle = 3;
-            AIType = NPCID.DesertGhoul;
+            AIType = NPCID.VortexLarva;
             if (AI_Timer == 1)
             {
                 NPC.velocity.Y -= 7;

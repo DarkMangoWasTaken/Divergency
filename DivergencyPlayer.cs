@@ -77,7 +77,7 @@ namespace DivergencyMod
             {
                 Spawned--;
             }
-            if (Main.rand.NextBool(200) && Main.dayTime && !Main.IsItAHappyWindyDay && Spawned == 0)
+            if (Main.rand.NextBool(200) && Main.dayTime && !Main.IsItAHappyWindyDay && Spawned == 0 && Player.ZoneForest)
             {
                 if (TryFindTreeTop(Player.Center, out Vector2 result))
                 {
