@@ -17,6 +17,7 @@ namespace DivergencyMod.NPCs.Forest
 
         private enum Phase
         {
+            JumpTree,
             Walking,
             Scream
         }
@@ -50,11 +51,11 @@ namespace DivergencyMod.NPCs.Forest
             NPC.aiStyle = -1; // This NPC has a completely unique AI, so we set this to -1. The default aiStyle 0 will face the player, which might conflict with custom AI code.
             NPC.damage = 30; // The amount of damage that this NPC deals
             NPC.defense = 2; // The amount of defense that this NPC has
-            NPC.lifeMax = 30; // The amount of health that this NPC has
+            NPC.lifeMax = 15; // The amount of health that this NPC has
             NPC.HitSound = SoundID.NPCHit2; // The sound the NPC will make when being hit.
             NPC.DeathSound = SoundID.LucyTheAxeTalk; // The sound the NPC will make when it dies.
             NPC.value = 90f; // How many copper coins the NPC will drop when killed.
-            NPC.knockBackResist = 1f;
+            NPC.knockBackResist = 0.7f;
             NPC.scale = 0.93f;
         }
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -69,11 +70,7 @@ namespace DivergencyMod.NPCs.Forest
 				new FlavorTextBestiaryInfoElement("Don't let him call his cousins")
             });
         }
-        public override float SpawnChance(NPCSpawnInfo spawnInfo)
-        {
-            // we would like this NPC to spawn in the overworld.
-            return SpawnCondition.OverworldDay.Chance * 0.3f;
-        }
+
         public override void AI()
         {
 
@@ -83,6 +80,9 @@ namespace DivergencyMod.NPCs.Forest
 
             switch (State)
             {
+                case (float)Phase.JumpTree:
+                    JumpTree();
+                    break;
                 case (float)Phase.Walking:
                     Walking();
                     break;
@@ -145,16 +145,47 @@ namespace DivergencyMod.NPCs.Forest
             }
            
         }
-        private void Walking()
+        private void JumpTree()
         {
+            AI_Timer++;
 
             NPC.aiStyle = 3;
-            AIType = NPCID.LarvaeAntlion;
+            AIType = NPCID.DesertGhoul;
+            if (AI_Timer == 1)
+            {
+                NPC.velocity.Y -= 7;
+                State = (float)Phase.Walking;
+                for (int i = 0; i < 15; i++)
+                {
+                    if (Main.netMode != NetmodeID.Server)
+                    {
+                        Vector2 perturbedSpeed = NPC.velocity.RotatedByRandom(MathHelper.ToRadians(20));
+
+                        float scale = 1f - (Main.rand.NextFloat() * 0.75f);
+                        perturbedSpeed *= scale;
+
+                        Dust dust = Dust.NewDustDirect(NPC.position - NPC.velocity, NPC.width, NPC.height, DustID.WoodFurniture, 0, 0, 100, default, 2f);
+                        dust.noGravity = true;
+                        dust.velocity *= 2f;
+                        dust = Dust.NewDustDirect(NPC.position - NPC.velocity, NPC.width, NPC.height, DustID.WoodFurniture, 0f, 0f, 1000, default, 2f);
+                        Gore.NewGore(null, NPC.Center, NPC.velocity, GoreID.TreeLeaf_Normal, 1.1f);
+                    }
+                }
+
+            }
+
+        }
+        private void Walking()
+        {
+            AI_Timer++;
+            NPC.knockBackResist = 0.7f;
+            NPC.aiStyle = 3;
+            AIType = NPCID.DesertGhoul;
 
             if (Main.player[NPC.target].Distance(NPC.Center) < 200f)
             {
 
-                AI_Timer++;
+
 
                 if (AI_Timer >= 300)
                 {
@@ -168,8 +199,23 @@ namespace DivergencyMod.NPCs.Forest
 
         private void Scream()
         {
-       
+
             NPC.aiStyle = 0;
+            AI_Timer++;
+            if (AI_Timer == 20)
+            {
+                for (int i = 0; i < 2; i++)
+                { 
+
+                        Vector2 pos = NPC.position;
+                        for (i = -5; i <= 5; i++)
+                        {
+                            bool success = TryFindTreeTop(pos + new Vector2(i * 16f, 0f), out Vector2 result);
+                            NPC.NewNPC(null, (int)(result.X + Main.rand.NextFloat(-32f, 33f)), (int)(result.Y + Main.rand.NextFloat(-64f, 1f)), ModContent.NPCType<Acorn>());
+
+                        }
+                } 
+            }
 
             NPC.knockBackResist = -1;
 
@@ -197,9 +243,52 @@ namespace DivergencyMod.NPCs.Forest
                 //Gore.NewGore(null, NPC.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreTypeAlt);
             }
         }
+        public bool TryFindTreeTop(Vector2 position, out Vector2 result)
+        {
+            if (Main.tile[(int)position.X / 16, (int)position.Y / 16].TileType == TileID.Trees)
+            {
+                // Origin position, in tile format.
+                int x = (int)(position.X / 16);
+                int y = (int)(position.Y / 16);
 
-        
+                // Position being checked;
+       
+                    int checkX = x;
+                    int checkY = y;
+
+                // Checking up to a maximum of 30 tiles.
+                for (int b = 0; b < 30; b++)
+                {
+                    // If this position is in the world, and if the tile is a Tree tile.
+                    if (WorldGen.InWorld(checkX, y) && Main.tile[checkX, checkY].TileType == TileID.Trees)
+                    {
+                        // Checking if the tile's frames are within the range of tile frames used for the invisible tree top tiles.
+                        if (Main.tile[checkX, checkY].TileFrameX == 22 && Main.tile[checkX, checkY].TileFrameY >= 198)
+                        {
+                            //Dust.QuickBox(new Vector2(checkX * 16, checkY * 16), new Vector2((checkX * 16) + 16, (checkY * 16) + 16), 10, Color.Yellow, null);
+                            result = new Vector2(checkX * 16, checkY * 16);
+                            return true;
+                        }
+                        // Otherwise, its a success, since it's still a tree tile. Just not the one we're looking for.
+                        //Dust.QuickBox(new Vector2(checkX * 16, checkY * 16), new Vector2((checkX * 16) + 16, (checkY * 16) + 16), 10, Color.Green, null);
+                        checkY--;
+                    }
+                    else
+                    {
+                        // If the tile isn't what we're looking for and since we're only iterating upwards, logically this means its useless to continue.
+                        //Dust.QuickDustLine(new Vector2(checkX * 16, checkY * 16), new Vector2((checkX * 16) + 16, (checkY * 16) + 16), 5f, Color.Red);
+                        //Dust.QuickDustLine(new Vector2(checkX * 16, (checkY * 16) + 16), new Vector2((checkX * 16) + 16, checkY * 16), 5f, Color.Red);
+                        break;
+                    }
+                }
+            }
+            
+            result = default;
+            return false;
         }
+
+    }
+
 
     
 }
