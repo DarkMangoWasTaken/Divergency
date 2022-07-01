@@ -53,7 +53,7 @@ namespace DivergencyMod.Items.Accs.Forest
         {
             if (Player.HeldItem.DamageType == DamageClass.Magic && HeartHeal)
             {
-                if (Player.HeldItem.DamageType == DamageClass.Magic && HeartHeal)
+                if (Player.HeldItem.DamageType == DamageClass.Magic && HeartHeal && !target.immortal)
                 {
 
                     for (int i = 0; i < Main.rand.Next(3, 4); i++)
