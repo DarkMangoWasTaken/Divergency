@@ -51,7 +51,7 @@ namespace DivergencyMod.NPCs.Forest
             NPC.aiStyle = -1; // This NPC has a completely unique AI, so we set this to -1. The default aiStyle 0 will face the player, which might conflict with custom AI code.
             NPC.damage = 30; // The amount of damage that this NPC deals
             NPC.defense = 2; // The amount of defense that this NPC has
-            NPC.lifeMax = 70; // The amount of health that this NPC has
+            NPC.lifeMax = 40; // The amount of health that this NPC has
             NPC.HitSound = SoundID.NPCHit2; // The sound the NPC will make when being hit.
             NPC.DeathSound = SoundID.LucyTheAxeTalk; // The sound the NPC will make when it dies.
             NPC.value = 90f; // How many copper coins the NPC will drop when killed.
