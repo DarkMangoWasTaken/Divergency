@@ -34,14 +34,12 @@ namespace DivergencyMod.NPCs.Forest
             NPCID.Sets.TrailingMode[NPC.type] = 0;
             DisplayName.SetDefault("Bushling"); // Automatic from localization files
             Main.npcFrameCount[NPC.type] = 9; // make sure to set this for your modNPCs.
-            var drawModifier = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+            NPCID.Sets.NPCBestiaryDrawModifiers value = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
             { // Influences how the NPC looks in the Bestiary
-                Position = new Vector2(0f, 0f),
-                PortraitPositionXOverride = 0f,
-
-                PortraitPositionYOverride = 0f
+                Velocity = 1f // Draws the NPC in the bestiary as if its walking +1 tiles in the x direction
             };
-            NPCID.Sets.NPCBestiaryDrawOffset.Add(NPC.type, drawModifier);
+            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, value);
+
 
         }
         public override void SetDefaults()

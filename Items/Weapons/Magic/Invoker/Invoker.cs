@@ -57,7 +57,7 @@ namespace DivergencyMod.Items.Weapons.Magic.Invoker
             {
                 Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                ParticleManager.NewParticle(Projectile.Center, speed * 7, ParticleManager.NewInstance<InvokedParticle4>(), Color.Purple, 0.8f);
+                ParticleManager.NewParticle(Projectile.Center, speed * 7, ParticleManager.NewInstance<InvokedParticle4>(), Color.Purple, Main.rand.NextFloat(0.5f, 0.7f));
             }
         }
 
@@ -104,7 +104,7 @@ namespace DivergencyMod.Items.Weapons.Magic.Invoker
 
             Player player = Main.player[Projectile.owner];
 
-            ParticleManager.NewParticle(Projectile.Center, Projectile.velocity, ParticleManager.NewInstance<InvokedParticle>(), Color.Purple, 1);
+            ParticleManager.NewParticle(Projectile.Center, Projectile.velocity, ParticleManager.NewInstance<InvokedParticle>(), Color.Purple,1);
         }
 
         public override void Kill(int timeLeft)
@@ -121,7 +121,7 @@ namespace DivergencyMod.Items.Weapons.Magic.Invoker
 
                 Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                ParticleManager.NewParticle(Projectile.Center, speed * 10, ParticleManager.NewInstance<InvokedParticle4>(), Color.Purple, 0.8f);
+                ParticleManager.NewParticle(Projectile.Center, speed * 10, ParticleManager.NewInstance<InvokedParticle4>(), Color.Purple, Main.rand.NextFloat(0.5f, 0.8f));
             }
         }
 

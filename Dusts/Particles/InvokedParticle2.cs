@@ -21,7 +21,6 @@ namespace DivergencyMod.Dusts.Particles
 
         public override void AI()
         {
-            rotation = velocity.ToRotation();
             velocity *= 1f;
             color = Color.Lerp(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), Color.Multiply(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), 0.5f), (360f - timeLeft) / 360f);
         }

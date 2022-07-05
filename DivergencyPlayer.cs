@@ -19,7 +19,8 @@ namespace DivergencyMod
         public int BranchCooldown = 300;
         public int BranchReload = 0;
         public bool Slowed = false;
-        public int Spawned = 600;
+        public int Spawned = 120;
+        public bool ParticleNope;
 
 
 
@@ -77,12 +78,12 @@ namespace DivergencyMod
             {
                 Spawned--;
             }
-            if (Main.rand.NextBool(200) && Main.dayTime && !Main.IsItAHappyWindyDay && Spawned == 0 && Player.ZoneForest)
+            if (Main.rand.NextBool(250) && Main.dayTime && !Main.IsItAHappyWindyDay && Spawned == 0 && Player.ZoneForest)
             {
                 if (TryFindTreeTop(Player.Center, out Vector2 result))
                 {
                     NPC.NewNPC(null, (int)(result.X + Main.rand.NextFloat(-32f, 33f)), (int)(result.Y + Main.rand.NextFloat(-64f, 1f)), ModContent.NPCType<Acorn>());
-                    Spawned = 600;
+                    Spawned = 1200;
                 }
             }
             else if (Main.rand.NextBool(100) && Main.dayTime && Main.IsItAHappyWindyDay && Spawned == 0)

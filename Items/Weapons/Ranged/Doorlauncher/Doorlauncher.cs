@@ -36,7 +36,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
         public override void SetDefaults()
         {
             Item.DamageType = DamageClass.Ranged;
-            Item.damage = 30;
+            Item.damage = 55;
             Item.crit = 3;
             Item.knockBack = 8f;
             Item.noMelee = true;
