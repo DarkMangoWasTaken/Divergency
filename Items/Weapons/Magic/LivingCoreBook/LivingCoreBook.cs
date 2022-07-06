@@ -157,7 +157,7 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
             {
                 Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                ParticleManager.NewParticle(Projectile.Center, speed * 7, ParticleManager.NewInstance<LivingCoreParticle2>(), Color.Purple, Main.rand.NextFloat(0.2f, 0.8f));
+                ParticleManager.NewParticle(Projectile.Center, speed * 7, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, Main.rand.NextFloat(0.2f, 0.8f));
             }
             ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreParticle>(), Color.Purple, 1);
 

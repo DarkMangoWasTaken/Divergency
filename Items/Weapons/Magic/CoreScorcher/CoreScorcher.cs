@@ -59,7 +59,7 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
             {
                 SoundEngine.PlaySound(SoundID.Item34, player.Center);
 
-                ParticleManager.NewParticle(position, velocity, ParticleManager.NewInstance<LivingCoreParticle2>(), Color.Purple, 0.8f);
+                ParticleManager.NewParticle(position, velocity, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.8f);
             }
 
 
