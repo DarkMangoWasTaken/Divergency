@@ -18,7 +18,7 @@ namespace DivergencyMod.Dusts.Particles
             width = 34;
             height = 34;
             scale = 1f;
-            timeLeft = 30;
+            timeLeft = 40;
         }
        
 
@@ -28,7 +28,7 @@ namespace DivergencyMod.Dusts.Particles
 
             color = Color.Lerp(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), Color.Multiply(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), 0.5f), (360f - timeLeft) / 360f);
             velocity *= 0.98f;
-            scale *= 1.08f;
+            scale *= 1.05f;
             if (scale <= 0f)
                 active = false;
         }

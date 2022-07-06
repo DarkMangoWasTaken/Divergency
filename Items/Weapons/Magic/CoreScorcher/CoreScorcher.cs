@@ -43,7 +43,7 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
             Item.shootSpeed = 12f;
             Item.mana = 1;
             Item.width = Item.height = 16;
-            Item.scale = 0.9f;
+            Item.scale = 1f;
             Item.useTime = Item.useAnimation = 2;
             Item.useStyle = ItemUseStyleID.Shoot;
             
@@ -99,7 +99,7 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
             Projectile.ignoreWater = false;
             Projectile.alpha = 255;
             Projectile.aiStyle = 0;
-            Projectile.timeLeft = 20;
+            Projectile.timeLeft = 30;
             Projectile.hide = true;
         }
        

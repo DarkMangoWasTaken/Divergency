@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace DivergencyMod.Dusts.Particles
 {
-    public class LivingWoodParticle : Particle
+    public class LivingCoreParticle2 : Particle
     {
         private int frameCount;
         private int frameTick;
