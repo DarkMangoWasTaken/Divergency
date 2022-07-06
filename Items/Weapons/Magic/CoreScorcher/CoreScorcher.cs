@@ -59,7 +59,7 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
             {
                 SoundEngine.PlaySound(SoundID.Item34, player.Center);
 
-                ParticleManager.NewParticle(position, velocity, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.8f);
+                ParticleManager.NewParticle(position, velocity, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.85f);
             }
 
 
@@ -70,14 +70,12 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
             Vector2 Offset = Vector2.Normalize(velocity) * 75f;
             velocity = velocity.RotatedByRandom(MathHelper.ToRadians(5)) * (1f - Main.rand.NextFloat(0.35f));
 
-            if (Collision.CanHit(position, 0, 0, position + Offset, 0, 0))
-            {
                 position += Offset;
-            }
+            
         }
         public override Vector2? HoldoutOffset()
         {
-            return new Vector2(3, 10);
+            return new Vector2(-10, -5);
         }
     }
 
