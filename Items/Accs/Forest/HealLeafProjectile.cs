@@ -51,8 +51,8 @@ namespace DivergencyMod.Items.Accs.Forest
          
             if (Projectile.active && player.Hitbox.Intersects(Projectile.Hitbox))
             {
-                player.statLife += 1;
-                player.HealEffect(1);
+                player.statLife += 3;
+                player.HealEffect(3);
                 Projectile.Kill();
             }
                 Projectile.damage = 0;
