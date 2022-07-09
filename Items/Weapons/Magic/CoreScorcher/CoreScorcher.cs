@@ -9,8 +9,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.Localization.GameCulture;
 using static Terraria.ModLoader.ModContent;
-using ParticleLibrary;
-using DivergencyMod.Dusts.Particles;
 
 namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
 {
@@ -18,15 +16,12 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
     {
 
 
-        public override bool AltFunctionUse(Player player) => true;
-
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Living Core Book");
-            DisplayName.AddTranslation((int)CultureName.German, "Wurzelbruch");
+            DisplayName.SetDefault("Core Scorcher");
 
-            Tooltip.SetDefault("Summons up to 10 explosive leaves"
-                + "\nRight click to detonate instantly");
+            Tooltip.SetDefault("Fires a deadly Living Core flame"
+                + "\nInflicts the Dryads buffs/debuffs on enemy/player contact");
 
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 
@@ -35,13 +30,13 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
         public override void SetDefaults()
         {
             Item.DamageType = DamageClass.Magic;
-            Item.damage = 30;
-            Item.knockBack = 5f;
+            Item.damage = 35;
+            Item.knockBack = 1f;
             Item.noMelee = true;
-
+            Item.crit = 0;
             Item.shoot = ProjectileType<CoreFlame>();
             Item.shootSpeed = 12f;
-            Item.mana = 1;
+            Item.mana = 2;
             Item.width = Item.height = 16;
             Item.scale = 1f;
             Item.useTime = Item.useAnimation = 2;
@@ -55,10 +50,10 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+            SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
             for (int i = 0; i < 5; i++)
             {
-                SoundEngine.PlaySound(SoundID.Item34, player.Center);
-
                 ParticleManager.NewParticle(position, velocity, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.85f);
             }
 
@@ -99,6 +94,8 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
             Projectile.aiStyle = 0;
             Projectile.timeLeft = 30;
             Projectile.hide = true;
+            Projectile.CritChance = 0;
+
         }
        
 
@@ -131,7 +128,7 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
         }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            target.AddBuff(BuffID.DryadsWardDebuff, 60, false);
+            target.AddBuff(BuffID.DryadsWardDebuff, 120, false);
         }
 
 

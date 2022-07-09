@@ -30,7 +30,10 @@ namespace DivergencyMod.Items.Accs.Forest
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-
+			if (player.HeldItem.DamageType == DamageClass.Ranged)
+			{
+				player.HeldItem.autoReuse = true;
+			}
 			 player.GetDamage(DamageClass.Ranged) *= 0.5f; // Increase ALL player damage by 100%
              player.GetAttackSpeed(DamageClass.Ranged) *= 2f;
 

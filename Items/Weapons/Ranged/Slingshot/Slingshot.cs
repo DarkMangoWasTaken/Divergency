@@ -28,7 +28,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.Slingshot
             Item.value = 10000;
             Item.noMelee = true;
             Item.rare = ItemRarityID.Green;
-            Item.UseSound = SoundID.Item44;
+            Item.UseSound = SoundID.Item1;
             Item.autoReuse = false;
             Item.shoot = ModContent.ProjectileType<PebbleProj>();
             Item.shootSpeed = 20f;

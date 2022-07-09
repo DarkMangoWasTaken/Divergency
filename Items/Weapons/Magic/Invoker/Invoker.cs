@@ -111,13 +111,9 @@ namespace DivergencyMod.Items.Weapons.Magic.Invoker
         {
             for (int i = 0; i < 14; i++)
             {
-                SoundStyle adjusted = SoundID.DD2_EtherianPortalSpawnEnemy with
-                {
-                    Volume = 0.5f,
-                    Pitch = 1f,
-                };
-                SoundEngine.PlaySound(adjusted);
-                SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with { Volume = 0.75f, Pitch = 1.3f });
+
+
+                SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with { Volume = 1f, Pitch = Main.rand.NextFloat(0.9f, 1.1f) });
 
                 Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
@@ -175,6 +171,7 @@ namespace DivergencyMod.Items.Weapons.Magic.Invoker
     public class ChargedInvokedProj : ModProjectile
     {
         public bool ParticleSpawned = false;
+        public bool Hit = false;
         public override string Texture => "DivergencyMod/Items/Weapons/Magic/Invoker/InvokedProj";
 
         public override void SetStaticDefaults()
@@ -277,16 +274,12 @@ namespace DivergencyMod.Items.Weapons.Magic.Invoker
 
         public override void Kill(int timeLeft)
         {
+            SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with { Volume = 1f, Pitch = Main.rand.NextFloat(0.9f, 1.1f) });
+
             for (int i = 0; i < 20; i++)
             {
                 Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
-                SoundStyle adjusted = SoundID.MenuTick with
-                {
-                    Volume = 1f,
-                    Pitch = 1f
-                };
-                SoundEngine.PlaySound(adjusted);
-                SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with { Volume = 1f, Pitch = 1.1f });
+                
 
                 ParticleManager.NewParticle(Projectile.Center, speed * 15, ParticleManager.NewInstance<InvokedParticle4>(), Color.Purple, 1f);
             }
@@ -358,8 +351,8 @@ namespace DivergencyMod.Items.Weapons.Magic.Invoker
         public override void SetDefaults()
         {
             Projectile.damage = 0;
-            Projectile.width = 20;
-            Projectile.height = 20;
+            Projectile.width = 0;
+            Projectile.height = 0;
             Projectile.aiStyle = 595;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;

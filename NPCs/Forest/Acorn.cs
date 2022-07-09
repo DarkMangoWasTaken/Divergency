@@ -99,7 +99,6 @@ namespace DivergencyMod.NPCs.Forest
                 case (float)Phase.Walking:
                     NPC.frameCounter++;
 
-
                     if (NPC.frameCounter >= 5)
                     {
                         if (Main.player[NPC.target].Distance(NPC.Center) < 200f && AI_Timer >= 300)
@@ -119,13 +118,9 @@ namespace DivergencyMod.NPCs.Forest
                     }
                     break;
 
-
-
                 case (float)Phase.Scream:
        
-                    
                         NPC.frameCounter++;
-
 
                     if (NPC.frameCounter >= 6)
                     {
@@ -141,9 +136,7 @@ namespace DivergencyMod.NPCs.Forest
                             }
                     }
                     break;
-
             }
-           
         }
         private void JumpTree()
         {

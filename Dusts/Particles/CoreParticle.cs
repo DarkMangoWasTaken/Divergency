@@ -24,25 +24,28 @@ namespace DivergencyMod.Dusts.Particles
 
         public override void AI()
         {
-            rotation += Utils.Clamp(velocity.X * 1.025f, -ai[1], ai[1]);
+            rotation = velocity.ToRotation();
 
-            color = Color.Lerp(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), Color.Multiply(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), 0.5f), (360f - timeLeft) / 360f);
-            velocity *= 0.98f;
+            velocity *= 0.98f;  
             scale *= 1.05f;
             if (scale <= 0f)
                 active = false;
+            opacity = 125f;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color lightColor)
         {
-            Texture2D tex = Request<Texture2D>("DivergencyMod/Dusts/Particles/TestParticle").Value;
+            Texture2D tex = Request<Texture2D>("DivergencyMod/Dusts/Particles/FireParticle").Value;
             Texture2D tex2 = Request<Texture2D>("DivergencyMod/Dusts/Particles/TestParticle3").Value;
             Texture2D tex3 = Request<Texture2D>("DivergencyMod/Dusts/Particles/TestParticle3").Value;
 
             float alpha = timeLeft <= 20 ? 1f - 1f / 20f * (20 - timeLeft) : 1f;
             if (alpha < 0f) alpha = 0f;
-            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), alpha);
-            spriteBatch.Draw(tex3, position - Main.screenPosition, new Rectangle(0, 0, tex3.Width, tex3.Height), color, ai[3].InRadians().AngleLerp((ai[3] + 90f).InRadians(), (120f - timeLeft) / 120f), new Vector2(tex3.Width / 2f, tex3.Height / 2f), 0.07f * scale, SpriteEffects.None, 0f);
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), alpha / 2);
+            Color color2 = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), alpha / 5);
+
+            spriteBatch.Draw(tex, position - Main.screenPosition, tex.AnimationFrame(ref frameCount, ref frameTick, 7, 7, true), color2, 0f, new Vector2(tex.Width / 2f, tex.Height / 2f / 7f), scale / 3.2f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex3, position - Main.screenPosition, new Rectangle(0, 0, tex3.Width, tex3.Height), color, rotation,  new Vector2(tex3.Width / 2f, tex3.Height / 2f), 0.17f * scale, SpriteEffects.None, 0f);
             return false;
         }
     }
