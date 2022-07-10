@@ -55,8 +55,7 @@ namespace DivergencyMod.Items.Armors
 			if (player.GetModPlayer<TreePlayer>().treeNear != 0 && player.GetModPlayer<TreePlayer>().treeCheck)
             {
 				player.GetDamage(DamageClass.Generic) += 0.25f;
-				player.manaRegen += 10;
-				Gore.NewGore(null, player.Center, player.velocity, GoreID.TreeLeaf_Normal, 1.1f);
+				player.manaRegenCount += 25;
 
 
 
@@ -92,7 +91,6 @@ namespace DivergencyMod.Items.Armors
 		}
 		public override void ResetEffects()
         {
-			treeNear = 0;
 			treeCheck = false;
         }
 

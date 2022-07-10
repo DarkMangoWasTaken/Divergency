@@ -71,7 +71,7 @@ namespace DivergencyMod.Items.Armors
 				if (Player.controlDown && Player.releaseDown && Player.doubleTapCardinalTimer[JumpDown] < 15 && !Player.justJumped)
 				{
 					JumpDir = JumpDown;
-					Player.velocity.Y += 6f;
+					Player.velocity.Y += 4.5f;
 					JumpLeaf = false;
 					Player.justJumped = true;
 					timer = 600;
@@ -84,7 +84,7 @@ namespace DivergencyMod.Items.Armors
 					Player.velocity.Y -= 20f;
 					JumpLeaf = false;
 					Player.justJumped = true;
-					timer = 60;
+					timer = 600;
 
 				}
 			}
@@ -94,7 +94,7 @@ namespace DivergencyMod.Items.Armors
 		{
 			if (timer >= 1)
 			timer--;
-
+			Main.NewText(timer);
 
 		}
 	}
