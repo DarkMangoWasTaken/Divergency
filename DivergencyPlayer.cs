@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using DivergencyMod.NPCs.Forest;
 using System;
+using DivergencyMod.Items.Armors;
 
 namespace DivergencyMod
 {
@@ -39,9 +40,13 @@ namespace DivergencyMod
 
                 int checkX = x;
                 int checkY = y;
+                if (WorldGen.InWorld(checkX, y) && Main.tile[checkX, checkY].TileType == TileID.Trees)
+                {
+                    Player.GetModPlayer <TreePlayer>().treeNear = 600;
+                }
 
-                // Checking up to a maximum of 30 tiles.
-                for (int b = 0; b < 30; b++)
+                    // Checking up to a maximum of 30 tiles.
+                    for (int b = 0; b < 30; b++)
                 {
                     // If this position is in the world, and if the tile is a Tree tile.
                     if (WorldGen.InWorld(checkX, y) && Main.tile[checkX, checkY].TileType == TileID.Trees)

@@ -30,7 +30,7 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
         public override void SetDefaults()
         {
             Item.DamageType = DamageClass.Magic;
-            Item.damage = 35;
+            Item.damage = 30;
             Item.knockBack = 1f;
             Item.noMelee = true;
             Item.crit = 0;
