@@ -159,7 +159,7 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
 
                 ParticleManager.NewParticle(Projectile.Center, speed * 7, ParticleManager.NewInstance<LivingCoreParticle2>(), Color.Purple, Main.rand.NextFloat(0.2f, 0.8f));
             }
-            ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreParticle>(), Color.Purple, 1);
+           // ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreParticle>(), Color.Purple, 1);
 
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, Vector2.Zero, ProjectileType<LivingExplosion>(), Projectile.damage + player.ownedProjectileCounts[Projectile.type] * 4,
                 Projectile.knockBack, Projectile.owner);

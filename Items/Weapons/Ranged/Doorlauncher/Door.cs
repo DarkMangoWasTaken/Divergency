@@ -1,3 +1,4 @@
+using DivergencyMod.Base;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -80,6 +81,8 @@ namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("a Door");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 3;
         }
 
         public override void SetDefaults()
@@ -111,6 +114,11 @@ namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
             if (Projectile.ai[0] >= 15)
             {
                 Projectile.velocity.Y += 0.95f;
+            }
+            for (int j = 0; j < 10; j++)
+            {
+                Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
+                Dust.NewDustPerfect(Projectile.Center, DustID.GemRuby, speed * 2, 0, Color.Red, 1f);
             }
 
             Behavior();
@@ -148,6 +156,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
         {
             if (initialize)
             {
+
                 SoundEngine.PlaySound(SoundID.Item20, Projectile.position);
                 initialize = false;
             }

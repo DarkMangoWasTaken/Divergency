@@ -1,8 +1,10 @@
+using DivergencyMod.Base;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
@@ -15,7 +17,12 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
         public static bool swung = false;
         public int SwingTime = 48;
         public float holdOffset = 80f;
-
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Commandants Sword");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 3;
+        }
         public override void SetDefaults()
         {
             Projectile.damage = 100;
@@ -115,7 +122,9 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
         {
             Player player = Main.player[Projectile.owner];
             // ONLY FOR DRAWING THE SLASH
-            Texture2D slash = ModContent.Request<Texture2D>("DivergencyMod/Dusts/Particles/SlashPartic").Value;
+
+
+            Texture2D slash = (Texture2D)ModContent.Request<Texture2D>("DivergencyMod/Dusts/Particles/SlashPartic").Value;
             float mult = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
             float alpha = (float)Math.Sin(mult * Math.PI);
             Vector2 pos = player.Center + Projectile.velocity * (40f - mult * 30f);

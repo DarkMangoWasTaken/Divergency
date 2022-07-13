@@ -94,7 +94,6 @@ namespace DivergencyMod.Items.Armors
 		{
 			if (timer >= 1)
 			timer--;
-			Main.NewText(timer);
 
 		}
 	}

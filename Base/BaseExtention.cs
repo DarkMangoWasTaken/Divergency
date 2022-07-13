@@ -1,9 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Terraria;
+using Terraria.Graphics.Shaders;
 
 namespace DivergencyMod.Base
 {
-    public static class BaseExtension
+	
+	public static class BaseExtension
     {
         public static float InRadians(this float degrees) => MathHelper.ToRadians(degrees);
 
@@ -21,5 +27,7 @@ namespace DivergencyMod.Base
                 frameTick++;
             return new Rectangle(0, overrideHeight != 0 ? overrideHeight * frame : (texture.Height / frameCount) * frame, texture.Width, texture.Height / frameCount);
         }
+
     }
+	
 }

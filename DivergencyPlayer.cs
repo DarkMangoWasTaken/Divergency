@@ -22,6 +22,7 @@ namespace DivergencyMod
         public bool Slowed = false;
         public int Spawned = 120;
         public bool ParticleNope;
+        public bool checkTree = true;
 
 
 
@@ -79,24 +80,25 @@ namespace DivergencyMod
 
         public override void PreUpdate()
         {
+            Main.NewText(itemCombo);
             if (Spawned > 0)
             {
                 Spawned--;
             }
-            if (Main.rand.NextBool(250) && Main.dayTime && !Main.IsItAHappyWindyDay && Spawned == 0 && Player.ZoneForest)
+            if (Main.rand.NextBool(1) && Main.dayTime && !Main.IsItAHappyWindyDay && Spawned == 0 && Player.ZoneForest && checkTree)
             {
                 if (TryFindTreeTop(Player.Center, out Vector2 result))
                 {
                     NPC.NewNPC(null, (int)(result.X + Main.rand.NextFloat(-32f, 33f)), (int)(result.Y + Main.rand.NextFloat(-64f, 1f)), ModContent.NPCType<Acorn>());
-                    Spawned = 1200;
+                    Spawned = 10;
                 }
             }
-            else if (Main.rand.NextBool(100) && Main.dayTime && Main.IsItAHappyWindyDay && Spawned == 0)
+            else if (Main.rand.NextBool(1) && Main.dayTime && Main.IsItAHappyWindyDay && Spawned == 0 && checkTree)
             {
                 if (TryFindTreeTop(Player.Center, out Vector2 result))
                 {
                     NPC.NewNPC(null, (int)(result.X + Main.rand.NextFloat(-32f, 33f)), (int)(result.Y + Main.rand.NextFloat(-64f, 1f)), ModContent.NPCType<Acorn>());
-                    Spawned = 450;
+                    Spawned = 10;
                 }
             }
 
@@ -181,6 +183,7 @@ namespace DivergencyMod
 
         public override void ResetEffects()
         {
+            checkTree = true;
             if (itemComboReset <= 0)
             {
                 itemCombo = 0;

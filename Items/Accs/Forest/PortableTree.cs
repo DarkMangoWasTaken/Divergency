@@ -4,8 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.GameContent.Creative;
 using Terraria.ModLoader;
-using DivergencyMod.Items.Weapons.Melee.RootBreaker;
-using DivergencyMod.Items.Weapons.Melee.LivingWoodGuitar;
+
 using DivergencyMod.Items.Armors;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,7 +28,7 @@ namespace DivergencyMod.Items.Accs.Forest
 			Item.value = Item.buyPrice(10);
 			Item.rare = ItemRarityID.Green;
 			Item.accessory = true;
-
+            
 
 
 		}
