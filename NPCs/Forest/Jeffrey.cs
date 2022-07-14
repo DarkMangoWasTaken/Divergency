@@ -77,7 +77,6 @@ namespace DivergencyMod.NPCs.Forest
             
             NPC.TargetClosest(true);
 
-            //Main.NewText(AI_Timer);
             
             // The NPC starts in the asleep state, waiting for a player to enter range
             switch (AI_StateDiv)

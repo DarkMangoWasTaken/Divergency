@@ -8,11 +8,13 @@ using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Utilities;
+using DivergencyMod.Base;
 
 
-namespace DivergencyMod.NPCs.Forest
+
+namespace DivergencyMod.Bosses.Forest
 {
-    public class Acorn : ModNPC
+    public class WraithHand : ModNPC
     {
 
         private enum Phase
@@ -40,18 +42,25 @@ namespace DivergencyMod.NPCs.Forest
             };
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, value);
         }
-        public override void SetDefaults()
+
+              public override void SetDefaults()
         {
-            NPC.width = 20; // The width of the NPC's hitbox (in pixels)
-            NPC.height = 25; // The height of the NPC's hitbox (in pixels)
-            NPC.aiStyle = -1; // This NPC has a completely unique AI, so we set this to -1. The default aiStyle 0 will face the player, which might conflict with custom AI code.
-            NPC.damage = 30; // The amount of damage that this NPC deals
-            NPC.defense = 2; // The amount of defense that this NPC has
-            NPC.lifeMax = 12; // The amount of health that this NPC has
-            NPC.HitSound = SoundID.NPCHit2; // The sound the NPC will make when being hit.
-            NPC.value = 90f; // How many copper coins the NPC will drop when killed.
-            NPC.knockBackResist = 0.7f;
-            NPC.scale = 0.93f;
+            NPC.aiStyle = -1;
+            NPC.lifeMax = 6000;
+            NPC.damage = 30;
+            NPC.defense = 10;
+            NPC.knockBackResist = 0f;
+            NPC.width = 140;
+            NPC.height = 120;
+            NPC.value = Item.buyPrice(0, 40, 0, 0);
+           // NPC.dontTakeDamage = true;
+            NPC.friendly = false;
+            NPC.boss = true;
+            NPC.lavaImmune = true;
+            NPC.noGravity = true;
+            NPC.noTileCollide = true;
+            //NPC.dontTakeDamageFromHostiles = true;
+            NPC.behindTiles = true;
         }
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
         {
@@ -208,7 +217,6 @@ namespace DivergencyMod.NPCs.Forest
                         for (i = -5; i <= 5; i++)
                         {
                             bool success = TryFindTreeTop(pos + new Vector2(i * 16f, 0f), out Vector2 result);
-                            NPC.NewNPC(null, (int)(result.X + Main.rand.NextFloat(-32f, 33f)), (int)(result.Y + Main.rand.NextFloat(-64f, 1f)), ModContent.NPCType<Acorn>());
 
                         }
                 } 

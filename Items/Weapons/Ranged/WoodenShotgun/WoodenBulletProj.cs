@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Graphics;
 
 namespace DivergencyMod.Items.Weapons.Ranged.WoodenShotgun
 {
@@ -13,8 +14,8 @@ namespace DivergencyMod.Items.Weapons.Ranged.WoodenShotgun
         {
             DisplayName.SetDefault("BewitchedSpikyBall");
             Main.projFrames[Projectile.type] = 4;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5; // The length of old position to be recorded
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 0; // The recording mode
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 3;
         }
 
         public override void SetDefaults()
@@ -39,6 +40,8 @@ namespace DivergencyMod.Items.Weapons.Ranged.WoodenShotgun
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(90);
             Projectile.spriteDirection = Projectile.direction;
+            default(RainbowRodDrawer).Draw(Projectile);
+
         }
 
         public override void Kill(int timeLeft)
@@ -59,6 +62,8 @@ namespace DivergencyMod.Items.Weapons.Ranged.WoodenShotgun
 
         public override bool PreDraw(ref Color lightColor)
         {
+            default(RainbowRodDrawer).Draw(Projectile);
+
             Main.instance.LoadProjectile(Projectile.type);
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 
@@ -66,6 +71,8 @@ namespace DivergencyMod.Items.Weapons.Ranged.WoodenShotgun
             Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, Projectile.height * 0.5f);
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
+                default(RainbowRodDrawer).Draw(Projectile);
+
                 Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
                 Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
                 Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);

@@ -66,7 +66,7 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 
 			if (Timer == 1)
             {
-				Projectile.damage /= 2;
+				Projectile.damage /= 2 ;
             }
 			if (Projectile.frame == 1)
 			{

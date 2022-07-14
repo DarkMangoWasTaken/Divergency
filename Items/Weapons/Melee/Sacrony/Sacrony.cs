@@ -257,7 +257,6 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
         public int framereset;
         public override void PreUpdate()
         {
-            Main.NewText(framereset);
             if (frame1 && framereset >= 1)
             {
                 framereset--;

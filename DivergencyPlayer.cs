@@ -80,7 +80,6 @@ namespace DivergencyMod
 
         public override void PreUpdate()
         {
-            Main.NewText(itemCombo);
             if (Spawned > 0)
             {
                 Spawned--;
