@@ -34,7 +34,7 @@ namespace DivergencyMod.Items.Accs.Forest
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.GetDamage(DamageClass.Melee) *= 1.12f; // Increase ALL player damage by 100%
-		
+			player.GetModPlayer<SavageTalismanPlayer>().TalismanHeal = true;
 
 		}
 
@@ -43,17 +43,17 @@ namespace DivergencyMod.Items.Accs.Forest
 
 	}
 
-	public class GuardPlayer : ModPlayer
+	public class SavageTalismanPlayer : ModPlayer
 	{
-	
+		public bool TalismanHeal;
 		public override void ResetEffects()
 		{
 			// Reset our equipped flag. If the accessory is equipped somewhere, ExampleShield.UpdateAccessory will be called and set the flag before PreUpdateMovement
-		
+			TalismanHeal = false;
 		}
         public override void OnHitByNPC(NPC npc, int damage, bool crit)
         {
-			if (Main.rand.NextBool(10))
+			if (Main.rand.NextBool(10) && TalismanHeal)
 			{
 				Player.statLife += 10;
 				Player.HealEffect(10);
@@ -64,7 +64,7 @@ namespace DivergencyMod.Items.Accs.Forest
         {
 
 
-			if (Main.rand.NextBool(10))
+			if (Main.rand.NextBool(10) && TalismanHeal)
 			{
 				Player.statLife += 5;
 				Player.HealEffect(5);

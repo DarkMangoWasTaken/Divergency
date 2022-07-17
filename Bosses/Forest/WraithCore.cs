@@ -51,9 +51,9 @@ namespace DivergencyMod.Bosses.Forest
               public override void SetDefaults()
         {
             NPC.aiStyle = -1;
-            NPC.lifeMax = 6000;
+            NPC.lifeMax = 6000  ;
             NPC.damage = 30;
-            NPC.defense = 10;
+            NPC.defense = 0;
             NPC.knockBackResist = 0f;
             NPC.width = 50;
             NPC.height = 50;
@@ -93,7 +93,7 @@ namespace DivergencyMod.Bosses.Forest
             Vector2 vector; float speed; float turnResistance = 10f; bool toNPC = false;
             Vector2 WraithPos = Parentnpc.Center;
 
-            speed = NPC.Distance(WraithPos) / 5;
+            speed = NPC.Distance(WraithPos) / 4;
 
             Vector2 moveTo = Parentnpc.Center;
             Vector2 move = moveTo - NPC.Center;
@@ -103,7 +103,7 @@ namespace DivergencyMod.Bosses.Forest
                 move *= speed / magnitude;
             }
 
-            move = (NPC.velocity * turnResistance + move) / (turnResistance + 1f);
+            move = (NPC.velocity * turnResistance + move) / (turnResistance + 0.5f);
             magnitude = Magnitude(move);
             if (magnitude > speed)
             {

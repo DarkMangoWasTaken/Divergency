@@ -115,11 +115,6 @@ namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
             {
                 Projectile.velocity.Y += 0.95f;
             }
-            for (int j = 0; j < 10; j++)
-            {
-                Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
-                Dust.NewDustPerfect(Projectile.Center, DustID.GemRuby, speed * 2, 0, Color.Red, 1f);
-            }
 
             Behavior();
         }
