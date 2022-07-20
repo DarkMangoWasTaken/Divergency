@@ -30,7 +30,7 @@ namespace DivergencyMod.Dusts.Particles
         {
             Texture2D tex = Request<Texture2D>("DivergencyMod/Dusts/Particles/TestParticle").Value;
             Texture2D tex2 = Request<Texture2D>("DivergencyMod/Dusts/Particles/TestParticle3").Value;
-            Texture2D tex3 = Request<Texture2D>("DivergencyMod/Dusts/Particles/WraithFireParticle").Value;
+            Texture2D tex3 = Request<Texture2D>("DivergencyMod/Dusts/Particles/EyeParticle").Value;
 
             float alpha = timeLeft <= 20 ? 1f - 1f / 20f * (20 - timeLeft) : 1f;
             if (alpha < 0f) alpha = 0f;

@@ -1,6 +1,7 @@
 ﻿using DivergencyMod.Base;
 using DivergencyMod.Dusts.Particles;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using ParticleLibrary;
 using System;
 using Terraria;
@@ -31,7 +32,8 @@ namespace DivergencyMod.Bosses.Forest
               
         }
 
-
+        private int frame = 0;
+        private int frameTimer = 0;
         public float State = 0;
         public bool ParticleShoot;
         public float AITimer;
@@ -39,12 +41,15 @@ namespace DivergencyMod.Bosses.Forest
         private bool SoundPlayed;
         private float frametimer;
         private int DashContinue = 3;
+        public int damage;
         private Vector2 oldPlayerCenter = Vector2.Zero;
         Vector2 toPlayer = Vector2.Zero;
 
 
         public override void SetStaticDefaults()
         {
+            //NPCID.Sets.TrailCacheLength[NPC.type] = 5;
+          //  NPCID.Sets.TrailingMode[NPC.type] = 0;
 
             DisplayName.SetDefault("Living Core Wraith"); // Automatic from localization files
             Main.npcFrameCount[NPC.type] = 14; // make sure to set this for your modNPCs.
@@ -58,13 +63,13 @@ namespace DivergencyMod.Bosses.Forest
         public override void SetDefaults()
         {
             NPC.aiStyle = -1;
-            NPC.lifeMax = 6000;
+            NPC.lifeMax = 3500;
             NPC.damage = 30;
-            NPC.defense = 15;
+            NPC.defense = 10;
             NPC.knockBackResist = 0f;
             NPC.width = 100;
             NPC.height = 100;
-            NPC.value = Item.buyPrice(0, 40, 0, 0);
+            NPC.value = Item.buyPrice(0, 3, 0, 0);
             // NPC.dontTakeDamage = true;
             NPC.friendly = false;
             NPC.boss = true;
@@ -73,6 +78,7 @@ namespace DivergencyMod.Bosses.Forest
             NPC.noTileCollide = true;
             //NPC.dontTakeDamageFromHostiles = true;
             NPC.behindTiles = false;
+            
             Music = MusicLoader.GetMusicSlot("DivergencyMod/Sounds/Music/LivingCoreWraithTheme");
 
         }
@@ -92,10 +98,26 @@ namespace DivergencyMod.Bosses.Forest
         {
             NPC.NewNPC(source, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WraithCore>(), 0, NPC.whoAmI);
             NPC.NewNPC(source, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WraithHand>(), 0, NPC.whoAmI);
+      
+            if (Main.masterMode)
+            {
+                NPC.NewNPC(source, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WraithHand2>(), 0, NPC.whoAmI);
+
+            }
+
+
 
         }
         public override void AI()
         {
+            if (Phase2)
+            {
+                damage = 40;
+            }
+            else
+            {
+                damage = 30;
+            }
             NPC.TargetClosest();
             switch (State)
             {
@@ -133,6 +155,10 @@ namespace DivergencyMod.Bosses.Forest
                     FlameBreathAbove();
                     break;
             }
+            if (NPC.life <= NPC.lifeMax / 2)
+            {
+                Phase2 = true;
+            }
 
         }
 
@@ -141,19 +167,223 @@ namespace DivergencyMod.Bosses.Forest
         public override void FindFrame(int frameHeight)
         {
             NPC.spriteDirection = -NPC.direction;
-            frametimer++;
-            if (frametimer == 6)
+            NPC.frame.Y = frameHeight * frame;
+
+            switch (State)
             {
-                NPC.frameCounter++;
-                frametimer = 0;
-                NPC.frame.Y += frameHeight;
+                case (int)Phase.Float:
+                    if (State == (float)Phase.Float)
+                    {
+
+
+                        // Float animation
+                        // Frames 0 - 11
+                        if (frame < 3)
+                        {
+                            frameTimer++;
+                            if (frameTimer % 8 == 0)
+                            {
+                                frame++;
+                            }
+                        }
+                        else
+                        {
+                            frameTimer++;
+                            if (frameTimer % 8 == 0)
+                            {
+                                frame = 0;
+                                frameTimer = 0;
+                            }
+                        }
+                    }
+                    break;
+                case (int)Phase.FireBarrage:
+                    if (State == (float)Phase.FireBarrage)
+                    {
+                        Timer++;
+
+                        if (Timer == 1)
+                        {
+                            frame = 4;
+
+                        }
+
+
+
+                        if (frame < 13 && frame > 3)
+                        {
+                            frameTimer++;
+                            if (frameTimer % 4 == 0)
+                            {
+                                frame++;
+                            }
+                        }
+                        else
+                        {
+                            frameTimer++;
+                            if (frameTimer % 3 == 0)
+                            {
+                                frame = 4;
+                                frameTimer = 0;
+                                Timer = 0;
+                            }
+                        }
+                    }
+                    break;
+                case (int)Phase.Dash:
+                    if (State == (float)Phase.Dash)
+                    {
+                        frame = 9;
+                    }
+                    break;
+                case (int)Phase.SpreadFire:
+                    if (State == (float)Phase.SpreadFire)
+                    {
+                        Timer++;
+
+                        if (Timer == 1)
+                        {
+                            frame = 4;
+
+                        }
+
+
+
+                        if (frame < 13 && frame > 3)
+                        {
+                            frameTimer++;
+                            if (frameTimer % 4 == 0)
+                            {
+                                frame++;
+                            }
+                        }
+                        else
+                        {
+                            frameTimer++;
+                            if (frameTimer % 4 == 0)
+                            {
+                                frame = 4;
+                                frameTimer = 0;
+                                Timer = 0;
+                            }
+                        }
+                    }
+                    break;
+                case (int)Phase.SpreadFireCircle:
+                    if (State == (float)Phase.SpreadFireCircle)
+                    {
+                        Timer++;
+
+                        if (Timer == 1)
+                        {
+                            frame = 4;
+
+                        }
+
+                        if (frame < 13 && frame > 3)
+                        {
+                            frameTimer++;
+                            if (frameTimer % 8 == 0)
+                            {
+                                frame++;
+                            }
+                        }
+                        else
+                        {
+                            if (frameTimer % 8 == 0)
+                            {
+                                frameTimer = 0;
+                                Timer = 0;
+                            }
+                        }
+                    }
+                    break;
+
+                case (int)Phase.SpreadFireCircleAfterDash:
+                    if (State == (float)Phase.SpreadFireCircleAfterDash)
+                    {
+                        Timer++;
+
+                        if (Timer == 1)
+                        {
+                            frame = 4;
+
+                        }
+
+
+
+                        if (frame < 13 && frame > 3)
+                        {
+                            frameTimer++;
+                            if (frameTimer % 2 == 0)
+                            {
+                                frame++; 
+                            }
+                        }
+                        else
+                        {
+                            frameTimer++;
+                            if (frameTimer % 2 == 0)
+                            {
+                                frame = 4;
+                                frameTimer = 0;
+                                Timer = 0;
+                            }
+                        }
+                    }
+                    break;
+
+                case (int)Phase.FlameDash:
+                    if (State == (float)Phase.FlameDash)
+                    {
+                        Timer++;
+
+                        if (Timer == 1)
+                        {
+                            frame = 4;
+
+                        }
+
+
+
+                        if (frame < 9 && frame > 3)
+                        {
+                            frameTimer++;
+                            if (frameTimer % 4 == 0)
+                            {
+                                frame++;
+                            }
+                        }
+                        else
+                        {
+                            frameTimer++;
+                            if (frameTimer % 4 == 0)
+                            {
+                                frame = 9;
+                                frameTimer = 0;
+                                Timer = 0;
+                            }
+                        }
+                    }
+                    break;
+                case (int)Phase.FlameBreathAbove:
+                    if (State == (float)Phase.FlameBreathAbove)
+                    {
+                        Timer++;
+                        frame = 9;
+                    }
+                    break;
+                case (int)Phase.FlameBreathFloat:
+                    if (State == (float)Phase.FlameBreathFloat)
+                    {
+                        Timer++;
+                        frame = 9;
+                    }
+                    break;
 
             }
-            NPC.frameCounter = 0;
-            if (NPC.frame.Y >= frameHeight * 14)
-                NPC.frame.Y = 0;
-
         }
+
 
 
 
@@ -161,8 +391,15 @@ namespace DivergencyMod.Bosses.Forest
         {
             AITimer++;
             Player player = Main.player[NPC.target];
+            if (Phase2)
+            {
+                NPC.Move(player.Center, 4f);
+            }
+            else
+            {
+                NPC.Move(player.Center, 2f);
 
-            NPC.Move(player.Center, 2f);
+            }
             if (AITimer >= 300)
             {
                 WeightedRandom<Phase> phase = new WeightedRandom<Phase>();
@@ -173,12 +410,20 @@ namespace DivergencyMod.Bosses.Forest
                 phase.Add(Phase.FireBarrage, 1f);
                 phase.Add(Phase.FlameBreathFloat, 1f);
                 phase.Add(Phase.FlameBreathAbove, 1f);
+                
 
+                if (Phase2)
+                {
+                    DashContinue = 3;
+                }
+                else
+                {
+                    DashContinue = 2;
 
-                DashContinue = 3;
+                }
 
                 State = (float)phase.Get();
-                //State = (float)Phase.FlameBreathAbove;
+                //State = (float)Phase.FlameDash; //<-----------------------------
                 AITimer = 0;
                 oldPlayerCenter = player.Center;
                 Vector2 toPlayer = NPC.velocity;
@@ -226,17 +471,18 @@ namespace DivergencyMod.Bosses.Forest
             {
                 for (int i = 0; i < 1; i++)
                 {
+
                     Vector2 speed = NPC.DirectionTo(player.Center);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.2f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.4f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.6f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.8f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(1f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.2f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.4f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.6f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.8f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-1f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.2f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.4f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.6f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.8f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(1f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.2f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.4f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.6f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.8f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-1f) * 3,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
 
 
@@ -244,7 +490,7 @@ namespace DivergencyMod.Bosses.Forest
 
 
             }
-            if (AITimer == 30)
+            if (AITimer == 35)
             {
                 if (DashContinue <= 0)
                 {
@@ -264,42 +510,48 @@ namespace DivergencyMod.Bosses.Forest
             AITimer++;
             Player player = Main.player[NPC.target];
             NPC.velocity *= 0.9f;
-            if (AITimer == 20)
+            if (AITimer == 5)
             {
                 for (int i = 0; i < 1; i++)
                 {
                     Vector2 speed = NPC.DirectionTo(player.Center);
-                    Projectile.NewProjectile(null, NPC.Center, speed * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed * -10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed * -10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    AITimer = 0;
-                    State = (float)Phase.Float;
+      
 
 
 
 
 
                 }
+                
             }
+            if (AITimer == 38)
+            {
+                AITimer = 0;
+                State = (float)Phase.Float;
+
+            }   
         }
         private void SpreadFireCircleAfterDash()
         {
@@ -311,27 +563,27 @@ namespace DivergencyMod.Bosses.Forest
                 for (int i = 0; i < 1; i++)
                 {
                     Vector2 speed = NPC.DirectionTo(player.Center);
-                    Projectile.NewProjectile(null, NPC.Center, speed * 6,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(1f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(2f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(4f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(6f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(7f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(8f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed * -6,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed * -15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-1f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-2f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-4f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-6f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-7f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-8f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
 
                 }
@@ -343,26 +595,26 @@ namespace DivergencyMod.Bosses.Forest
                 {
                     Vector2 speed = NPC.DirectionTo(player.Center);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(10f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(12f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(14f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(16f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(18f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(2f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(4f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(6f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(8f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(10f) *13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(12f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(14f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(16f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(18f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-10f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-12f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-14f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-16f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-18f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-2f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-4f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-6f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-8f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-10f) *13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-12f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-14f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-16f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-18f) * 13,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
                    
 
@@ -374,31 +626,35 @@ namespace DivergencyMod.Bosses.Forest
                 for (int i = 0; i < 1; i++)
                 {
                     Vector2 speed = NPC.DirectionTo(player.Center);
-                    Projectile.NewProjectile(null, NPC.Center, speed * 6,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed * 20,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed * -6,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed * -20,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
-                    AITimer = 0;
-                    State = (float)Phase.Float;
-
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-1f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-2f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-3f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-4f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-5f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-6f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-7f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
+                 
                 }
+
+            }
+            if (AITimer == 50)
+            {
+                AITimer = 0;
+                State = (float)Phase.Float;
 
             }
         }
@@ -416,19 +672,19 @@ namespace DivergencyMod.Bosses.Forest
                 NPC.velocity *= 0;
                 for (int i = 0; i < 1; i++)
                 {
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(-0.5f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
                     //telegraphing ^
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(-0.3) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(0.3f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(0.5f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
                 }
@@ -441,19 +697,19 @@ namespace DivergencyMod.Bosses.Forest
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(-0.5f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
                     //telegraphing ^
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(-0.3) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(0.3f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(0.5f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
 
@@ -464,70 +720,93 @@ namespace DivergencyMod.Bosses.Forest
             }
             if (AITimer == 80)
             {
-                NPC.velocity.Y += 32;
+                NPC.velocity.Y += 26;
 
             }
             if (AITimer == 95)
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(-0.5f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
                     //telegraphing ^
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(-0.3) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.3f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(0.3f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
-                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), 28, 0, Main.myPlayer);
+                    Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(0.5f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
 
 
                 }
+
+
+
+            }
+            if (AITimer == 110)
+            {
                 AITimer = 0;
                 State = (float)Phase.Float;
-
-
             }
 
 
 
         }
         #endregion
+        public int timer2;
+        private bool Phase2;
+        public int Timer3;
+
         private void FlameBreathFloat()
         {
             AITimer++;
-         
-            Player player = Main.player[NPC.target];
+            timer2++;
 
-            if (AITimer >= 60)
+            Player player = Main.player[NPC.target];
+            if (timer2 == 5 && AITimer <= 100)
             {
-                NPC.Move(player.Center, 3.5f);
+                Vector2 speed = NPC.DirectionTo(player.Center);
+                timer2 = 0;
+                //Projectile.NewProjectile(null, NPC.Center, NPC.velocity * 15, ModContent.ProjectileType<LivingFlameCage>(), damage, 0, Main.myPlayer);
+
+            }
+            if (AITimer >= 100)
+            {
+                if (Phase2)
+                {
+                    NPC.Move(player.Center, 6f);
+                }
+                else
+                {
+                    NPC.Move(player.Center, 4.5f);
+
+                }
 
                 Vector2 speed = NPC.DirectionTo(player.Center);
-                Timer++;
+                Timer3++;
 
-                if (Timer == 5)
+                if (Timer3 == 5)
                 {
                     ParticleShoot = true;
                     if (ParticleShoot)
                     {
                         for (int i = 0; i < 3; i++)
                         {
-                            ParticleManager.NewParticle(NPC.Center, speed * 12, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.85f);
-                            Projectile.NewProjectile(null, NPC.Center, speed * 12, ModContent.ProjectileType<WraithFireBreathProj>(), 28, 0, Main.myPlayer);
+                            ParticleManager.NewParticle(NPC.Center, speed * 15, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.85f);
+                            Projectile.NewProjectile(null, NPC.Center, speed * 15, ModContent.ProjectileType<WraithFireBreathProj>(), damage, 0, Main.myPlayer);
 
                             ParticleShoot = false;
-                            Timer = 0;
+                            Timer3 = 0;
                         }
                     }
                 }
-            }
-            if (AITimer == 400)
+            }   
+            if (AITimer  == 600)
             {
                 AITimer = 0;
                 State = (float)Phase.Float;
@@ -544,27 +823,36 @@ namespace DivergencyMod.Bosses.Forest
             AITimer++;
             NPC.velocity *= 0.9f;
             Player player = Main.player[NPC.target];
-
-            if (AITimer == 5)
+            if (AITimer == 1)
             {
-                toPlayer = NPC.DirectionTo(oldPlayerCenter) * 70;
-                ParticleManager.NewParticle(NPC.Center, toPlayer * 0.001f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
+                toPlayer = NPC.DirectionTo(oldPlayerCenter) * 90;
 
+                ParticleManager.NewParticle(NPC.Center, toPlayer * 0.001f, ParticleManager.NewInstance<Telegraph2>(), Color.Purple, 1f); ;
             }
-            if (AITimer == 15)
+         
+            if (AITimer == 30)
             {
-                DashContinue--;
                 NPC.velocity = toPlayer;
-
-        
-
-
+                
 
             }
-            if (AITimer == 40)
+            if(AITimer > 30 && AITimer < 40)
+            {
+                Projectile.NewProjectile(null, NPC.Center, NPC.velocity * 0, ModContent.ProjectileType<LivingFlameTrail>(), damage, 0, Main.myPlayer);
+            }
+            if (AITimer == 40)  
             {
                 AITimer = 0;
-                State = (float)Phase.SpreadFireCircleAfterDash;
+                if (Phase2)
+                {
+                    State = (float)Phase.SpreadFireCircleAfterDash;
+
+                }
+                else
+                {
+                    State = (float)Phase.SpreadFireCircle;
+
+                }
 
 
 
@@ -586,10 +874,10 @@ namespace DivergencyMod.Bosses.Forest
             }
             else
             {
-                Timer++;
+                Timer3++;
                 NPC.MoveAbove(player.Center, 7.5f);
 
-                if (Timer == 5)
+                if (Timer3 == 5)
                 {
                     Vector2 speed = NPC.DirectionTo(player.Center);
 
@@ -598,11 +886,11 @@ namespace DivergencyMod.Bosses.Forest
                     {
                         for (int i = 0; i < 3; i++)
                         {
-                            ParticleManager.NewParticle(NPC.Center, speed * 10, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.85f);
-                            Projectile.NewProjectile(null, NPC.Center, speed * 12, ModContent.ProjectileType<WraithFireBreathProj>(), 28, 0, Main.myPlayer);
+                            ParticleManager.NewParticle(NPC.Center, speed * 10, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.9f);
+                            Projectile.NewProjectile(null, NPC.Center, speed * 10, ModContent.ProjectileType<WraithFireBreathProj>(), damage, 0, Main.myPlayer);
 
                             ParticleShoot = false;
-                            Timer = 0;
+                            Timer3 = 0;
                         }
                     }
                 }
@@ -611,39 +899,44 @@ namespace DivergencyMod.Bosses.Forest
             if (AITimer == 450)
             {
                 AITimer = 0;
-                State = (float)Phase.SpreadFireCircle;
+                if (Phase2)
+                {
+                    State = (float)Phase.SpreadFireCircleAfterDash;
+
+                }
+                else
+                {
+                    State = (float)Phase.SpreadFireCircle;
+
+                }
             }
         }
-
-
-    }
-    public class WraithFireBreathProj : ModProjectile
-    {
-        public override Color? GetAlpha(Color lightColor) => new(255, 255, 255, 100);
-        public override string Texture => "DivergencyMod/Items/Weapons/Magic/Invoker/InvokedProj";
-
-        public override void SetDefaults()
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            Projectile.penetrate = -1;
-            Projectile.DamageType = DamageClass.Magic;
-            Projectile.friendly = false;
-            Projectile.hostile = true;
-            Projectile.width = Projectile.height = 40;
-            Projectile.scale = 1f;
-            Projectile.penetrate = -1;
-            Projectile.tileCollide = false;
-            Projectile.ignoreWater = false;
-            Projectile.alpha = 255;
-            Projectile.aiStyle = 0;
-            Projectile.timeLeft = 30;
-            Projectile.hide = true;
-            Projectile.CritChance = 0;
+            if (State == (float)Phase.Dash || State == (float)Phase.AfterDash || State == (float)Phase.FlameDash || State == (float)Phase.FireBarrage)
+            {
+
+                Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+                for (int k = 0; k < NPC.oldPos.Length; k++)
+                {
+
+                    int frameHeight = texture.Height / Main.npcFrameCount[NPC.type];
+                    int startY = (int)(frameHeight * NPC.frameCounter);
+                    Rectangle sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
+                    Vector2 origin = sourceRectangle.Size() / 2f;
+
+                    var effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                    Vector2 drawPos = NPC.oldPos[k] - Main.screenPosition + origin + new Vector2(0f, NPC.gfxOffY);
+                    Color color = NPC.GetAlpha(drawColor) * (float)(((NPC.oldPos.Length - k) / (float)NPC.oldPos.Length) / 2);
+                    spriteBatch.Draw(texture, drawPos, new Microsoft.Xna.Framework.Rectangle?(NPC.frame), color, NPC.rotation, origin, NPC.scale, effects, 0f);
+                }
+            }
+            return true;
 
         }
 
-
-
     }
+    
 }
 
 

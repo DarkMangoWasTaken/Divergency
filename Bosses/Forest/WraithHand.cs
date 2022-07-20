@@ -37,7 +37,7 @@ namespace DivergencyMod.Bosses.Forest
         public override void SetStaticDefaults()
         {
 
-            DisplayName.SetDefault("WraithHand"); // Automatic from localization files
+            DisplayName.SetDefault("Wraith Hand"); // Automatic from localization files
             Main.npcFrameCount[NPC.type] = 1; // make sure to set this for your modNPCs.
             NPCID.Sets.NPCBestiaryDrawModifiers value = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
             { // Influences how the NPC looks in the Bestiary
@@ -49,21 +49,21 @@ namespace DivergencyMod.Bosses.Forest
         public override void SetDefaults()
         {
             NPC.aiStyle = -1;
-            NPC.lifeMax = 1000;
-            NPC.damage = 30;
-            NPC.defense = 10;
+            NPC.lifeMax = 650;
+            NPC.damage = 50;
+            NPC.defense = 5;
             NPC.knockBackResist = 0f;
             NPC.width = 10;
             NPC.height = 50;
-            NPC.value = Item.buyPrice(0, 40, 0, 0);
+            NPC.value = Item.buyPrice(0, 1, 0, 0);
             // NPC.dontTakeDamage = true;
             NPC.friendly = false;
-            NPC.boss = true;
+            //NPC.boss = true;
             NPC.lavaImmune = true;
             NPC.noGravity = true;
             NPC.noTileCollide = true;
             //NPC.dontTakeDamageFromHostiles = true;
-            NPC.behindTiles = true; 
+            NPC.behindTiles = false; 
 
 
         }

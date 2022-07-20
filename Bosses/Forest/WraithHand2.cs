@@ -14,12 +14,8 @@ using DivergencyMod.Base;
 
 namespace DivergencyMod.Bosses.Forest
 {
-    public class WraithCore : ModNPC
+    public class WraithHand2 : ModNPC
     {
-        public static float Magnitude(Vector2 mag)
-        {
-            return (float)Math.Sqrt(mag.X * mag.X + mag.Y * mag.Y);
-        }
 
         private enum Phase
         {
@@ -28,19 +24,22 @@ namespace DivergencyMod.Bosses.Forest
             Scream
         }
 
-
+        public static float Magnitude(Vector2 mag)
+        {
+            return (float)Math.Sqrt(mag.X * mag.X + mag.Y * mag.Y);
+        }
         public float State = 0;
 
         public float AI_Timer;
         public float Timer;
         private bool SoundPlayed;
-        private int frametimer;
+        public override string Texture => "DivergencyMod/Bosses/Forest/WraithHand";
 
         public override void SetStaticDefaults()
         {
 
-            DisplayName.SetDefault("Living Core"); // Automatic from localization files
-            Main.npcFrameCount[NPC.type] = 7; // make sure to set this for your modNPCs.
+            DisplayName.SetDefault("Wraith Hand"); // Automatic from localization files
+            Main.npcFrameCount[NPC.type] = 1; // make sure to set this for your modNPCs.
             NPCID.Sets.NPCBestiaryDrawModifiers value = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
             { // Influences how the NPC looks in the Bestiary
                 Velocity = 1f // Draws the NPC in the bestiary as if its walking +1 tiles in the x direction
@@ -48,26 +47,26 @@ namespace DivergencyMod.Bosses.Forest
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, value);
         }
 
-              public override void SetDefaults()
+        public override void SetDefaults()
         {
             NPC.aiStyle = -1;
-            NPC.lifeMax = 6000  ;
-            NPC.damage = 0;
-            NPC.defense = 0;
+            NPC.lifeMax = 650;
+            NPC.damage = 50;
+            NPC.defense = 5;
             NPC.knockBackResist = 0f;
-            NPC.width = 50;
+            NPC.width = 10;
             NPC.height = 50;
             NPC.value = Item.buyPrice(0, 3, 0, 0);
-           // NPC.dontTakeDamage = true;
+            // NPC.dontTakeDamage = true;
             NPC.friendly = false;
             //NPC.boss = true;
             NPC.lavaImmune = true;
             NPC.noGravity = true;
             NPC.noTileCollide = true;
             //NPC.dontTakeDamageFromHostiles = true;
-            NPC.behindTiles = false;
-            NPC.ShowNameOnHover = false;
-        
+            NPC.behindTiles = false; 
+
+
         }
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
         {
@@ -78,48 +77,39 @@ namespace DivergencyMod.Bosses.Forest
       
 
 				// Sets the description of this NPC that is listed in the bestiary.
-				new FlavorTextBestiaryInfoElement("its orbin time")
+				new FlavorTextBestiaryInfoElement("Don't let him call his cousins")
             });
         }
         public NPC Parentnpc;
         public override void OnSpawn(IEntitySource source)
         {
-           
+
             Parentnpc = Main.npc[(int)NPC.ai[0]];
+            NPC.spriteDirection *= -1;
 
 
         }
+
         public override void AI()
-
         {
-            Vector3 RGB = new Vector3(1.45f, 2.55f, 0.94f);
-            float multiplier = 1;
-            float max = 2.25f;
-            float min = 1.0f;
-            RGB *= multiplier;
-            if (RGB.X > max)
-            {
-                multiplier = 0.5f;
-            }
-            if (RGB.X < min)
-            {
-                multiplier = 1.5f;
-            }
-            Lighting.AddLight(NPC.position, RGB.X, RGB.Y, RGB.Z);
+            Player player = Main.player[NPC.target];
+    
+
+
             Vector2 vector; float speed; float turnResistance = 10f; bool toNPC = false;
-            Vector2 WraithPos = Parentnpc.Center;
+            Vector2 WraithPos = Parentnpc.BottomLeft;
 
-            speed = NPC.Distance(WraithPos) / 4;
+            speed = NPC.Distance(WraithPos);
 
-            Vector2 moveTo = Parentnpc.Center;
-            Vector2 move = moveTo - NPC.Center;
+            Vector2 moveTo = Parentnpc.BottomRight;
+            Vector2 move = moveTo - NPC.Top;
             float magnitude = Magnitude(move);
             if (magnitude > speed)
             {
                 move *= speed / magnitude;
             }
 
-            move = (NPC.velocity * turnResistance + move) / (turnResistance + 0.5f);
+            move = (NPC.velocity * turnResistance + move) / (turnResistance + 1.1f);
             magnitude = Magnitude(move);
             if (magnitude > speed)
             {
@@ -127,40 +117,18 @@ namespace DivergencyMod.Bosses.Forest
             }
 
             NPC.velocity = move;
-            NPC.TargetClosest(true);
+            NPC.TargetClosest();
 
 
-          
 
 
-        }
-        public override void FindFrame(int frameHeight)
-        {
-            frametimer++;
-            if (frametimer == 5)
-            {
-                NPC.frameCounter++;
-                frametimer = 0;
-                NPC.frame.Y += frameHeight;
-
-            }
-            NPC.frameCounter = 0;
-            if (NPC.frame.Y >= frameHeight * 7)
-                NPC.frame.Y = 0;
 
         }
-        #region Movement towards main body
-  
-
-
-        #endregion
-
     }
+        
+      
 
-
-
-
-
+    
 }
 
 
