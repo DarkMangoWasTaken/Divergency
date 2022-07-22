@@ -16,7 +16,7 @@ namespace DivergencyMod.Items.Accs.Forest
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("mogus");
+			Tooltip.SetDefault("Decreases movement speed by 60%");
 
 			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 		}
@@ -28,15 +28,19 @@ namespace DivergencyMod.Items.Accs.Forest
 			Item.value = Item.buyPrice(10);
 			Item.rare = ItemRarityID.Green;
 			Item.accessory = true;
-            
+           
 
 
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.moveSpeed -= 0.15f;
-			player.GetModPlayer<TreePlayer>().treeNear = 300;
+         
+           
+                player.moveSpeed -= 0.3f;
+
+            
+            player.GetModPlayer<TreePlayer>().treeNear = 300;
             player.GetModPlayer<DrawTreeBackPlayer>().drawtree = true;
 		}
 

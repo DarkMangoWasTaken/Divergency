@@ -50,12 +50,32 @@ namespace DivergencyMod.Items.Armors
 		}
 		public override void UpdateArmorSet(Player player)
 		{
-			player.setBonus = "Enhances every stat in the near of a tree"; // This is the setbonus tooltip
+            if (!player.controlDown)
+            {
+				player.setBonus = "Enhances various stats in the near of a tree, press down for more info"; // This is the setbonus tooltip
+
+			}
+			else
+            {
+				player.setBonus = "Increased life regen, mana regen and damage while in the near of trees"
+				+"\nIncreases damage dealt by 15%'"
+				+"\nIncreases life regen by 3'"
+				+"\nIncreases mana regen'"
+				+"\nIncreases defense by 2'"
+				+"\nIncreases damage reduction by 5%'"
+				+"\nIncreases movement speed by 30%'";
+
+
+			}
 			player.GetModPlayer<TreePlayer>().treeCheck = true;
 			if (player.GetModPlayer<TreePlayer>().treeNear != 0 && player.GetModPlayer<TreePlayer>().treeCheck)
             {
-				player.GetDamage(DamageClass.Generic) += 0.25f;
-				player.manaRegenCount += 25;
+				player.GetDamage(DamageClass.Generic) += 0.15f;
+				player.manaRegenCount += 8;
+				player.statDefense += 2;
+				player.lifeRegenCount += 3;
+				player.endurance += 0.05f;
+				player.moveSpeed += 0.3f;
 
 
 
