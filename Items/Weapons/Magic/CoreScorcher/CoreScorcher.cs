@@ -39,7 +39,7 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
             Item.mana = 3;
             Item.width = Item.height = 16;
             Item.scale = 1f;
-            Item.useTime = Item.useAnimation = 3;
+            Item.useTime = Item.useAnimation = 2;
             Item.useStyle = ItemUseStyleID.Shoot;
             
             Item.autoReuse = true;
