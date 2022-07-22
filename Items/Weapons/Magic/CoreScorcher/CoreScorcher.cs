@@ -30,16 +30,16 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
         public override void SetDefaults()
         {
             Item.DamageType = DamageClass.Magic;
-            Item.damage = 30;
+            Item.damage = 25;
             Item.knockBack = 1f;
             Item.noMelee = true;
             Item.crit = 0;
             Item.shoot = ProjectileType<CoreFlame>();
             Item.shootSpeed = 12f;
-            Item.mana = 2;
+            Item.mana = 3;
             Item.width = Item.height = 16;
             Item.scale = 1f;
-            Item.useTime = Item.useAnimation = 2;
+            Item.useTime = Item.useAnimation = 3;
             Item.useStyle = ItemUseStyleID.Shoot;
             
             Item.autoReuse = true;
