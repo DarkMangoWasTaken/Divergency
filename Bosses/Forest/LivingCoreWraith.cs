@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ParticleLibrary;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -487,6 +488,7 @@ namespace DivergencyMod.Bosses.Forest
 
 
                 }
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
 
 
             }
@@ -544,7 +546,8 @@ namespace DivergencyMod.Bosses.Forest
 
 
                 }
-                
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
             }
             if (AITimer == 38)
             {
@@ -587,6 +590,8 @@ namespace DivergencyMod.Bosses.Forest
 
 
                 }
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
 
             }
             if (AITimer == 30)
@@ -619,6 +624,8 @@ namespace DivergencyMod.Bosses.Forest
                    
 
                 }
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
 
             }
             if (AITimer == 40)
@@ -649,6 +656,8 @@ namespace DivergencyMod.Bosses.Forest
                     Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(-8f) * 10,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                  
                 }
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
 
             }
             if (AITimer == 50)
@@ -686,8 +695,11 @@ namespace DivergencyMod.Bosses.Forest
 
                     Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(0.5f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
+     
 
                 }
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
             }
             if (AITimer == 35)
             {
@@ -711,9 +723,12 @@ namespace DivergencyMod.Bosses.Forest
 
                     Projectile.NewProjectile(null, NPC.Center, speed.RotatedBy(0.5f) * 15,ModContent.ProjectileType<LivingFlameBlast>(), damage, 0, Main.myPlayer);
                     ParticleManager.NewParticle(NPC.Center, speed.RotatedBy(0.5f) * 0.01f, ParticleManager.NewInstance<Telegraph>(), Color.Purple, 1.5f);
+                   
 
 
                 }
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
 
                 // State = (float)Phase.Float;
 
@@ -744,6 +759,7 @@ namespace DivergencyMod.Bosses.Forest
 
 
                 }
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
 
 
 
@@ -784,6 +800,7 @@ namespace DivergencyMod.Bosses.Forest
                 else
                 {
                     NPC.Move(player.Center, 4.5f);
+                    SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
 
                 }
 
@@ -827,9 +844,25 @@ namespace DivergencyMod.Bosses.Forest
             {
                 toPlayer = NPC.DirectionTo(oldPlayerCenter) * 90;
 
-                ParticleManager.NewParticle(NPC.Center, toPlayer * 0.001f, ParticleManager.NewInstance<Telegraph2>(), Color.Purple, 1f); ;
+                ParticleManager.NewParticle(NPC.Center, toPlayer * 0.001f, ParticleManager.NewInstance<Telegraph2>(), Color.Purple, 1f);
+
+              
+                    SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/Wraith/WraithDash")
+
+                    {
+                       Pitch = Main.rand.NextFloat(1f),
+                       Volume = 1f,
+                       MaxInstances = 1,
+
+                    });
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
+
+
+
+
             }
-         
+
             if (AITimer == 30)
             {
                 NPC.velocity = toPlayer;
@@ -876,6 +909,7 @@ namespace DivergencyMod.Bosses.Forest
             {
                 Timer3++;
                 NPC.MoveAbove(player.Center, 7.5f);
+                SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
 
                 if (Timer3 == 5)
                 {
@@ -910,6 +944,28 @@ namespace DivergencyMod.Bosses.Forest
 
                 }
             }
+        }
+        public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
+        {
+            SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/Wraith/WraithHurt")
+
+            {
+                Pitch = Main.rand.NextFloat(0.5f, 2f),
+                Volume = 0.5f,
+                MaxInstances = 5,
+
+            });
+        }
+        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+        {
+            SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/Wraith/WraithHurt")
+
+            {
+                Pitch = Main.rand.NextFloat(0.5f, 2f),
+                Volume = 0.5f,
+                MaxInstances = 5,
+
+            });
         }
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {

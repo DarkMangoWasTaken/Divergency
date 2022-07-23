@@ -349,7 +349,6 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 	}
 	public class SacronyFlameProj : ModProjectile
     {
-		public override string Texture => "Terraria/Images/Item_" + ItemID.LivingFireBlock;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Invoked Projectile");
@@ -366,8 +365,8 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 			Projectile.tileCollide = false;
 			Projectile.penetrate = 1;
 			Projectile.timeLeft = 30;
-			Projectile.scale = 1f;
-			Projectile.alpha = 125;
+			Projectile.scale = 0.5f;
+			Projectile.alpha = 90;
 		}
   
         public override bool OnTileCollide(Vector2 oldVelocity)
@@ -405,7 +404,8 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 	
 			}
 
-			Projectile.rotation = Projectile.velocity.ToRotation();
+			Projectile.rotation = Projectile.velocity.ToRotation()+ MathHelper.ToRadians(90);
+			Projectile.spriteDirection = Projectile.direction;
 			Projectile.ai[0]++;
 			Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 			Dust.NewDustPerfect(Projectile.Center, DustID.GemTopaz, speed * 2, 0, default, 0.5f);
