@@ -3,9 +3,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
+namespace DivergencyMod.Items.Accs.Forest
 {
-    public class FrickinDoorShield : ModProjectile
+    public class DefenDoorProj : ModProjectile
     {
         public override void SetStaticDefaults()
         {
@@ -25,7 +25,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.Doorlauncher
             Projectile.friendly = true;
             Projectile.ignoreWater = false;
             Projectile.tileCollide = true;
-            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.DamageType = DamageClass.Generic;
             Projectile.timeLeft = 1200;
 
             Projectile.ownerHitCheck = true;

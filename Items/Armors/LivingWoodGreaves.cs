@@ -1,4 +1,5 @@
 ﻿using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Items.Accs.Forest;
 using Microsoft.Xna.Framework;
 using ParticleLibrary;
 using Terraria;
@@ -32,18 +33,15 @@ namespace DivergencyMod.Items.Armors
 			Item.height = 18;
 			Item.value = 10000;
 			Item.rare = ItemRarityID.Green;
-			Item.defense = 60;
 			Item.defense = 2;
 		}
 
 		public override void UpdateEquip(Player player)
 		{
 
-			if (player.velocity.Y <= 0)
-			{
+		
 				player.GetModPlayer<LeafJump>().JumpLeaf = true;
-			}
-			player.moveSpeed += 0.15f;
+			player.moveSpeed += 0.10f;
 			//will allow a double jump
 
 		}
@@ -66,34 +64,29 @@ namespace DivergencyMod.Items.Armors
 			// ResetEffects is called not long after player.doubleTapCardinalTimer's values have been set
 			// When a directional key is pressed and released, vanilla starts a 15 tick (1/4 second) timer during which a second press activates a dash
 			// If the timers are set to 15, then this is the first press just processed by the vanilla logic.  Otherwise, it's a double-tap
-			if (timer == 0)
+		
+		}
+		public override void PostUpdate()	
+		{
+			if (timer >= 1)
 			{
-				if (Player.controlDown && Player.releaseDown && Player.doubleTapCardinalTimer[JumpDown] < 15 && !Player.justJumped)
-				{
-					JumpDir = JumpDown;
-					Player.velocity.Y += 4.5f;
-					JumpLeaf = false;
-					Player.justJumped = true;
-					timer = 600;
+				timer--;
+			}
 
-
-				}
-				else if (Player.controlUp && Player.releaseUp && Player.doubleTapCardinalTimer[JumpUp] < 15)
-				{
+				if (timer == 0 && JumpLeaf)
+			    {
+		
+			    	if (Player.controlUp && Player.releaseUp && Player.doubleTapCardinalTimer[JumpUp] < 15)
+				    {
 					JumpDir = JumpUp;
+
 					Player.velocity.Y -= 20f;
 					JumpLeaf = false;
 					Player.justJumped = true;
 					timer = 600;
 
-				}
-			}
-
-		}
-		public override void PreUpdate()
-		{
-			if (timer >= 1)
-			timer--;
+				    }
+		     	}
 
 		}
 	}
