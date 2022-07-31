@@ -52,6 +52,8 @@ namespace DivergencyMod.NPCs.Forest
             NPC.value = 90f; // How many copper coins the NPC will drop when killed.
             NPC.knockBackResist = 0.7f;
             NPC.scale = 0.93f;
+            NPC.noGravity = true;
+            NPC.noTileCollide = false;
         }
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
         {
