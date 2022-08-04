@@ -8,45 +8,44 @@ using static Terraria.ModLoader.ModContent;
 
 namespace DivergencyMod.Tiles.LivingTree
 {
-    public class LivingCoreWoodTile : ModTile
+    public class LivingCoreCrystalTile : ModTile
     {
         public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
+            Main.tileMerge[Type][ModContent.TileType<LivingCoreWoodTile>()] = true;
+            Main.tileMerge[ModContent.TileType<LivingCoreWoodTile>()][Type] = true;
             Main.tileMerge[Type][TileID.LeafBlock] = true;
             Main.tileMerge[TileID.LeafBlock][Type] = true;
+
             Main.tileBlendAll[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
-            AddMapEntry(new Color(79, 55, 59));
+            AddMapEntry(new Color(13, 255, 13));
             ModTranslation name = CreateMapEntryName();
-            Main.tileMergeDirt[Type] = true;
-            name.SetDefault("LivingCoreBlock");
-            DustType = 7;
+            name.SetDefault("LivingCoreCrystal");
+            DustType = 10;
 
         }
 
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
-            Tile tile = Main.tile[i, j];
-            Vector2 zero = new Vector2(Main.offScreenRange, Main.offScreenRange);
-            if (Main.drawToScreen)
-            {
-                zero = Vector2.Zero;
-            }
-            Texture2D tex = Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreWoodGlow").Value;
-            int height = tile.TileFrameY == 36 ? 18 : 16;
-            if (tile.Slope == 0 && !tile.IsHalfBlock)
-            {
-                Main.spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y + 2) + zero, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, height), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            }
+        
+
+
+                r = 0.08f;
+                g = 1.99f;
+                b = 0f; 
         }
+     
+
+
     }
 
 
 
 
-    public class LivingCoreWoodItem : ModItem
+    public class LivingCoreCrystal : ModItem
     {
         public override void SetStaticDefaults()
         {
@@ -66,7 +65,7 @@ namespace DivergencyMod.Tiles.LivingTree
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.rare = ItemRarityID.White;
-            Item.createTile = ModContent.TileType<LivingCoreWoodTile>();
+            Item.createTile = ModContent.TileType<LivingCoreCrystalTile>();
         }
     }
 }

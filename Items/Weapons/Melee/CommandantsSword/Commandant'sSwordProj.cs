@@ -124,7 +124,7 @@ namespace DivergencyMod.Items.Weapons.Melee.CommandantsSword
             // ONLY FOR DRAWING THE SLASH
 
 
-            Texture2D slash = (Texture2D)ModContent.Request<Texture2D>("DivergencyMod/Dusts/Particles/SlashPartic").Value;
+            //Texture2D slash = (Texture2D)ModContent.Request<Texture2D>("DivergencyMod/Dusts/Particles/SlashPartic").Value;
             float mult = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
             float alpha = (float)Math.Sin(mult * Math.PI);
             Vector2 pos = player.Center + Projectile.velocity * (40f - mult * 30f);

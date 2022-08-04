@@ -47,7 +47,7 @@ namespace DivergencyMod
 			// Limit the biome height to be underground in either rock layer or dirt layer
 			return (player.ZoneRockLayerHeight || player.ZoneDirtLayerHeight) &&
 				// Check how many tiles of our biome are present, such that biome should be active
-				ModContent.GetInstance<BiomeTileCount>().BlockCount >= 40;
+				ModContent.GetInstance<BiomeTileCount>().BlockCount >= 100;
 		}
 	}
 	public class BiomeTileCount : ModSystem
@@ -56,7 +56,7 @@ namespace DivergencyMod
 
 		public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
 		{
-			BlockCount = tileCounts[ModContent.TileType<LivingCoreWoodBlock>()];
+			BlockCount = tileCounts[ModContent.TileType<LivingCoreWoodTile>()];
 		}
 	}
 }

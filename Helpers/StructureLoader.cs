@@ -146,7 +146,7 @@ namespace DivergencyMod.Helpers
                 BottomLeft = Pos;
                 return;
             }
-            //string Path = Main.SavePath + "/" + "ModSources" + "/" + Mod.Name + "/" + "SavedStruct.str";
+            string Path = Main.SavePath + "/" + "ModSources" + "/" + Mod.Name + "/" + "SavedStruct.str";
             using (var stream = File.Open(Main.SavePath + "/SavedStruct.str", FileMode.Create))
             {
                 using (var writer = new BinaryWriter(stream))
