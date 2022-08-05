@@ -1,4 +1,5 @@
 ﻿using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Items.Armors.Vanity;
 using Microsoft.Xna.Framework;
 using ParticleLibrary;
 using Terraria;
@@ -13,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 namespace DivergencyMod.Items.Armors
 {
 
-		[AutoloadEquip(EquipType.Head)]
+    [AutoloadEquip(EquipType.Head)]
 		public class LivingWoodHelmet : ModItem
 		{
 			public override void SetStaticDefaults()

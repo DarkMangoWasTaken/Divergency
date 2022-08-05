@@ -10,11 +10,11 @@ using Terraria.ModLoader;
 using static Terraria.Localization.GameCulture;
 using static Terraria.ModLoader.ModContent;
 
-namespace DivergencyMod.Items.Armors
+namespace DivergencyMod.Items.Armors.Vanity
 {
     [AutoloadEquip(EquipType.Body)]
 
-    public class LivingWoodBreastplate : ModItem
+    public class MonsoonBreastplate : ModItem
     {
 
         public override void SetStaticDefaults()
