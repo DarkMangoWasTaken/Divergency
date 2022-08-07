@@ -84,20 +84,20 @@ namespace DivergencyMod
             {
                 Spawned--;
             }
-            if (Main.rand.NextBool(1) && Main.dayTime && !Main.IsItAHappyWindyDay && Spawned == 0 && Player.ZoneForest && checkTree)
+            if (Main.rand.NextBool(10) && Main.dayTime && !Main.IsItAHappyWindyDay && Spawned == 0 && Player.ZoneForest && checkTree)
             {
                 if (TryFindTreeTop(Player.Center, out Vector2 result))
                 {
                     NPC.NewNPC(null, (int)(result.X + Main.rand.NextFloat(-32f, 33f)), (int)(result.Y + Main.rand.NextFloat(-64f, 1f)), ModContent.NPCType<Acorn>());
-                    Spawned = 10;
+                    Spawned = 1200;
                 }
             }
-            else if (Main.rand.NextBool(1) && Main.dayTime && Main.IsItAHappyWindyDay && Spawned == 0 && checkTree)
+            else if (Main.rand.NextBool(5) && Main.dayTime && Main.IsItAHappyWindyDay && Spawned == 0 && checkTree)
             {
                 if (TryFindTreeTop(Player.Center, out Vector2 result))
                 {
                     NPC.NewNPC(null, (int)(result.X + Main.rand.NextFloat(-32f, 33f)), (int)(result.Y + Main.rand.NextFloat(-64f, 1f)), ModContent.NPCType<Acorn>());
-                    Spawned = 10;
+                    Spawned = 1200;
                 }
             }
 
