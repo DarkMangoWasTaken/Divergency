@@ -45,22 +45,7 @@ namespace DivergencyMod.Tiles.LivingTree
             DustType = 7;
 
         }
-        public override bool RightClick(int i, int j)
-        {
-            Vector2 pos = new Vector2(i * 16, j * 16);
 
-            Vector2 speed = new Vector2(-10f, 0f);
-
-            Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
-
-            //if (!ChangeTexture)
-            //   ChangeTexture = true;
-            //else
-            //   ChangeTexture = false;
-
-
-            return true;
-        }
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
 
