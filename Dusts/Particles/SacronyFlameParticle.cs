@@ -19,7 +19,7 @@ namespace DivergencyMod.Dusts.Particles
         {
             width = 34;
             height = 34;
-            scale = 1f;
+            Scale = 1f;
             timeLeft = 30;
         }
        
@@ -35,7 +35,7 @@ namespace DivergencyMod.Dusts.Particles
                 }
                 ProjDed = true;
             }
-                if (scale <= 0f)
+                if (Scale <= 0f)
                 active = false;
             opacity = 125f;
         }
@@ -51,8 +51,8 @@ namespace DivergencyMod.Dusts.Particles
             Color color = Color.Multiply(new(2.51f, 1.83f, 0.65f, 0), alpha / 2);
 
 
-//            spriteBatch.Draw(tex, position - Main.screenPosition, tex.AnimationFrame(ref frameCount, ref frameTick, 7, 7, true), color2, 0f, new Vector2(tex.Width / 2f, tex.Height / 2f / 7f), scale / 3.2f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(tex3, position - Main.screenPosition, new Rectangle(0, 0, tex3.Width, tex3.Height), color, rotation,  new Vector2(tex3.Width / 2f, tex3.Height / 2f), 0.17f * scale, SpriteEffects.None, 0f);
+//            spriteBatch.Draw(tex, position - Main.screenPosition, tex.AnimationFrame(ref frameCount, ref frameTick, 7, 7, true), color2, 0f, new Vector2(tex.Width / 2f, tex.Height / 2f / 7f), Scale / 3.2f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex3, position - Main.screenPosition, new Rectangle(0, 0, tex3.Width, tex3.Height), color, rotation,  new Vector2(tex3.Width / 2f, tex3.Height / 2f), 0.17f * Scale, SpriteEffects.None, 0f);
             return false;
         }
     }

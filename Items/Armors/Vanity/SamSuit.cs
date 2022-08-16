@@ -14,7 +14,7 @@ namespace DivergencyMod.Items.Armors.Vanity
 {
     [AutoloadEquip(EquipType.Body)]
 
-    public class MonsoonBreastplate : ModItem
+    public class SamSuit : ModItem
     {
 
         public override void SetStaticDefaults()
@@ -29,7 +29,7 @@ namespace DivergencyMod.Items.Armors.Vanity
             Item.width = 18;
             Item.height = 18;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = ItemRarityID.Green;
             Item.defense = 60;
         }
 

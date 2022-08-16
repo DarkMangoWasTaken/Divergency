@@ -18,7 +18,7 @@ namespace DivergencyMod.Dusts.Particles
         {
             width = 1;
             height = 1;
-            scale = 1f;
+            Scale = 1f;
             timeLeft = 30;
             
         }

@@ -1,5 +1,5 @@
 ﻿using DivergencyMod.Dusts.Particles;
-using DivergencyMod.Items.Accs.Forest;
+using DivergencyMod.Items.Armors.Vanity;
 using Microsoft.Xna.Framework;
 using ParticleLibrary;
 using Terraria;
@@ -13,16 +13,15 @@ using static Terraria.ModLoader.ModContent;
 
 namespace DivergencyMod.Items.Armors.Vanity
 {
-	[AutoloadEquip(EquipType.Legs)]
 
-	public class MonsoonGreaves : ModItem
+	[AutoloadEquip(EquipType.Head)]
+	public class SamHead : ModItem
 	{
-
 		public override void SetStaticDefaults()
 		{
 			base.SetStaticDefaults();
-			DisplayName.SetDefault("Meme Greaves");
-			Tooltip.SetDefault("'We're all pawns controlled by something greater...'");
+			DisplayName.SetDefault("Living Wood Helmet");
+			Tooltip.SetDefault("'Free will is a myth...'");
 
 		}
 
@@ -33,6 +32,14 @@ namespace DivergencyMod.Items.Armors.Vanity
 			Item.value = 10000;
 			Item.rare = ItemRarityID.Purple;
 		}
+
+
+
+
+
+
+
+
 
 	}
 }

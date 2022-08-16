@@ -1,4 +1,4 @@
-displayName = Divergency
+displayName =[c/dafaf4:Divergency]
 author = Team Brise
 version = 0.1
 modReferences = ParticleLibrary

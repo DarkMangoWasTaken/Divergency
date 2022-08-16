@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace DivergencyMod.Items.Accs.Forest
 {
-	public class Attackspeeder : ModItem
+	public class AttackSpeeder : ModItem
 	{
 		public override void SetStaticDefaults()
 		{

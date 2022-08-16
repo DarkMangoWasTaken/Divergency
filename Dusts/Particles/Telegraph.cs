@@ -16,7 +16,7 @@ namespace DivergencyMod.Dusts.Particles
         {
             width = 34;
             height = 34;
-            scale = 1f;
+            Scale = 1f;
             timeLeft = 30;
         
         }
@@ -27,7 +27,7 @@ namespace DivergencyMod.Dusts.Particles
 
             color = Color.Lerp(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), Color.Multiply(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), 0.5f), (360f - timeLeft) / 360f);
 
-            if (scale <= 0f)
+            if (Scale <= 0f)
                 active = false;
             if (timeLeft == 14)
             {
@@ -44,8 +44,8 @@ namespace DivergencyMod.Dusts.Particles
             float alpha = timeLeft <= 20 ? 1f - 1f / 20f * (20 - timeLeft) : 1f;
             if (alpha < 0f) alpha = 0f;
             Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), alpha);
-            spriteBatch.Draw(tex2, position - Main.screenPosition, new Rectangle(0, 0, tex2.Width, tex2.Height), color,velocity.ToRotation()+ MathHelper.PiOver2, new Vector2(tex2.Width / 2f, tex2.Height / 2f), 0.7f * scale, SpriteEffects.None, 0f);
-            //spriteBatch.Draw(tex3, position - Main.screenPosition, new Rectangle(0, 0, tex3.Width, tex3.Height), color, ai[0].InRadians().AngleLerp((ai[0] + 90f).InRadians(), (120f - timeLeft) / 120f), new Vector2(tex3.Width / 2f, tex3.Height / 2f), 0.2f * scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex2, position - Main.screenPosition, new Rectangle(0, 0, tex2.Width, tex2.Height), color,velocity.ToRotation()+ MathHelper.PiOver2, new Vector2(tex2.Width / 2f, tex2.Height / 2f), 0.7f * Scale, SpriteEffects.None, 0f);
+            //spriteBatch.Draw(tex3, position - Main.screenPosition, new Rectangle(0, 0, tex3.Width, tex3.Height), color, ai[0].InRadians().AngleLerp((ai[0] + 90f).InRadians(), (120f - timeLeft) / 120f), new Vector2(tex3.Width / 2f, tex3.Height / 2f), 0.2f * Scale, SpriteEffects.None, 0f);
             //spriteBatch.Draw(tex, position - Main.screenPosition, tex.AnimationFrame(ref frameCount, ref frameTick, 4, 7, true), color, 0f, new Vector2(width / 2, height / 2), 1f, SpriteEffects.None, 0f);
             return false;
         }

@@ -1,5 +1,5 @@
 ﻿using DivergencyMod.Dusts.Particles;
-using DivergencyMod.Items.Armors.Vanity;
+using DivergencyMod.Items.Accs.Forest;
 using Microsoft.Xna.Framework;
 using ParticleLibrary;
 using Terraria;
@@ -13,17 +13,17 @@ using static Terraria.ModLoader.ModContent;
 
 namespace DivergencyMod.Items.Armors.Vanity
 {
+	[AutoloadEquip(EquipType.Legs)]
 
-	[AutoloadEquip(EquipType.Head)]
-	public class MonsoonHelmet : ModItem
+	public class SamLegs : ModItem
 	{
+
 		public override void SetStaticDefaults()
 		{
 			base.SetStaticDefaults();
-			DisplayName.SetDefault("Living Wood Helmet");
-			Tooltip.SetDefault("'It barely fits'"
-				+ "\nIncreases damage dealt by 5%'"
-				+ "\nIncreases your crit chance by 5%");
+			DisplayName.SetDefault("Meme Greaves");
+			Tooltip.SetDefault("'We're all pawns controlled by something greater...'");
+
 		}
 
 		public override void SetDefaults()
@@ -32,17 +32,7 @@ namespace DivergencyMod.Items.Armors.Vanity
 			Item.height = 18;
 			Item.value = 10000;
 			Item.rare = ItemRarityID.Green;
-			Item.defense = 60;
-			Item.defense = 3;
 		}
-
-
-
-
-
-
-
-
 
 	}
 }

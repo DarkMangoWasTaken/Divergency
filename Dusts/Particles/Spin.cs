@@ -18,7 +18,7 @@ namespace DivergencyMod.Dusts.Particles
         {
             width = 1;
             height = 1;
-            scale = 1f;
+            Scale = 1f;
             timeLeft = 1000000;
         }
 
@@ -52,7 +52,7 @@ namespace DivergencyMod.Dusts.Particles
             float alpha = timeLeft <= 20 ? 1f - 1f / 20f * (20 - timeLeft) : 1f;
             if (alpha < 0f) alpha = 0f;
             Color color = Color.Multiply(new(2.55f, 2.55f, 2.55f, 0), alpha / 3);
-            spriteBatch.Draw(tex3, Bottom - Main.screenPosition, tex3.AnimationFrame(ref frameCount, ref frameTick, 2, 3, true), color, velocity.ToRotation() + 180, new Vector2(270f, 249f) * 0.5f, 1.35f * scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex3, Bottom - Main.screenPosition, tex3.AnimationFrame(ref frameCount, ref frameTick, 2, 3, true), color, velocity.ToRotation() + 180, new Vector2(270f, 249f) * 0.5f, 1.35f * Scale, SpriteEffects.None, 0f);
             return false;
         }
     }

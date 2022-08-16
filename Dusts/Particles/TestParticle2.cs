@@ -41,7 +41,7 @@ namespace DivergencyMod.Dusts.Particles
                 // It adds less the faster it is already going.
                 velocity += new Vector2(Main.windSpeedCurrent * (Main.windPhysicsStrength * 3f) * MathHelper.Lerp(1f, 0.1f, Math.Abs(velocity.X) / 6f), 0f);
                 // Add the sine component to the velocity.
-                // This is scaled by the mult, which changes every cycle.
+                // This is Scaled by the mult, which changes every cycle.
                 velocity += new Vector2(sineX * mult, -Main.rand.NextFloat(1f, 2f) / 100f);
 
                 // Clamp the velocity so the particle doesnt go too fast.
