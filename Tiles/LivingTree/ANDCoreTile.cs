@@ -11,7 +11,7 @@ using Terraria.ObjectData;
 
 namespace DivergencyMod.Tiles.LivingTree
 {
-    public class XORCoreTile : ModTile
+    public class ANDCoreTile : ModTile
     {
 
         private static bool ChangeTexture;
@@ -72,9 +72,9 @@ namespace DivergencyMod.Tiles.LivingTree
         }
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/XORCoreTile").Value;
-            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/XORCoreTileCharged1").Value;
-            Texture2D tex3 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/XORCoreTileCharged2").Value;
+            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/ANDCoreTile").Value;
+            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/ANDCoreTileCharged1").Value;
+            Texture2D tex3 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/ANDCoreTileCharged2").Value;
             
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
@@ -102,9 +102,9 @@ namespace DivergencyMod.Tiles.LivingTree
         }
 
     }
-    internal class XORCore : ModItem
+    internal class ANDCore : ModItem
     {
-         public override string Texture => "DivergencyMod/Tiles/LivingTree/XORCoreTile";
+         public override string Texture => "DivergencyMod/Tiles/LivingTree/ANDCoreTile";
 
         public override void SetStaticDefaults()
         {
@@ -125,7 +125,7 @@ namespace DivergencyMod.Tiles.LivingTree
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.rare = ItemRarityID.White;
-            Item.createTile = ModContent.TileType<XORCoreTile>();
+            Item.createTile = ModContent.TileType<ANDCoreTile>();
         }
     }
 }

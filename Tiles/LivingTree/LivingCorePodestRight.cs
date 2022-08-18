@@ -47,9 +47,12 @@ namespace DivergencyMod.Tiles.LivingTree
         }
         public override bool RightClick(int i, int j)
         {
-            Vector2 pos = new Vector2(i * 16, j * 16);
+            
+                int left = i - Main.tile[i, j].TileFrameX / 18;
+                int top = j - Main.tile[i, j].TileFrameY / 18;
+                Vector2 pos = new Vector2(left * 16f + 32f, top * 16f + 8f);
 
-            Vector2 speed = new Vector2(10f, 0f);
+                Vector2 speed = new Vector2(10f, 0f);
 
             Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
 

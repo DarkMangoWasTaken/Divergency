@@ -11,13 +11,11 @@ using Terraria.ObjectData;
 
 namespace DivergencyMod.Tiles.LivingTree
 {
-    public class XORCoreTile : ModTile
+    public class CoreDoublerDownLeftTile : ModTile
     {
-
         private static bool ChangeTexture;
         private Vector2 zero = Vector2.Zero;
         private bool AlreadyDrawn;
-        private int timer;
 
         public override void SetStaticDefaults()
         {
@@ -25,23 +23,38 @@ namespace DivergencyMod.Tiles.LivingTree
             Main.tileFrameImportant[Type] = true;
             Main.tileLavaDeath[Type] = true;
             TileID.Sets.FramesOnKillWall[Type] = true;
-
             Main.tileLighted[Type] = false;
-            Main.tileBouncy[Type] = false;
-
-
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-
+          
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
             TileObjectData.newTile.AnchorBottom = default(AnchorData);
             TileObjectData.newTile.AnchorTop = default(AnchorData);
             TileObjectData.newTile.AnchorWall = true;
+
             TileObjectData.addTile(Type);
+            Main.tileBouncy[Type] = true;
 
             AddMapEntry(new Color(120, 85, 60), Language.GetText("MapObject.Trophy"));
             DustType = 7;
 
         }
+        public override bool RightClick(int i, int j)
+        {
+            Vector2 pos = new Vector2(i * 16, j * 16);
 
+            Vector2 speed = new Vector2(-10f, 0f);
+
+            Tile tile = Framing.GetTileSafely(i, j);
+
+            WorldGen.KillTile(i, j);
+            WorldGen.PlaceTile(i, j, ModContent.TileType<CoreDoublerLeftUpTile>());
+            //if (!ChangeTexture)
+            //   ChangeTexture = true;
+            //else
+            //   ChangeTexture = false;
+
+
+            return true;
+        }
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
 
@@ -72,10 +85,8 @@ namespace DivergencyMod.Tiles.LivingTree
         }
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/XORCoreTile").Value;
-            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/XORCoreTileCharged1").Value;
-            Texture2D tex3 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/XORCoreTileCharged2").Value;
-            
+            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/CoreDoublerDownLeftTile").Value;
+            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/CoreDoublerDownLeftTile").Value;
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
 
@@ -84,15 +95,12 @@ namespace DivergencyMod.Tiles.LivingTree
                 if (!Main.tileLighted[Type])
                 {
                     spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    AlreadyDrawn = true;
                 }
                 else if (Main.tileLighted[Type])
                 {
-                    spriteBatch.Draw(tex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);  
-
-                }
-                if (Main.tileBouncy[Type] && Main.tileLighted[Type])
-                {
-                    spriteBatch.Draw(tex3, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    spriteBatch.Draw(tex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    AlreadyDrawn = true;
 
                 }
             }
@@ -102,9 +110,9 @@ namespace DivergencyMod.Tiles.LivingTree
         }
 
     }
-    internal class XORCore : ModItem
+    internal class CoreDoublerDownLeft : ModItem
     {
-         public override string Texture => "DivergencyMod/Tiles/LivingTree/XORCoreTile";
+        public override string Texture => "DivergencyMod/Tiles/LivingTree/CoreDoublerDownLeftTile";
 
         public override void SetStaticDefaults()
         {
@@ -125,7 +133,7 @@ namespace DivergencyMod.Tiles.LivingTree
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.rare = ItemRarityID.White;
-            Item.createTile = ModContent.TileType<XORCoreTile>();
+            Item.createTile = ModContent.TileType<CoreDoublerDownLeftTile>();
         }
     }
 }
