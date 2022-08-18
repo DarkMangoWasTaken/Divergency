@@ -16,7 +16,7 @@ namespace DivergencyMod.Tiles.LivingTree
         private static bool ChangeTexture;
         private Vector2 zero = Vector2.Zero;
         private bool AlreadyDrawn;
-        public override string Texture => "DivergencyMod/Tiles/LivingTree/CoreRootsTile";
+        public override string Texture => "DivergencyMod/Tiles/LivingTree/CoreRootsTile1";
 
         public override void SetStaticDefaults()
         {
@@ -51,8 +51,8 @@ namespace DivergencyMod.Tiles.LivingTree
         }
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/CoreRootsTile").Value;
-            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/CoreRootsTile").Value;
+            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/CoreRootsTile1").Value;
+            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/CoreRootsTile1").Value;
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
 
@@ -78,7 +78,7 @@ namespace DivergencyMod.Tiles.LivingTree
     }
     internal class CoreRoots1 : ModItem
     {
-        public override string Texture => "DivergencyMod/Tiles/LivingTree/CoreRootsTile";
+        public override string Texture => "DivergencyMod/Tiles/LivingTree/CoreRootsTile1";
 
         public override void SetStaticDefaults()
         {
