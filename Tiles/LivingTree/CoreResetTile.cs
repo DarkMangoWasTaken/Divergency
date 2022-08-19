@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DivergencyMod.Items.Ammo;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Terraria;
@@ -25,7 +26,7 @@ namespace DivergencyMod.Tiles.LivingTree
             TileID.Sets.FramesOnKillWall[Type] = true;
             Main.tileLighted[Type] = false;
 
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2);
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
 
             TileObjectData.addTile(Type);
             Main.tileBouncy[Type] = false;
@@ -53,7 +54,17 @@ namespace DivergencyMod.Tiles.LivingTree
             Main.tileLighted[ModContent.TileType<CoreRootsTile1>()] = false;
 
             Main.tileLighted[ModContent.TileType<CoreRootsTile2>()] = false;
+            Main.tileLighted[ModContent.TileType<CoreDoublerDownLeftTile>()] = false;
+            Main.tileLighted[ModContent.TileType<CoreDoublerLeftUpTile>()] = false;
+            Main.tileLighted[ModContent.TileType<CoreDoublerRightDownTile>()] = false;
+            Main.tileLighted[ModContent.TileType<CoreDoublerUpRightTile>()] = false;
 
+            Main.tileLighted[ModContent.TileType<LivingCorePodestTileLeft>()] = false;
+            Main.tileLighted[ModContent.TileType<LivingCorePodestTileRight>()] = false;
+            Main.tileLighted[ModContent.TileType<LivingCorePodestTileUp>()] = false;
+
+            Item.NewItem(null, pos, ModContent.ItemType<LivingCore>(), 1);
+        
 
 
 
@@ -92,7 +103,7 @@ namespace DivergencyMod.Tiles.LivingTree
         }
         public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY)
         {
-            offsetY = 2;
+            offsetY = 20;
         }
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
@@ -105,12 +116,12 @@ namespace DivergencyMod.Tiles.LivingTree
             {
                 if (!Main.tileLighted[Type])
                 {
-                    spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, 2), Color.White);
                     AlreadyDrawn = true;
                 }
                 else if (Main.tileLighted[Type])
                 {
-                    spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, 2), Color.White);
                     AlreadyDrawn = true;
 
                 }
@@ -145,6 +156,29 @@ namespace DivergencyMod.Tiles.LivingTree
             Item.consumable = true;
             Item.rare = ItemRarityID.White;
             Item.createTile = ModContent.TileType<CoreResetTile>();
+        }
+    }
+    internal class LivingCore : ModItem
+    {
+
+        public override void SetStaticDefaults()
+        {
+            CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
+
+        }
+
+        public override void SetDefaults()
+        {
+            Item.width = 12;
+            Item.height = 12;
+            Item.maxStack = 999;
+            Item.useTurn = true;
+            Item.value = 1000;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.rare = ItemRarityID.White;
         }
     }
 

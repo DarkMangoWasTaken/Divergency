@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DivergencyMod.Items.Ammo;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Terraria;
@@ -25,49 +26,54 @@ namespace DivergencyMod.Tiles.LivingTree
             TileID.Sets.FramesOnKillWall[Type] = true;
             Main.tileLighted[Type] = false;
 
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
-            TileObjectData.newTile.Height = 4;
-            TileObjectData.newTile.Width = 4;
-            TileObjectData.newTile.CoordinateHeights = new int[]
-            {
-                16,
-                16,
-                16,
-                16
-            };
-            TileObjectData.newTile.AnchorBottom = default(AnchorData);
-            TileObjectData.newTile.AnchorTop = default(AnchorData);
-            TileObjectData.newTile.AnchorWall = true;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
+            TileObjectData.newTile.Width = 2; // unless it's already 2 tiles wide
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(0, 2);
+
+
             TileObjectData.addTile(Type);
             Main.tileBouncy[Type] = true;
 
-            AddMapEntry(new Color(120, 85, 60), Language.GetText("MapObject.Trophy"));
+            AddMapEntry(new Color(120, 85, 60), Language.GetText("MapObject.Podest"));
             DustType = 7;
 
         }
         public override bool RightClick(int i, int j)
         {
-            
-                int left = i - Main.tile[i, j].TileFrameX / 18;
-                int top = j - Main.tile[i, j].TileFrameY / 18;
-                Vector2 pos = new Vector2(left * 16f + 32f, top * 16f + 8f);
-
-                Vector2 speed = new Vector2(-10f, 0f);
-
-            Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
-
-            //if (!ChangeTexture)
-            //   ChangeTexture = true;
-            //else
-            //   ChangeTexture = false;
+            Vector2 speed = new Vector2(-10f, 0f);
 
 
+            int left = i - Main.tile[i, j].TileFrameX / 18;
+            int top = j - Main.tile[i, j].TileFrameY / 18;
+            int core = ModContent.ItemType<LivingCore>();
+
+
+            Vector2 pos = new Vector2(left * 16f + 32f, top * 16f + 8f);
+            Player player = Main.LocalPlayer;
+            if (!Main.tileLighted[Type])
+            {
+                if (player.HasItem(core))
+                {
+                    Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                    player.ConsumeItem(core);
+                    Main.tileLighted[Type] = true;
+
+
+                }
+            }
+
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 1f, left, top);
+            }
             return true;
         }
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
 
-            if (ChangeTexture)
+            if (Main.tileLighted[Type])
             {
 
 
@@ -75,7 +81,7 @@ namespace DivergencyMod.Tiles.LivingTree
                 g = 2.55f;
                 b = 0.94f;
             }
-            else
+            else if (!Main.tileLighted[Type])
             {
                 r = 0f;
                 g = 0f;
@@ -94,8 +100,8 @@ namespace DivergencyMod.Tiles.LivingTree
         }
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCorePodestTile").Value;
-            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCorePodestTileLeft").Value;
+            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCorePodestTileLeft").Value;
+            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCorePodestTileLeftCharged").Value;
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
 
@@ -103,12 +109,12 @@ namespace DivergencyMod.Tiles.LivingTree
             {
                 if (!Main.tileLighted[Type])
                 {
-                    spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, 9), Color.White);
                     AlreadyDrawn = true;
                 }
                 else if (Main.tileLighted[Type])
                 {
-                    spriteBatch.Draw(tex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    spriteBatch.Draw(tex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, 7), Color.White);
                     AlreadyDrawn = true;
 
                 }
@@ -121,7 +127,7 @@ namespace DivergencyMod.Tiles.LivingTree
     }
     internal class LivingCorePodestLeft : ModItem
     {
-        public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCorePodestTile";
+        public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCorePodestTileLeft";
 
         public override void SetStaticDefaults()
         {

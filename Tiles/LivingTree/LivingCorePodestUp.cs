@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DivergencyMod.Items.Ammo;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -27,41 +28,46 @@ namespace DivergencyMod.Tiles.LivingTree
             TileID.Sets.FramesOnKillWall[Type] = true;
             Main.tileLighted[Type] = false;
 
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
-            TileObjectData.newTile.Height = 4;
-            TileObjectData.newTile.Width = 4;
-            TileObjectData.newTile.CoordinateHeights = new int[]
-            {
-                16,
-                16,
-                16,
-                16
-            };
-            TileObjectData.newTile.AnchorBottom = default(AnchorData);
-            TileObjectData.newTile.AnchorTop = default(AnchorData);
-            TileObjectData.newTile.AnchorWall = true;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
+            TileObjectData.newTile.Width = 2; // unless it's already 2 tiles wide
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(0, 2);
+
             TileObjectData.addTile(Type);
             Main.tileBouncy[Type] = true;
 
-            AddMapEntry(new Color(120, 85, 60), Language.GetText("MapObject.Trophy"));
+            AddMapEntry(new Color(120, 85, 60), Language.GetText("MapObject.Podest"));
             DustType = 7;
 
         }
         public override bool RightClick(int i, int j)
         {
-            int left = i - Main.tile[i, j].TileFrameX / 18;
-            int top = j - Main.tile[i, j].TileFrameY / 18;
-            Vector2 pos = new Vector2(left * 16f + 32f, top * 16f + 8f);
-            Point loc = new Point(10, 10);
             Vector2 speed = new Vector2(0f, -10f);
 
-            Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
-            
-            //if (!ChangeTexture)
-            //   ChangeTexture = true;
-            //else
-            //   ChangeTexture = false;
+            int left = i - Main.tile[i, j].TileFrameX / 18;
+            int top = j - Main.tile[i, j].TileFrameY / 18;
+            int core = ModContent.ItemType<LivingCore>();
 
+
+            Vector2 pos = new Vector2(left * 16f + 8f, top * 16f + 8f);
+            Player player = Main.LocalPlayer;
+            if (!Main.tileLighted[Type])
+            {
+                if (player.HasItem(core))
+                {
+                    Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                    player.ConsumeItem(core);
+                    Main.tileLighted[Type] = true;
+
+
+                }
+            }
+
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 1f, left, top);
+            }
 
             return true;
         }
@@ -95,8 +101,8 @@ namespace DivergencyMod.Tiles.LivingTree
         }
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCorePodestTile").Value;
-            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCorePodestTileUp").Value;
+            Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCorePodestTileUp").Value;
+            Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCorePodestTileUpCharged").Value;
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
 
@@ -104,12 +110,12 @@ namespace DivergencyMod.Tiles.LivingTree
             {
                 if (!Main.tileLighted[Type])
                 {
-                    spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, 9), Color.White);
                     AlreadyDrawn = true;
                 }
                 else if (Main.tileLighted[Type])
                 {
-                    spriteBatch.Draw(tex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    spriteBatch.Draw(tex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, 7), Color.White);
                     AlreadyDrawn = true;
 
                 }
@@ -122,7 +128,7 @@ namespace DivergencyMod.Tiles.LivingTree
     }
     internal class LivingCorePodestUp : ModItem
     {
-        public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCorePodestTile";
+        public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCorePodestTileUp";
 
 
         public override void SetStaticDefaults()
@@ -221,10 +227,9 @@ namespace DivergencyMod.Tiles.LivingTree
            }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(90);
             Projectile.spriteDirection = Projectile.direction;
-            if (Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<LivingCorePodestTileUp>()
-                    || Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<LivingCorePodestTileRight>()
-                    || Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<LivingCorePodestTileLeft>()
-                    || Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<CoreMirrorTileDown>()
+            if (
+                    
+                     Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<CoreMirrorTileDown>()
                     || Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<CoreMirrorTileUp>()
                     || Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<CoreMirrorTileRight>()
                     || Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<CoreMirrorTileLeft>()
@@ -276,24 +281,7 @@ namespace DivergencyMod.Tiles.LivingTree
                     {
                         Projectile.velocity = new Vector2(-10, 0);
                     }
-                    // Checking if the tile's frames are within the range of tile frames used for the invisible tree top tiles.
-                        if (Main.tile[checkX, checkY].TileType == ModContent.TileType<LivingCorePodestTileUp>())
-                        {
-                            Main.tileLighted[ModContent.TileType<LivingCorePodestTileUp>()] = true;
-
-                        }
-                        if(Main.tile[checkX, checkY].TileType == ModContent.TileType<LivingCorePodestTileRight>())
-                        {
-                            Main.tileLighted[ModContent.TileType<LivingCorePodestTileRight>()] = true;
-
-
-                        }
-                        if (Main.tile[checkX, checkY].TileType == ModContent.TileType<LivingCorePodestTileLeft>())
-                        {
-                            Main.tileLighted[ModContent.TileType<LivingCorePodestTileLeft>()] = true;
-
-                        
-                        }
+                 
                     if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreRootsTile>() && !Main.tileLighted[ModContent.TileType<CoreRootsTile>()])
                     {
                         Projectile.Kill();
@@ -341,59 +329,75 @@ namespace DivergencyMod.Tiles.LivingTree
 
                         Projectile.Kill();
                     }
-                    if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreDoublerUpRightTile>() && DoubleCooldown == 0)
+                    if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreDoublerUpRightTile>())
                     {
                         Vector2 up = new Vector2(0f, -10f);
                         Vector2 right = new Vector2(10f, 0f);
 
+                        if (!Main.tileLighted[ModContent.TileType<CoreDoublerUpRightTile>()])
+                        {
+                            Projectile.NewProjectile(null, Projectile.Center, up, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                            Projectile.NewProjectile(null, Projectile.Center, right, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                            Main.tileLighted[ModContent.TileType<CoreDoublerUpRightTile>()] = true;
+                            Projectile.Kill();
 
-                        Projectile.NewProjectile(null, Projectile.Center, up, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
-                        Projectile.NewProjectile(null, Projectile.Center, right, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
 
-                        Projectile.Kill();
-                        DoubleCooldown = 100;
+                        }
 
 
                     }
-                    if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreDoublerLeftUpTile>() && DoubleCooldown == 0)
+                    if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreDoublerLeftUpTile>())
                     {
                         Vector2 up = new Vector2(0f, -10f);
                         Vector2 left = new Vector2(-10f, 0f);
 
+                        if (!Main.tileLighted[ModContent.TileType<CoreDoublerLeftUpTile>()])
+                        {
+                            Projectile.NewProjectile(null, Projectile.Center, up, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                            Projectile.NewProjectile(null, Projectile.Center, left, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                            Main.tileLighted[ModContent.TileType<CoreDoublerLeftUpTile>()] = true;
+                            Projectile.Kill();
 
-                        Projectile.NewProjectile(null, Projectile.Center, up, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
-                        Projectile.NewProjectile(null, Projectile.Center, left, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                        }
 
-                        Projectile.Kill();
-                        DoubleCooldown = 100;
+
 
 
                     }
-                    if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreDoublerDownLeftTile>() && DoubleCooldown == 0)
+                    if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreDoublerDownLeftTile>())
                     {
                         Vector2 down = new Vector2(0f, 10f);
                         Vector2 left = new Vector2(-10f, 0f);
 
+                        if (!Main.tileLighted[ModContent.TileType<CoreDoublerDownLeftTile>()])
+                        {
+                            Projectile.NewProjectile(null, Projectile.Center, down, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                            Projectile.NewProjectile(null, Projectile.Center, left, ModContent.ProjectileType<PodestProjectile>(), 0, 0); 
+                            Main.tileLighted[ModContent.TileType<CoreDoublerDownLeftTile>()] = true;
+                            Projectile.Kill();
 
-                        Projectile.NewProjectile(null, Projectile.Center, down, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
-                        Projectile.NewProjectile(null, Projectile.Center, left, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                        }
 
-                        Projectile.Kill();
-                        DoubleCooldown = 100;
+
 
 
                     }
-                    if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreDoublerRightDownTile>() && DoubleCooldown == 0)
+                    if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreDoublerRightDownTile>())
                     {
                         Vector2 down = new Vector2(0f, 10f);
                         Vector2 right = new Vector2(10f, 0f);
 
 
-                        Projectile.NewProjectile(null, Projectile.Center, down, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
-                        Projectile.NewProjectile(null, Projectile.Center, right, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                        if (!Main.tileLighted[ModContent.TileType<CoreDoublerRightDownTile>()])
+                        {
+                            Projectile.NewProjectile(null, Projectile.Center, down, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                            Projectile.NewProjectile(null, Projectile.Center, right, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
+                            Main.tileLighted[ModContent.TileType<CoreDoublerRightDownTile>()] = true;
+                            Projectile.Kill();
 
-                        Projectile.Kill();
-                        DoubleCooldown = 100;
+
+                        }
+
 
 
 
