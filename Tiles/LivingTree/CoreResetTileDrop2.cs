@@ -1,6 +1,8 @@
-﻿using DivergencyMod.Items.Ammo;
+﻿using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Items.Ammo;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ParticleLibrary;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
@@ -64,8 +66,14 @@ namespace DivergencyMod.Tiles.LivingTree
             Main.tileLighted[ModContent.TileType<LivingCorePodestTileRight>()] = false;
             Main.tileLighted[ModContent.TileType<LivingCorePodestTileUp>()] = false;
 
-            Item.NewItem(null, pos, ModContent.ItemType<LivingCore>(), 2);
-            
+            Player player = Main.LocalPlayer;
+            player.GetModPlayer<CorePuzzle>().LivingCoreAmount = 1;
+            ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<LivingCoreInsertParticle>(), Color.Purple, 1f);
+            ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<LivingCoreInsertParticle2>(), Color.Purple, 1f);
+
+
+            player.GetModPlayer<CorePuzzle>().LivingCoreAmount = 2;
+
 
 
 
@@ -132,7 +140,18 @@ namespace DivergencyMod.Tiles.LivingTree
             return false;
 
         }
-        
+        public int FindEmptySlot()
+        {
+            for (int i = 0; i < Main.player[Main.myPlayer].inventory.Length; i++)
+            {
+                Item item = Main.player[Main.myPlayer].inventory[i];
+                if (!item.active)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
     }
     internal class CoreResetDrop2 : ModItem
     {
@@ -157,7 +176,7 @@ namespace DivergencyMod.Tiles.LivingTree
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.rare = ItemRarityID.White;
-            Item.createTile = ModContent.TileType<CoreResetTile>();
+            Item.createTile = ModContent.TileType<CoreResetTileDrop2>();
         }
     }
 

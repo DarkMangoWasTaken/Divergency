@@ -1,6 +1,11 @@
-﻿using DivergencyMod.Items.Ammo;
+﻿using CsvHelper.TypeConversion;
+using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Items.Ammo;
+using Humanizer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ParticleLibrary;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
@@ -17,6 +22,7 @@ namespace DivergencyMod.Tiles.LivingTree
         private static bool ChangeTexture;
         private Vector2 zero = Vector2.Zero;
         private bool AlreadyDrawn;
+        private bool reset;
 
         public override void SetStaticDefaults()
         {
@@ -31,7 +37,7 @@ namespace DivergencyMod.Tiles.LivingTree
             TileObjectData.addTile(Type);
             Main.tileBouncy[Type] = false;
 
-            AddMapEntry(new Color(120, 85, 60), Language.GetText("MapObject.Trophy"));
+            AddMapEntry(new Color(120, 85, 60), Language.GetText("Resetter"));
             DustType = 7;
 
         }
@@ -41,12 +47,13 @@ namespace DivergencyMod.Tiles.LivingTree
 
             Vector2 speed = new Vector2(-10f, 0f);
 
-     
+            Player player = Main.LocalPlayer;
+
 
             Main.tileLighted[ModContent.TileType<XORCoreTile>()] = false;
             Main.tileBouncy[ModContent.TileType<XORCoreTile>()] = false;
 
-                
+
             Main.tileLighted[ModContent.TileType<ANDCoreTile>()] = false;
             Main.tileBouncy[ModContent.TileType<ANDCoreTile>()] = false;
 
@@ -63,10 +70,14 @@ namespace DivergencyMod.Tiles.LivingTree
             Main.tileLighted[ModContent.TileType<LivingCorePodestTileRight>()] = false;
             Main.tileLighted[ModContent.TileType<LivingCorePodestTileUp>()] = false;
 
-            Item.NewItem(null, pos, ModContent.ItemType<LivingCore>(), 1);
-        
+            player.GetModPlayer<CorePuzzle>().LivingCoreAmount = 0;
+            reset = true;
+            if (reset)
+            {
+                player.GetModPlayer<CorePuzzle>().LivingCoreAmount = 1;
+                ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<LivingCoreInsertParticle>(), Color.Purple, 1f);
 
-
+            }
 
 
             //if (!ChangeTexture)
@@ -130,7 +141,19 @@ namespace DivergencyMod.Tiles.LivingTree
             return false;
 
         }
-        
+        public int FindEmptySlot()
+        {
+            for (int i = 0; i < Main.player[Main.myPlayer].inventory.Length; i++)
+            {
+                Item item = Main.player[Main.myPlayer].inventory[i];
+                if (!item.active)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
     }
     internal class CoreReset : ModItem
     {
@@ -158,28 +181,13 @@ namespace DivergencyMod.Tiles.LivingTree
             Item.createTile = ModContent.TileType<CoreResetTile>();
         }
     }
-    internal class LivingCore : ModItem
+
+    public class CorePuzzle : ModPlayer
     {
+        public byte LivingCoreAmount;
+        public bool spawned;
+        public bool particlekill;
 
-        public override void SetStaticDefaults()
-        {
-            CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 
-        }
-
-        public override void SetDefaults()
-        {
-            Item.width = 12;
-            Item.height = 12;
-            Item.maxStack = 999;
-            Item.useTurn = true;
-            Item.value = 1000;
-            Item.autoReuse = true;
-            Item.useAnimation = 15;
-            Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.rare = ItemRarityID.White;
-        }
     }
-
 }

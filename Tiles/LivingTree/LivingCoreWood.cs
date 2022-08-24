@@ -4,7 +4,9 @@ using Terraria;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.ModLoader;
+using DivergencyMod.Helpers;    
 using static Terraria.ModLoader.ModContent;
+using Aequus.Tiles;
 
 namespace DivergencyMod.Tiles.LivingTree
 {
@@ -15,15 +17,23 @@ namespace DivergencyMod.Tiles.LivingTree
             Main.tileSolid[Type] = true;
             Main.tileMerge[Type][TileID.LeafBlock] = true;
             Main.tileMerge[TileID.LeafBlock][Type] = true;
+            Main.tileMerge[Type][ModContent.TileType<LivingCoreCrystalTile>()] = true;
+            Main.tileMerge[ModContent.TileType<LivingCoreCrystalTile>()][Type] = true;
+            TileID.Sets.ChecksForMerge[Type] = true;
             Main.tileBlendAll[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
             AddMapEntry(new Color(79, 55, 59));
             ModTranslation name = CreateMapEntryName();
             Main.tileMergeDirt[Type] = true;
-            name.SetDefault("LivingCoreBlock");
+            name.SetDefault("Living Core Wood");
             DustType = 7;
 
+        }
+        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+        {
+            TileFramingHelper.MergeWithFrame(i, j, Type, TileID.LeafBlock);
+            return false;
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

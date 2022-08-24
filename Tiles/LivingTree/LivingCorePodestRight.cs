@@ -46,22 +46,27 @@ namespace DivergencyMod.Tiles.LivingTree
 
             int left = i - Main.tile[i, j].TileFrameX / 18;
             int top = j - Main.tile[i, j].TileFrameY / 18;
-            int core = ModContent.ItemType<LivingCore>();
 
 
             Vector2 pos = new Vector2(left * 16f + 32f, top * 16f + 8f);
             Player player = Main.LocalPlayer;
             if (!Main.tileLighted[Type])
             {
-                if(player.HasItem(core))
-                {   
+                if (player.GetModPlayer<CorePuzzle>().LivingCoreAmount != 0)
+                {
+                    player.GetModPlayer<CorePuzzle>().LivingCoreAmount--;
+
                     Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
-                    player.ConsumeItem(core);
                     Main.tileLighted[Type] = true;
 
 
                 }
+                else
+                {
+
+                }
             }
+        
 
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {

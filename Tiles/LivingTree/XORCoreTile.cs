@@ -18,6 +18,7 @@ namespace DivergencyMod.Tiles.LivingTree
         private Vector2 zero = Vector2.Zero;
         private bool AlreadyDrawn;
         private int timer;
+        private bool Shoot;
 
         public override void SetStaticDefaults()
         {
@@ -37,7 +38,7 @@ namespace DivergencyMod.Tiles.LivingTree
             TileObjectData.newTile.AnchorWall = true;
             TileObjectData.addTile(Type);
 
-            AddMapEntry(new Color(120, 85, 60), Language.GetText("MapObject.Trophy"));
+            AddMapEntry(new Color(120, 85, 60), Language.GetText("XOR Tile"));
             DustType = 7;
 
         }
@@ -78,22 +79,36 @@ namespace DivergencyMod.Tiles.LivingTree
             
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-
+            Vector2 pos = new Vector2(i * 16, j * 16);
+            Vector2 speed = new Vector2(3, 0);
             if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
                 if (!Main.tileLighted[Type])
                 {
                     spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
                 }
-                else if (Main.tileLighted[Type])
+                else if (Main.tileLighted[Type] && !Main.tileBouncy[Type])
                 {
-                    spriteBatch.Draw(tex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);  
-
+                    spriteBatch.Draw(tex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
+                    Shoot = true;
+                    if (Shoot)
+                    {
+                        timer++;
+                        if (timer == 60)
+                        {
+                            Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<GateProjectile>(), 0, 0);
+                            timer = 0;
+                            Main.tileLighted[Type] = false;
+                            Main.tileBouncy[Type] = false;
+                            Shoot = false;
+                        }
+                    }
                 }
                 if (Main.tileBouncy[Type] && Main.tileLighted[Type])
                 {
                     spriteBatch.Draw(tex3, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
-
+                    Shoot = false;
+                    timer = 0;
                 }
             }
 
