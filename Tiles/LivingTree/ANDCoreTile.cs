@@ -156,6 +156,9 @@ namespace DivergencyMod.Tiles.LivingTree
         public override void SetDefaults()
         {
             Projectile.height = Projectile.width = 20;
+            Projectile.tileCollide = false;
+            Projectile.timeLeft = 600;
+
         }
         public override void SetStaticDefaults()
         {
@@ -179,7 +182,7 @@ namespace DivergencyMod.Tiles.LivingTree
             {   
                 multiplier = 1.5f;
             }
-            Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
+           // Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
 
             if (++Projectile.frameCounter >= 4)
             {
@@ -196,11 +199,41 @@ namespace DivergencyMod.Tiles.LivingTree
 
                 if (proj.type == ModContent.ProjectileType<Barriere>() && proj.active && Projectile.Hitbox.Intersects(proj.Hitbox))
                 {
+                    Projectile.velocity.DirectionTo(proj.Center);
+
                     proj.Kill();
+                    Main.tileLighted[ModContent.TileType<BarrierSpawnerTile>()] = true;
                     player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 30;
                 }
             }
-            Vector2 pos = Projectile.position;
+            if (Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<LivingCoreCrystalTile>())
+            {
+                // Origin position, in tile format.
+                int x = (int)(Projectile.position.X / 16);
+                int y = (int)(Projectile.position.Y / 16);
+
+                // Position being checked;
+
+
+
+                int checkX = x;
+                int checkY = y;
+                Tile tile = Framing.GetTileSafely(checkX, checkY);
+
+
+
+                // Checking up to a maximum of 30 tiles.
+                for (int b = 0; b < 1; b++)
+                {
+
+                    if (Main.tile[checkX, checkY].TileType == ModContent.TileType<LivingCoreCrystalTile>())
+
+                    {
+                        WorldGen.KillTile(checkX, checkY);
+                    }
+                }
+            }
+                    Vector2 pos = Projectile.position;
 
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(90);
             Projectile.spriteDirection = Projectile.direction;
@@ -218,14 +251,15 @@ namespace DivergencyMod.Tiles.LivingTree
         public override void SetDefaults()
         {
             Projectile.height = Projectile.width = 30;
+            Projectile.tileCollide = false;
+            Projectile.alpha = 255;
+            Projectile.timeLeft = 2;
         }
         public override void AI()
         {
             Player player = Main.LocalPlayer;
-            Projectile.timeLeft = 10;
             if (player.Hitbox.Intersects(Projectile.Hitbox))
             {
-                player.KillMe(PlayerDeathReason.ByProjectile(1, 1), 1, 1);
             }
             
               
@@ -244,7 +278,7 @@ namespace DivergencyMod.Tiles.LivingTree
             {
                 multiplier = 1.5f;
             }
-            Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
+            //Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
 
             if (++Projectile.frameCounter >= 4)
             {
@@ -274,7 +308,7 @@ namespace DivergencyMod.Tiles.LivingTree
 
             Main.tileBlendAll[Type] = true;
             Main.tileBlockLight[Type] = true;
-            Main.tileLighted[Type] = true;
+            Main.tileLighted[Type] = false;
             AddMapEntry(new Color(13, 255, 13));
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Living Core Crystal");
@@ -294,21 +328,35 @@ namespace DivergencyMod.Tiles.LivingTree
         private int timer = 0;
         private protected bool spawned;
 
+        public override void NearbyEffects(int i, int j, bool closer)
+        {
+            Vector2 pos = new Vector2(i * 16 + 8f, j * 16);
+            Vector2 speed = new Vector2(0, 0);
+            base.NearbyEffects(i, j, closer);
+            if (!spawned)
+            {
+                Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<Barriere>(), 0, 0);
+            }
+        }
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
         
-            Vector2 pos = new Vector2(i * 16, j * 16);
+            Vector2 pos = new Vector2(i * 16 + 8f, j * 16);
             Vector2 speed = new Vector2(0,0);
-         
+   
 
-            if (timer <= 5)
+
+
+            if (Main.tileLighted[Type])
             {
-                timer++;
-
-                Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<Barriere>(), 0, 0);
                 spawned = true;
+                WorldGen.KillTile(i, j);
+                Main.tileLighted[Type] = false;
+
             }
-           
+
+             
+
             return true;
         }
     }

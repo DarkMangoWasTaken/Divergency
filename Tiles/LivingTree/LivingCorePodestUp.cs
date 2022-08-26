@@ -1,6 +1,8 @@
-﻿using DivergencyMod.Items.Ammo;
+﻿using DivergencyMod.Helpers;
+using DivergencyMod.Items.Ammo;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Drawing.Drawing2D;
 using System.IO;
 using Terraria;
@@ -167,6 +169,8 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             DisplayName.SetDefault("Living Core Blast");
             Main.projFrames[Projectile.type] = 4;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 
         }
         public override void SetDefaults()
@@ -182,13 +186,26 @@ namespace DivergencyMod.Tiles.LivingTree
             Projectile.friendly = true;
             Projectile.scale = 1f;
         }
+        public TrailRenderer prim;
 
         public float Timer
         {
             get => Projectile.ai[0];
             set => Projectile.ai[0] = value;
         }
+        public override bool PreDraw(ref Color lightColor)
+        {
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
 
+            if (prim == null)
+            {
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(6f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = Projectile.Size / 2f;
+            }
+            prim.Draw(Projectile.oldPos);
+
+            return false;
+        }
         public override void AI()
         {
             Timer++;
