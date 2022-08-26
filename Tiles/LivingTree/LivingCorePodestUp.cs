@@ -1,7 +1,11 @@
-﻿using DivergencyMod.Helpers;
+﻿using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Dusts.Particles.CorePuzzleParticles;
+using DivergencyMod.Helpers;
 using DivergencyMod.Items.Ammo;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
+using ParticleLibrary;
 using System;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -39,7 +43,7 @@ namespace DivergencyMod.Tiles.LivingTree
             TileObjectData.addTile(Type);
             Main.tileBouncy[Type] = true;
 
-            AddMapEntry(new Color(120, 85, 60), Language.GetText("MapObject.Podest"));
+            AddMapEntry(new Color(120, 85, 60), Language.GetText("Podest"));
             DustType = 7;
 
         }
@@ -155,6 +159,7 @@ namespace DivergencyMod.Tiles.LivingTree
             Item.consumable = true;
             Item.rare = ItemRarityID.White;
             Item.createTile = ModContent.TileType<LivingCorePodestTileUp>();
+
         }
     }
 
@@ -169,7 +174,7 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             DisplayName.SetDefault("Living Core Blast");
             Main.projFrames[Projectile.type] = 4;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 25;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 
         }
@@ -179,36 +184,43 @@ namespace DivergencyMod.Tiles.LivingTree
             Projectile.timeLeft = 600;
             Projectile.penetrate = -1;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = false;
+            Projectile.tileCollide = true;
             Projectile.DamageType = DamageClass.Generic;
-            Projectile.height = 10;
+            Projectile.height = 20;
             Projectile.width = 10;
             Projectile.friendly = true;
             Projectile.scale = 1f;
+            Projectile.timeLeft = 3000;
+
         }
-        public TrailRenderer prim;
 
         public float Timer
         {
             get => Projectile.ai[0];
             set => Projectile.ai[0] = value;
         }
-        public override bool PreDraw(ref Color lightColor)
+        public override void OnSpawn(IEntitySource source)
         {
-            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
 
-            if (prim == null)
-            {
-                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(6f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
-                prim.drawOffset = Projectile.Size / 2f;
-            }
-            prim.Draw(Projectile.oldPos);
-
-            return false;
         }
+
         public override void AI()
         {
+
             Timer++;
+            for (int j = 0; j < 2; j++)
+            {
+                Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
+
+                ParticleManager.NewParticle(Projectile.Center, speed * 50, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+
+
+            }
+            if (Timer == 1)
+            {
+                ParticleManager.NewParticle(Projectile.Center, Projectile.velocity, ParticleManager.NewInstance<PodestProjBase>(), Color.Purple, 1f, Projectile.whoAmI, Projectile.whoAmI);
+
+            }
             if (DoubleCooldown >= 1)
             {
                 DoubleCooldown--;
@@ -425,6 +437,9 @@ namespace DivergencyMod.Tiles.LivingTree
             }
 
         }
+        public TrailRenderer prim;
+
+        public TrailRenderer prim2;
 
         public bool TryFindNearPodest(Vector2 position, out Vector2 result)
         {
@@ -465,9 +480,34 @@ namespace DivergencyMod.Tiles.LivingTree
                 }
             }
 
+
             result = default;
             return false;
         }
+          public override bool PreDraw(ref Color lightColor)
+        {
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
+            if (prim == null)
+            {
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(20f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = Projectile.Size / 2f;
+            }
+            if (prim2 == null)
+            {
+                prim2 = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(10f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim2.drawOffset = Projectile.Size / 2f;
+            }
+            prim.Draw(Projectile.oldPos);
+            prim2.Draw(Projectile.oldPos);
+
+
+            return false;
+        }
+
+    
+
+
 
     }
 }

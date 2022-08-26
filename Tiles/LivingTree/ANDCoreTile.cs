@@ -1,6 +1,10 @@
-﻿using DivergencyMod.Items.Weapons.Melee.NaturesWrath;
+﻿using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Dusts.Particles.CorePuzzleParticles;
+using DivergencyMod.Helpers;
+using DivergencyMod.Items.Weapons.Melee.NaturesWrath;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ParticleLibrary;
 using System;
 using System.IO;
 using System.Threading;
@@ -78,6 +82,7 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             offsetY = 2;
         }
+        public int timer2 = 0;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/ANDCoreTile").Value;
@@ -106,9 +111,21 @@ namespace DivergencyMod.Tiles.LivingTree
                         Vector2 pos = new Vector2(i * 16, j * 16);
                         Vector2 speed = new Vector2(3, 0);
 
+                        timer2++;
+                        for (int jo = 0; jo < 10; jo++)
+                        {
+                            Vector2 vel = Main.rand.NextVector2Circular(1f, 1f);
+
+                            if (timer2 == 120)
+                            {
+                                ParticleManager.NewParticle(pos, vel * 10, ParticleManager.NewInstance<GateParticle>(), Color.Purple, 0.9f);
+                                timer2 = 0;
+                            }
 
 
+                        }
                         Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<GateProjectile>(), 0, 0);
+                           
                         Shoot = true;
                     }
                 }
@@ -164,10 +181,26 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             DisplayName.SetDefault("Living Core Blast");
             Main.projFrames[Projectile.type] = 4;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 40;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
-
+        public int Timer = 0;
         public override void AI()
         {
+            Timer++;
+            for (int j = 0; j < 4; j++)
+            {
+                Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
+
+                ParticleManager.NewParticle(Projectile.Center, speed * 60, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+
+
+            }
+            if (Timer == 1)
+            {
+                ParticleManager.NewParticle(Projectile.Center, Projectile.velocity, ParticleManager.NewInstance<PodestProjBase>(), Color.Purple, 1.3f, Projectile.whoAmI, Projectile.whoAmI);
+
+            }
 
             Vector3 RGB = new Vector3(1.45f, 2.55f, 0.94f);
             float multiplier = 0.4f;
@@ -193,19 +226,7 @@ namespace DivergencyMod.Tiles.LivingTree
                 }
             }
             Player player = Main.LocalPlayer;
-            for (int i = 0; i < Main.maxProjectiles; i++)
-            {
-                Projectile proj = Main.projectile[i];
-
-                if (proj.type == ModContent.ProjectileType<Barriere>() && proj.active && Projectile.Hitbox.Intersects(proj.Hitbox))
-                {
-                    Projectile.velocity.DirectionTo(proj.Center);
-
-                    proj.Kill();
-                    Main.tileLighted[ModContent.TileType<BarrierSpawnerTile>()] = true;
-                    player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 30;
-                }
-            }
+ 
             if (Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<LivingCoreCrystalTile>())
             {
                 // Origin position, in tile format.
@@ -229,7 +250,15 @@ namespace DivergencyMod.Tiles.LivingTree
                     if (Main.tile[checkX, checkY].TileType == ModContent.TileType<LivingCoreCrystalTile>())
 
                     {
+                        Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
+
                         WorldGen.KillTile(checkX, checkY);
+                        player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 20;
+                        for (int j = 0; j < 10; j++)
+                        {
+                            ParticleManager.NewParticle(Projectile.Center, speed * 10, ParticleManager.NewInstance<CrystalParticle>(), Color.Purple, 0.9f);
+                        }
+
                     }
                 }
             }
@@ -238,154 +267,31 @@ namespace DivergencyMod.Tiles.LivingTree
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(90);
             Projectile.spriteDirection = Projectile.direction;
         }
+        public TrailRenderer prim;
+
+        public TrailRenderer prim2;
+        public override bool PreDraw(ref Color lightColor)
+        {
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
+            if (prim == null)
+            {
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(30f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = Projectile.Size / 2f;
+            }
+            if (prim2 == null)
+            {
+                prim2 = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(20f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim2.drawOffset = Projectile.Size / 2f;
+            }
+            prim.Draw(Projectile.oldPos);
+            prim2.Draw(Projectile.oldPos);
+
+
+            return false;
+        }
     }
-    internal class Barriere : ModProjectile
-    {
-      
-        public override string Texture => "DivergencyMod/Bosses/Forest/LivingFlameBlast";
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Living Core Blast");
-            Main.projFrames[Projectile.type] = 4;
-        }
-        public override void SetDefaults()
-        {
-            Projectile.height = Projectile.width = 30;
-            Projectile.tileCollide = false;
-            Projectile.alpha = 255;
-            Projectile.timeLeft = 2;
-        }
-        public override void AI()
-        {
-            Player player = Main.LocalPlayer;
-            if (player.Hitbox.Intersects(Projectile.Hitbox))
-            {
-            }
-            
-              
-            
-
-            Vector3 RGB = new Vector3(1.45f, 2.55f, 0.94f);
-            float multiplier = 0.4f;
-            float max = 1f;
-            float min = 1.0f;
-            RGB *= multiplier;
-            if (RGB.X > max)
-            {
-                multiplier = 0.5f;
-            }
-            if (RGB.X < min)
-            {
-                multiplier = 1.5f;
-            }
-            //Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
-
-            if (++Projectile.frameCounter >= 4)
-            {
-                Projectile.frameCounter = 0;
-                if (++Projectile.frame >= 4)
-                {
-                    Projectile.frame = 0;
-                }
-            }
-            Vector2 pos = Projectile.position;
-
-            Projectile.spriteDirection = Projectile.direction;
-        }
-
-    }
-    internal class BarrierSpawnerTile : ModTile
-    {
-        public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCoreCrystalTile";
-
-        public override void SetStaticDefaults()
-        {
-            Main.tileSolid[Type] = true;
-            Main.tileMerge[Type][ModContent.TileType<LivingCoreWoodTile>()] = true;
-            Main.tileMerge[ModContent.TileType<LivingCoreWoodTile>()][Type] = true;
-            Main.tileMerge[Type][TileID.LeafBlock] = true;
-            Main.tileMerge[TileID.LeafBlock][Type] = true;
-
-            Main.tileBlendAll[Type] = true;
-            Main.tileBlockLight[Type] = true;
-            Main.tileLighted[Type] = false;
-            AddMapEntry(new Color(13, 255, 13));
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Living Core Crystal");
-            DustType = 10;
-
-        }
-
-        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-        {
-
-
-
-            r = 0.08f;
-            g = 1.99f;
-            b = 0f;
-        }
-        private int timer = 0;
-        private protected bool spawned;
-
-        public override void NearbyEffects(int i, int j, bool closer)
-        {
-            Vector2 pos = new Vector2(i * 16 + 8f, j * 16);
-            Vector2 speed = new Vector2(0, 0);
-            base.NearbyEffects(i, j, closer);
-            if (!spawned)
-            {
-                Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<Barriere>(), 0, 0);
-            }
-        }
-        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
-        {
-        
-            Vector2 pos = new Vector2(i * 16 + 8f, j * 16);
-            Vector2 speed = new Vector2(0,0);
    
+    
+}
 
-
-
-            if (Main.tileLighted[Type])
-            {
-                spawned = true;
-                WorldGen.KillTile(i, j);
-                Main.tileLighted[Type] = false;
-
-            }
-
-             
-
-            return true;
-        }
-    }
-    internal class BarrierSpawner : ModItem
-    {
-        public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCoreCrystal";
-
-        public override void SetStaticDefaults()
-        {
-            CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
-        }
-
-        public override void SetDefaults()
-        {
-            Item.width = 12;
-            Item.height = 12;
-            Item.maxStack = 9999;
-            Item.useTurn = true;
-            Item.value = 1000;
-            Item.autoReuse = true;
-            Item.useAnimation = 15;
-            Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.consumable = true;
-            Item.rare = ItemRarityID.White;
-            Item.createTile = ModContent.TileType<BarrierSpawnerTile>();
-        }
-    }
-
-
-
-}   

@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DivergencyMod.Dusts.Particles.CorePuzzleParticles;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ParticleLibrary;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
@@ -79,7 +81,7 @@ namespace DivergencyMod.Tiles.LivingTree
             
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            Vector2 pos = new Vector2(i * 16, j * 16);
+            Vector2 pos = new Vector2(i * 16 + 16f, j * 16 + 16f);
             Vector2 speed = new Vector2(3, 0);
             if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
@@ -93,6 +95,17 @@ namespace DivergencyMod.Tiles.LivingTree
                     Shoot = true;
                     if (Shoot)
                     {
+                  
+                        for (int jo = 0; jo < 1; jo++)
+                        {
+                            Vector2 vel = Main.rand.NextVector2Circular(1f, 1f);
+
+                    
+                                ParticleManager.NewParticle(pos, vel * 10, ParticleManager.NewInstance<GateParticle>(), Color.Purple, 0.9f);
+                            
+
+
+                        }
                         timer++;
                         if (timer == 60)
                         {

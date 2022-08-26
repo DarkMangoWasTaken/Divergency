@@ -72,7 +72,8 @@ namespace DivergencyMod.Tiles.LivingTree
             ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<LivingCoreInsertParticle>(), Color.Purple, 1f);
             ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<LivingCoreInsertParticle2>(), Color.Purple, 1f);
             ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<LivingCoreInsertParticle3>(), Color.Purple, 1f);
-            
+            ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<ResetParticle>(), Color.Purple, 8f);
+
             player.GetModPlayer<CorePuzzle>().LivingCoreAmount = 3;
 
             

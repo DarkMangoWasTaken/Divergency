@@ -814,7 +814,7 @@ namespace DivergencyMod.Bosses.Forest
                     {
                         for (int i = 0; i < 3; i++)
                         {
-                            ParticleManager.NewParticle(NPC.Center, speed * 15, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.85f);
+                            ParticleManager.NewParticle(NPC.Center, speed * 15, ParticleManager.NewInstance<ResetParticle>(), Color.Purple, 0.85f);
                             Projectile.NewProjectile(null, NPC.Center, speed * 15, ModContent.ProjectileType<WraithFireBreathProj>(), damage, 0, Main.myPlayer);
 
                             ParticleShoot = false;
@@ -920,7 +920,7 @@ namespace DivergencyMod.Bosses.Forest
                     {
                         for (int i = 0; i < 3; i++)
                         {
-                            ParticleManager.NewParticle(NPC.Center, speed * 10, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.9f);
+                            ParticleManager.NewParticle(NPC.Center, speed * 10, ParticleManager.NewInstance<ResetParticle>(), Color.Purple, 0.9f);
                             Projectile.NewProjectile(null, NPC.Center, speed * 10, ModContent.ProjectileType<WraithFireBreathProj>(), damage, 0, Main.myPlayer);
 
                             ParticleShoot = false;

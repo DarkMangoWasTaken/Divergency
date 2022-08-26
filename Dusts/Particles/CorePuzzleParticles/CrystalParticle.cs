@@ -4,9 +4,9 @@ using ParticleLibrary;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-namespace DivergencyMod.Dusts.Particles
+namespace DivergencyMod.Dusts.Particles.CorePuzzleParticles
 {
-    public class WraithFireParticle : Particle
+    public class CrystalParticle : Particle
     {
         private int frameCount;
         private int frameTick;
@@ -16,12 +16,12 @@ namespace DivergencyMod.Dusts.Particles
             width = 34;
             height = 34;
             Scale = 1f;
-            timeLeft = 10;
+            timeLeft = 600;
         }
 
         public override void AI()
         {
-            velocity *= 0.2f;
+            velocity.Y += 0.9f;
             color = Color.Lerp(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), Color.Multiply(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), 0.5f), (360f - timeLeft) / 360f);
         }
 
@@ -29,7 +29,7 @@ namespace DivergencyMod.Dusts.Particles
         {
             Texture2D tex = Request<Texture2D>("DivergencyMod/Dusts/Particles/TestParticle").Value;
             Texture2D tex2 = Request<Texture2D>("DivergencyMod/Dusts/Particles/TestParticle3").Value;
-            Texture2D tex3 = Request<Texture2D>("DivergencyMod/Dusts/Particles/EyeParticle").Value;
+            Texture2D tex3 = Request<Texture2D>("DivergencyMod/Dusts/Particles/CorePuzzleParticles/CrystalParticle").Value;
 
             float alpha = timeLeft <= 20 ? 1f - 1f / 20f * (20 - timeLeft) : 1f;
             if (alpha < 0f) alpha = 0f;

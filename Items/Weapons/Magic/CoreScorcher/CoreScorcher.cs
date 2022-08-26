@@ -54,7 +54,7 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
 
             for (int i = 0; i < 5; i++)
             {
-                ParticleManager.NewParticle(position, velocity, ParticleManager.NewInstance<CoreParticle>(), Color.Purple, 0.85f);
+                ParticleManager.NewParticle(position, velocity, ParticleManager.NewInstance<ResetParticle>(), Color.Purple, 0.85f);
             }
 
 
