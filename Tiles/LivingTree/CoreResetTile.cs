@@ -1,5 +1,6 @@
 ﻿using CsvHelper.TypeConversion;
 using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Dusts.Particles.CorePuzzleParticles;
 using DivergencyMod.Items.Ammo;
 using Humanizer;
 using Microsoft.Xna.Framework;
@@ -70,7 +71,7 @@ namespace DivergencyMod.Tiles.LivingTree
             Main.tileLighted[ModContent.TileType<LivingCorePodestTileLeft>()] = false;
             Main.tileLighted[ModContent.TileType<LivingCorePodestTileRight>()] = false;
             Main.tileLighted[ModContent.TileType<LivingCorePodestTileUp>()] = false;
-
+            
             player.GetModPlayer<CorePuzzle>().LivingCoreAmount = 0;
    
                 player.GetModPlayer<CorePuzzle>().LivingCoreAmount = 1;
@@ -80,21 +81,31 @@ namespace DivergencyMod.Tiles.LivingTree
             {
                 Vector2 speed2 = Main.rand.NextVector2Circular(1f, 1f);
 
-                ParticleManager.NewParticle(pos, speed2 * 50, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+                ParticleManager.NewParticle(pos, speed2 * 10, ParticleManager.NewInstance<CrystalParticle>(), Color.Purple, 0.9f);
 
 
+            }
+            for (int io = 0; io < Main.maxProjectiles; io++)
+            {
+                Projectile proj = Main.projectile[io];
+                if (proj.type == ModContent.ProjectileType<PodestProjectile
+                    >())
+                {
+                    proj.Kill();
+                }
             }
 
 
 
 
-            //if (!ChangeTexture)
-            //   ChangeTexture = true;
-            //else
-            //   ChangeTexture = false;
+
+                //if (!ChangeTexture)
+                //   ChangeTexture = true;
+                //else
+                //   ChangeTexture = false;
 
 
-            return true;
+                return true;
         }
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {

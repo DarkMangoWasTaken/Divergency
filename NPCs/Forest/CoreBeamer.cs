@@ -1,7 +1,9 @@
 using DivergencyMod.Base;
+using DivergencyMod.Bosses.Forest;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Threading;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -16,18 +18,10 @@ namespace DivergencyMod.NPCs.Forest
     public class CoreBeamer : ModNPC
     {
 
-        private enum Phase
-        {
-            JumpTree,
-            Walking,
-            Scream
-        }
-
-
-        public float State = 0;
-
         public float AI_Timer;
         public float Beam_Timer;
+        private int timer;
+        private float rand = 100000;
 
         public override void SetStaticDefaults()
         {
@@ -47,13 +41,13 @@ namespace DivergencyMod.NPCs.Forest
             NPC.aiStyle = -1; // This NPC has a completely unique AI, so we set this to -1. The default aiStyle 0 will face the player, which might conflict with custom AI code.
             NPC.damage = 30; // The amount of damage that this NPC deals
             NPC.defense = 2; // The amount of defense that this NPC has
-            NPC.lifeMax = 240; // The amount of health that this NPC has
+            NPC.lifeMax = 200; // The amount of health that this NPC has
             NPC.HitSound = SoundID.NPCHit2; // The sound the NPC will make when being hit.
             NPC.value = 90f; // How many copper coins the NPC will drop when killed.
-            NPC.knockBackResist = 0.7f;
+            NPC.knockBackResist = 0.1f;
             NPC.scale = 0.93f;
             NPC.noGravity = true;
-            NPC.noTileCollide = false;
+            NPC.noTileCollide = true;
         }
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
         {
@@ -64,32 +58,54 @@ namespace DivergencyMod.NPCs.Forest
       
 
 				// Sets the description of this NPC that is listed in the bestiary.
-				new FlavorTextBestiaryInfoElement("A flying bundle of living core energy, be carefull or it unleases it, melting anything near it.")
+				new FlavorTextBestiaryInfoElement("They HATE normal attacks, will only use powerful and flashy attacks because the 'funny'. What an idiot.")
             });
         }
 
         public override void AI()
         {
+            timer++;
             NPC.TargetClosest();
+            if (timer == 60)
+            {
+                rand = Main.rand.NextFloat(40, 120);
+            }
             Player player = Main.player[NPC.target];
 
             if(AI_Timer < 360)
             {
                 AI_Timer++;
-                NPC.Move(player.Center, 5f);
+                NPC.Move(player.Center, player.Distance(NPC.Center) / rand);
             }
             else
             {
                 Beam_Timer++;
                 int dustType = DustID.TerraBlade;
                 int dustIndex = Dust.NewDust(NPC.position, NPC.width, NPC.height ,0, 0, 0, dustType);
-                NPC.velocity = new Vector2(0, 0);
-                
-                if(Beam_Timer == 120)
+                NPC.Move(player.Center, player.Distance(NPC.Center) / 300);
+
+                if (Beam_Timer == 120)
                 {
-                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, new Vector2(0, 1).RotatedByRandom(5), ProjectileID.BombSkeletronPrime, 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.velocity * Main.rand.NextFloat(5, 10) * NPC.velocity.RotatedByRandom(MathHelper.ToRadians(5)), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                    }
                 }
-                if(Beam_Timer > 240)
+                if (Beam_Timer == 140)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.velocity * Main.rand.NextFloat(5, 10) * NPC.velocity.RotatedByRandom(MathHelper.ToRadians(5)), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                    }
+                }
+                if (Beam_Timer == 160)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.velocity * Main.rand.NextFloat(5, 10) * NPC.velocity.RotatedByRandom(MathHelper.ToRadians(5)), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                    }
+                }
+                if (Beam_Timer > 180)
                 {
                     AI_Timer = 0;
                     Beam_Timer = 0;
@@ -112,7 +128,7 @@ namespace DivergencyMod.NPCs.Forest
         public override void FindFrame(int frameHeight)
         {
             NPC.spriteDirection = NPC.direction;
-            NPC.rotation = NPC.velocity.X * 0.1f;
+            NPC.rotation = NPC.velocity.X * 0.2f;
 
         }
 

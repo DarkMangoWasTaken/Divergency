@@ -85,6 +85,14 @@ namespace DivergencyMod.Tiles.LivingTree
 
 
             }
+            for (int io = 0; io < Main.maxProjectiles; io++)
+            {
+                Projectile proj = Main.projectile[io];
+                if (proj.type == ModContent.ProjectileType<PodestProjectile>())
+                {
+                    proj.Kill();
+                }
+            }
 
 
 
