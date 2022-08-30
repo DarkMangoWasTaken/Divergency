@@ -1,5 +1,6 @@
 using DivergencyMod.Base;
 using DivergencyMod.Bosses.Forest;
+using DivergencyMod.Tiles.LivingTree;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -58,7 +59,7 @@ namespace DivergencyMod.NPCs.Forest
       
 
 				// Sets the description of this NPC that is listed in the bestiary.
-				new FlavorTextBestiaryInfoElement("They HATE normal attacks, will only use powerful and flashy attacks because the 'funny'. What an idiot.")
+				new FlavorTextBestiaryInfoElement("They HATE normal attacks, will only use fancy and flashy attacks because of the 'funny'. What an idiot.")
             });
         }
 
@@ -79,6 +80,8 @@ namespace DivergencyMod.NPCs.Forest
             }
             else
             {
+                Vector2 oldPos = Vector2.Zero;
+
                 Beam_Timer++;
                 int dustType = DustID.TerraBlade;
                 int dustIndex = Dust.NewDust(NPC.position, NPC.width, NPC.height ,0, 0, 0, dustType);
@@ -86,26 +89,31 @@ namespace DivergencyMod.NPCs.Forest
 
                 if (Beam_Timer == 120)
                 {
-                    for (int i = 0; i < 3; i++)
+                    oldPos = player.Center;
+                    for (int i = 0; i < 1; i++)
                     {
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.velocity * Main.rand.NextFloat(5, 10) * NPC.velocity.RotatedByRandom(MathHelper.ToRadians(5)), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center,NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(5)) * Main.rand.NextFloat(9,10), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
                     }
                 }
                 if (Beam_Timer == 140)
                 {
-                    for (int i = 0; i < 3; i++)
+                    oldPos = player.Center;
+
+                    for (int i = 0; i < 2; i++)
                     {
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.velocity * Main.rand.NextFloat(5, 10) * NPC.velocity.RotatedByRandom(MathHelper.ToRadians(5)), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(10)) * Main.rand.NextFloat(5, 8), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
                     }
                 }
-                if (Beam_Timer == 160)
+                if (Beam_Timer == 250)
                 {
+                    oldPos = player.Center;
+
                     for (int i = 0; i < 3; i++)
                     {
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.velocity * Main.rand.NextFloat(5, 10) * NPC.velocity.RotatedByRandom(MathHelper.ToRadians(5)), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(20)) * Main.rand.NextFloat(4, 6), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
                     }
                 }
-                if (Beam_Timer > 180)
+                if (Beam_Timer > 350)
                 {
                     AI_Timer = 0;
                     Beam_Timer = 0;
@@ -131,7 +139,52 @@ namespace DivergencyMod.NPCs.Forest
             NPC.rotation = NPC.velocity.X * 0.2f;
 
         }
+        public override void OnKill()
+        {
+            Projectile.NewProjectile(null, NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<AltarKiller>(), 0, 0);
+        }
 
+    }
+    public class AltarKiller : ModProjectile
+    {
+        public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCore";
+
+        public override void SetDefaults()
+        {
+            Projectile.height = Projectile.width = 10;
+            Projectile.timeLeft = 300;
+            Projectile.alpha = 255;
+            Projectile.friendly = true;
+        }
+        public override void AI()
+        {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC altar = Main.npc[i];
+                if (altar.type == ModContent.NPCType<AltarHandler1>())
+                {
+                    Projectile.Center = altar.Center;
+
+                    if (Projectile.Hitbox.Intersects(altar.Hitbox))
+                    {
+                        if (altar.life == 1)
+                        {
+                            altar.dontTakeDamage = false;
+                            altar.immortal = false;
+                            altar.StrikeNPC(1, 0, 0);
+                          
+                        }
+                        else
+                        {
+                            altar.life--;
+
+                        }
+                        Projectile.Kill();
+                    }
+                }
+            }
+            
+        }
     }
 }
 

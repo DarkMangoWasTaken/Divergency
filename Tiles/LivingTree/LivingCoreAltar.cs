@@ -1,23 +1,18 @@
-﻿using CsvHelper.TypeConversion;
-using DivergencyMod.Dusts.Particles;
-using DivergencyMod.Dusts.Particles.CorePuzzleParticles;
-using DivergencyMod.Items.Ammo;
-using DivergencyMod.Items.Weapons.Melee.ShadowflameSword;
-using DivergencyMod.NPCs.Forest;
-using Humanizer;
+﻿using DivergencyMod.NPCs.Forest;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ParticleLibrary;
-using System;
-using System.IO;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
-using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using DivergencyMod.Helpers;
+using Humanizer;
+using ReLogic.Content;
+using Terraria.GameContent.UI.BigProgressBar;
+using Terraria.GameContent;
 
 namespace DivergencyMod.Tiles.LivingTree
 {
@@ -142,12 +137,23 @@ namespace DivergencyMod.Tiles.LivingTree
             NPC.alpha = 0;
             NPC.immortal = true;
             NPC.lifeMax = 12;
-            NPC.friendly = true;
-            Music = MusicLoader.GetMusicSlot("DivergencyMod/Sounds/Music/LivingCoreWraithTheme");
+            NPC.friendly = false;
+            NPC.dontTakeDamage = true;
+            Music = MusicLoader.GetMusicSlot("DivergencyMod/Sounds/Music/CoreBattle");
             NPC.aiStyle = -1;
             NPC.noGravity = true;
             NPC.boss = true;
-            
+            NPC.BossBar = ModContent.GetInstance<AltarProgressBar>();
+            NPC.ShowNameOnHover = false;
+            NPC.alpha = 255;
+
+
+
+
+
+
+                
+
         }
         public int timer = 0;
         public int deathtimer = 0;
@@ -157,7 +163,10 @@ namespace DivergencyMod.Tiles.LivingTree
             timer++;
             spawntimer++;
 
-          
+          if (NPC.life <= 0)
+            {
+               
+            }
 
             
             for (int i = 0; i < Main.maxPlayers; i++)
@@ -182,7 +191,7 @@ namespace DivergencyMod.Tiles.LivingTree
 
 
             }
-            if (spawntimer == 1000)
+            if (spawntimer == 600)
             {
                 NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
                 NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
@@ -191,7 +200,7 @@ namespace DivergencyMod.Tiles.LivingTree
 
 
             }
-            if (spawntimer == 1500)
+            if (spawntimer == 1000)
             {
                 NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
                 NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
@@ -203,5 +212,48 @@ namespace DivergencyMod.Tiles.LivingTree
 
 
         }
+        public override void OnKill()
+        {
+            NPC.SetEventFlagCleared(ref DownedHelper.ClearedAltar, -1);
+            Main.NewText("Cleared!");
+            base.OnKill();
+        }
+
     } 
+
+
+        public class AltarProgressBar : ModBossBar
+        {
+            private int bossHeadIndex = -1;
+
+            public override Asset<Texture2D> GetIconTexture(ref Rectangle? iconFrame)
+            {
+                // Display the previously assigned head index
+                if (bossHeadIndex != -1)
+                {
+                    return TextureAssets.NpcHeadBoss[bossHeadIndex];
+                }
+                return null;
+            }
+
+            public override bool? ModifyInfo(ref BigProgressBarInfo info, ref float lifePercent, ref float shieldPercent)
+            {
+                // Here the game wants to know if to draw the boss bar or not. Return false whenever the conditions don't apply.
+                // If there is no possibility of returning false (or null) the bar will get drawn at times when it shouldn't, so write defensive code!
+
+                NPC npc = Main.npc[info.npcIndexToAimAt];
+                if (!npc.active)
+                    return false;
+
+                // We assign bossHeadIndex here because we need to use it in GetIconTexture
+                bossHeadIndex = npc.GetBossHeadTextureIndex();
+
+                lifePercent = Utils.Clamp(npc.life / (float)npc.lifeMax, 0f, 1f);
+
+
+                return true;
+            }
+        }
+    
+
 }

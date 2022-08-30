@@ -30,7 +30,6 @@ namespace DivergencyMod.Items.Armors.Vanity
             Item.height = 18;
             Item.value = 10000;
             Item.rare = ItemRarityID.Purple;
-            Item.defense = 60;
         }
 
         public override void UpdateEquip(Player player)
