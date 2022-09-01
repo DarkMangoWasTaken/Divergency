@@ -22,9 +22,7 @@ namespace DivergencyMod.Tiles.LivingTree
     // Simple 3x3 tile that can be placed on a wall
     public class LivingCorePodestTileUp : ModTile
     {
-        private static bool ChangeTexture;
         private Vector2 zero = Vector2.Zero;
-        private bool AlreadyDrawn;
 
         public override void SetStaticDefaults()
         {
@@ -119,12 +117,10 @@ namespace DivergencyMod.Tiles.LivingTree
                 if (!Main.tileLighted[Type])
                 {
                     spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, 9), Color.White);
-                    AlreadyDrawn = true;
                 }
                 else if (Main.tileLighted[Type])
                 {
                     spriteBatch.Draw(tex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, 7), Color.White);
-                    AlreadyDrawn = true;
 
                 }
             }

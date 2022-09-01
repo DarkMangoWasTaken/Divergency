@@ -13,6 +13,9 @@ using Humanizer;
 using ReLogic.Content;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.GameContent;
+using IL.Terraria.DataStructures;
+using System;
+
 
 namespace DivergencyMod.Tiles.LivingTree
 {
@@ -20,10 +23,8 @@ namespace DivergencyMod.Tiles.LivingTree
     {
         public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCoreAltar";
 
-        private static bool ChangeTexture;
         private Vector2 zero = Vector2.Zero;
-        private bool AlreadyDrawn;
-        private bool reset;
+
 
         public override void SetStaticDefaults()
         {
@@ -31,7 +32,14 @@ namespace DivergencyMod.Tiles.LivingTree
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.FramesOnKillWall[Type] = true;
             Main.tileBouncy[Type] = true;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style5x4);
+
+            Main.tileLighted[Type] = false;
+            Main.tileAxe[Type] = false;
+            Main.tileBrick[Type] = false;
+            Main.tileHammer[Type] = false;
+            
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
+
             TileObjectData.addTile(Type);
 
             AddMapEntry(new Color(120, 85, 60), Language.GetText("Living Core Altar"));
@@ -50,7 +58,7 @@ namespace DivergencyMod.Tiles.LivingTree
 
             player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 50;
 
-            NPC.NewNPC(null, left * 16, top * 16, ModContent.NPCType<AltarHandler1>());
+            NPC.NewNPC(null, left * 16 + 30, top * 16, ModContent.NPCType<AltarHandler1>());
             WorldGen.PlaceTile(left  - 10, top , ModContent.TileType<LivingCoreWoodTile>());
             WorldGen.PlaceTile(left  + 10, top , ModContent.TileType<LivingCoreWoodTile>());
             WorldGen.PlaceTile(left - 10, top -1, ModContent.TileType<LivingCoreWoodTile>());
@@ -68,25 +76,70 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             //offsetY = 20;
         }
+        public float y = -50;
+        private bool rewardactive = false;
+
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Texture2D item = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCore").Value;
+            Texture2D itemglow = ModContent.Request<Texture2D>("DivergencyMod/Effects/LivingCoreGlow").Value;
+            Texture2D tiletex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar").Value;
+            Texture2D tiletex1 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar4").Value;
+            Texture2D tiletex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar3").Value;
+            Texture2D tiletex3 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar2").Value;
+            Texture2D tiletex4 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar1").Value;
 
+
+
+            int left = i - Main.tile[i, j].TileFrameX / 18;
+            int top = j - Main.tile[i, j].TileFrameY / 18;
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-
+            
             if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
-                if (Main.tileBouncy[Type])
+                if (Main.tileBouncy[Type] && !rewardactive)
                 {
-                    spriteBatch.Draw(item, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, -40), Color.White);
+                   
+                    Projectile.NewProjectile(null, left * 16 + 27, top * 16 + -10, 0, 0.0001f, ModContent.ProjectileType<AltarReward>(), 0, 0);
+                    Main.tileBouncy[Type] = false;
+                }
+
+                if (!Main.tileLighted[Type])
+                {
+                    spriteBatch.Draw(tiletex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, -0), Color.White);
 
                 }
+                else if (Main.tileLighted[Type])
+                {
+                    spriteBatch.Draw(tiletex1, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, -0), Color.White);
+                    Main.tileHammer[Type] = false;
+                }
+                if (Main.tileAxe[Type])
+                {
+                    spriteBatch.Draw(tiletex2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, -0), Color.White);
+                    Main.tileLighted[Type] = false;
+                }
+                if (Main.tileBrick[Type])
+                {
+                    spriteBatch.Draw(tiletex3, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, -0), Color.White);
+                    Main.tileLighted[Type] = false;
+                    Main.tileAxe[Type] = false;
+
+
+                }
+                if (Main.tileHammer[Type])
+                {
+                    spriteBatch.Draw(tiletex4, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero + new Vector2(0, -0), Color.White);
+                    Main.tileLighted[Type] = false;
+                    Main.tileAxe[Type] = false;
+                    Main.tileBrick[Type] = false;
+                }
+
 
 
             }
 
-            return true;
+            return false;
 
         }
 
@@ -118,15 +171,70 @@ namespace DivergencyMod.Tiles.LivingTree
             Item.createTile = ModContent.TileType<LivingCoreAltarTile1>();
         }
     }
-
-    public class AltarPlayer : ModPlayer
+    public class AltarReward : ModProjectile
     {
-        public byte LivingCoreAmount;
-        public bool spawned;
-        public bool particlekill;
+        public TrailRenderer prim;
+        public TrailRenderer prim2;
+        private bool switchtimertime;
+        public int timer;
+        public override void SetStaticDefaults()
+        {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 100;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
+        public override string Texture => "DivergencyMod/Effects/LivingCoreGlow";
+
+        public override void SetDefaults()
+        {
+            Projectile.damage = 100;
+            Projectile.timeLeft = 600;
+            Projectile.penetrate = -1;
+            Projectile.ignoreWater = true;
+            Projectile.tileCollide = false;
+            Projectile.DamageType = DamageClass.Generic;
+            Projectile.height = 20;
+            Projectile.width = 10;
+            Projectile.friendly = true;
+            Projectile.scale = 1f;
+            Projectile.timeLeft = 3000;
+            
+
+        }
+     
+        public override void AI()
+        {
+            Projectile.gfxOffY = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2) * 10;
+            Projectile.active = true;
+            timer++;
+            Projectile.timeLeft = 10;
+          
+
+        }
+        public override bool PreDraw(ref Color lightColor)
+        {
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
+            if (prim == null)
+            {
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(30f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = Projectile.Size / 2f;
+            }
+            if (prim2 == null)
+            {
+                prim2 = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(20f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim2.drawOffset = Projectile.Size / 2f;
+            }
+            prim.Draw(Projectile.oldPos);
+            prim2.Draw(Projectile.oldPos);
+
+            //item drawing 
 
 
+            return true;
+        }
+       
     }
+
     public class AltarHandler1 : ModNPC
     {
         public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCore";
@@ -136,14 +244,14 @@ namespace DivergencyMod.Tiles.LivingTree
             NPC.width = NPC.height = 1;
             NPC.alpha = 0;
             NPC.immortal = true;
-            NPC.lifeMax = 12;
+            NPC.lifeMax = 16;
             NPC.friendly = false;
             NPC.dontTakeDamage = true;
             Music = MusicLoader.GetMusicSlot("DivergencyMod/Sounds/Music/CoreBattle");
             NPC.aiStyle = -1;
             NPC.noGravity = true;
             NPC.boss = true;
-            NPC.BossBar = ModContent.GetInstance<AltarProgressBar>();
+         //   NPC.BossBar = ModContent.GetInstance<AltarProgressBar>();
             NPC.ShowNameOnHover = false;
             NPC.alpha = 255;
 
@@ -158,17 +266,201 @@ namespace DivergencyMod.Tiles.LivingTree
         public int timer = 0;
         public int deathtimer = 0;
         public int spawntimer = 0;
+        public bool stoptimerreset = false;
+        public byte clearedWaveCount = 0;
+        public bool stoppls = false;
+        public bool stoppls2 = false;
+        public bool stoppls3 = false;
+        private bool wave3;
+        private bool wave4;
+
         public override void AI()
         {
             timer++;
-            spawntimer++;
-
-          if (NPC.life <= 0)
+            if (!stoptimerreset)
             {
-               
+                spawntimer++;
+            }
+            if (clearedWaveCount == 1)
+            {
+                spawntimer = 1;
+                clearedWaveCount = 0;
+                if (!stoppls)
+                {
+                    stoppls = true;
+                }
+                if (!stoppls2 && stoppls && wave3)
+                {
+                    stoppls2 = true;
+                }
+                if (!stoppls3 && stoppls2 && wave4)
+                {
+                    stoppls3 = true;
+                }
+            }
+            Vector2 pos = NPC.Center;
+
+            if (NPC.life == 16)
+            {
+
+                Main.tileLighted[ModContent.TileType<LivingCoreAltarTile1>()] = true;
+                if (spawntimer == 1)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "WAVE 1!", true, false);
+                    stoptimerreset = false;
+
+
+                }
+                if (spawntimer == 100)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "3!", false, false);
+                }
+                if (spawntimer == 160)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "2!", false, false);
+                }
+                if (spawntimer == 220)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "1!", false, false);
+                }
+                if (spawntimer == 280)
+                {
+                    NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
+                    stoptimerreset = true;
+                    spawntimer = 0;
+                }
+
+
+            }
+            if (NPC.life == 12)
+            {
+                if (!stoppls)
+                {
+                    clearedWaveCount = 1;
+                    stoppls = true;
+                   
+                }
+
+
+                Main.tileAxe[ModContent.TileType<LivingCoreAltarTile1>()] = true;
+                if (spawntimer == 1)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "WAVE 2!", true, false);
+                    stoptimerreset = false;
+
+                }
+                if (spawntimer == 100)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "3!", false, false);
+                }
+                if (spawntimer == 160)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "2!", false, false);
+                }
+                if (spawntimer == 220)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "1!", false, false);
+                }
+                if (spawntimer == 280)
+                {
+                    NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
+                    stoptimerreset = true;
+                    spawntimer = 0;
+                }
+
+
+            }
+            if (NPC.life == 8)
+            {
+                wave3 = true;
+                if (!stoppls2)
+                {
+                    clearedWaveCount = 1;
+                    stoppls2 = true;
+
+                }
+
+
+
+                Main.tileBrick[ModContent.TileType<LivingCoreAltarTile1>()] = true;
+                if (spawntimer == 1)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "WAVE 3!", true, false);
+                    stoptimerreset = false;
+                }
+                if (spawntimer == 100)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "3!", false, false);
+                }
+                if (spawntimer == 160)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "2!", false, false);
+                }
+                if (spawntimer == 220)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "1!", false, false);
+                }
+                if (spawntimer == 280)
+                {
+                    NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
+                    stoptimerreset = true;
+                    spawntimer = 0;
+                }
+
+
+            }
+            if (NPC.life == 4)
+            {
+                wave4 = true;
+                if (!stoppls3)
+                {
+                    clearedWaveCount = 1;
+                    stoppls3 = true;
+
+                }
+
+                Main.tileHammer[ModContent.TileType<LivingCoreAltarTile1>()] = true;
+                if (spawntimer == 1)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "WAVE 4!", true, false);
+                    stoptimerreset = false;
+                }
+                if (spawntimer == 100)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "3!", false, false);
+                }
+                if (spawntimer == 160)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "2!", false, false);
+                }
+                if (spawntimer == 220)
+                {
+                    CombatText.NewText(NPC.getRect(), Color.LightGreen, "1!", false, false);
+                }
+                if (spawntimer == 280)
+                {
+                    NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
+                    stoptimerreset = true;
+                    spawntimer = 0;
+                }
+
+
             }
 
-            
+
+
             for (int i = 0; i < Main.maxPlayers; i++)
             {
                 Player player = Main.player[i];
@@ -180,35 +472,7 @@ namespace DivergencyMod.Tiles.LivingTree
                     }
                 }
             }
-            Vector2 pos = NPC.Center;
-            
-            if (spawntimer == 30)
-            {
-                NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
-                NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
-                NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
-                NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
-
-
-            }
-            if (spawntimer == 600)
-            {
-                NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
-                NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
-                NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
-                NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
-
-
-            }
-            if (spawntimer == 1000)
-            {
-                NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
-                NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y - 300, ModContent.NPCType<CoreBeamer>());
-                NPC.NewNPC(null, (int)pos.X - 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
-                NPC.NewNPC(null, (int)pos.X + 300, (int)pos.Y + 300, ModContent.NPCType<CoreBeamer>());
-
-
-            }
+           
 
 
         }
@@ -216,7 +480,11 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             NPC.SetEventFlagCleared(ref DownedHelper.ClearedAltar, -1);
             Main.NewText("Cleared!");
-            base.OnKill();
+            Main.tileLighted[ModContent.TileType<LivingCoreAltarTile1>()] = false;
+            Main.tileAxe[ModContent.TileType<LivingCoreAltarTile1>()] = false;
+            Main.tileBrick[ModContent.TileType<LivingCoreAltarTile1>()] = false;
+            Main.tileHammer[ModContent.TileType<LivingCoreAltarTile1>()] = false;
+
         }
 
     } 

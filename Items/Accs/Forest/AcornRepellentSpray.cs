@@ -8,11 +8,10 @@ namespace DivergencyMod.Items.Accs.Forest
 {
 	public class AcornRepellentSpray : ModItem
 	{
-		public override string Texture => "DivergencyMod/Items/Accs/Forest/LivingCoreHeart";
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("'Being annoyed by noisy Acorns? Than this is what you were searching for!'");
+			Tooltip.SetDefault("'Being annoyed by noisy Acorns? Then this is what you were searching for! Favorite to activate its effects.'");
 
 			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 		}

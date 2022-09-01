@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DivergencyMod.Tiles.LivingTree;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -16,16 +17,20 @@ namespace DivergencyMod.Helpers
     {
         public static bool ClearedAltar = false;
         // public static bool downedOtherBoss = false;
-
+       
         public override void OnWorldLoad()
         {
+            
             ClearedAltar = false;
+            Main.tileBouncy[ModContent.TileType<LivingCoreAltarTile1>()] = true;
             // downedOtherBoss = false;
         }
 
         public override void OnWorldUnload()
         {
             ClearedAltar = false;
+            Main.tileBouncy[ModContent.TileType<LivingCoreAltarTile1>()] = true;
+
             // downedOtherBoss = false;
         }
 

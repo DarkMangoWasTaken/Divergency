@@ -45,8 +45,8 @@ namespace DivergencyMod.NPCs.Forest
             NPC.lifeMax = 200; // The amount of health that this NPC has
             NPC.HitSound = SoundID.NPCHit2; // The sound the NPC will make when being hit.
             NPC.value = 90f; // How many copper coins the NPC will drop when killed.
-            NPC.knockBackResist = 0.1f;
-            NPC.scale = 0.93f;
+            NPC.knockBackResist = 1f;
+            NPC.scale = Main.rand.NextFloat(0.65f,1.15f);
             NPC.noGravity = true;
             NPC.noTileCollide = true;
         }

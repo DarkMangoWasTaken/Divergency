@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using DivergencyMod.NPCs.Forest;
 using System;
 using DivergencyMod.Items.Armors;
+using DivergencyMod.Tiles.LivingTree;
 
 namespace DivergencyMod
 {
@@ -23,8 +24,7 @@ namespace DivergencyMod
         public int Spawned = 120;
         public bool ParticleNope;
         public bool checkTree = true;
-
-
+        public bool ScreenPosOnProjectile;
 
         public bool TryFindTreeTop(Vector2 position, out Vector2 result)
         {
@@ -126,6 +126,15 @@ namespace DivergencyMod
 
                 ScreenShakeIntensity *= 0.9f;
             }
+            //for (int i = 0; i < Main.maxProjectiles; i++)
+           // {
+            //   Projectile proj =  Main.projectile[i];
+               // if (ScreenPosOnProjectile && proj.type == ModContent.ProjectileType<GateProjectile>())
+               // {
+                 //   Main.screenPosition = proj.Center + new Vector2(-10,-500);
+             //   }
+           // }
+      
         }
 
 

@@ -11,7 +11,6 @@ namespace DivergencyMod.Items.Accs.Forest
 {
 	public class SavageTalisman : ModItem
 	{
-		public override string Texture => "DivergencyMod/Items/Accs/Forest/LivingCoreHeart";
 
 		public override void SetStaticDefaults()
 		{

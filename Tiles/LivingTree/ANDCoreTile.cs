@@ -21,10 +21,7 @@ namespace DivergencyMod.Tiles.LivingTree
     public class ANDCoreTile : ModTile
     {
 
-        private static bool ChangeTexture;
         private Vector2 zero = Vector2.Zero;
-        private bool AlreadyDrawn;
-        private int timer;
         private bool Shoot;
 
         public override void SetStaticDefaults()
@@ -57,21 +54,13 @@ namespace DivergencyMod.Tiles.LivingTree
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
 
-            if (ChangeTexture)
-            {
+            
 
 
                 r = 1.45f;
                 g = 2.55f;
                 b = 0.94f;
-            }
-            else
-            {
-                r = 0f;
-                g = 0f;
-                b = 0f;
-            }
-
+            
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -174,7 +163,7 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             Projectile.height = Projectile.width = 20;
             Projectile.tileCollide = false;
-            Projectile.timeLeft = 600;
+            Projectile.timeLeft = 360;
 
         }
         public override void SetStaticDefaults()
@@ -187,7 +176,18 @@ namespace DivergencyMod.Tiles.LivingTree
         public int Timer = 0;
         public override void AI()
         {
+            Player player = Main.LocalPlayer;
+
             Timer++;
+            if (Timer < 180)
+            {
+                player.GetModPlayer<DivergencyPlayer>().ScreenPosOnProjectile = true;
+            }
+            else
+            {
+                player.GetModPlayer<DivergencyPlayer>().ScreenPosOnProjectile = false;
+
+            }
             for (int j = 0; j < 4; j++)
             {
                 Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
@@ -225,7 +225,6 @@ namespace DivergencyMod.Tiles.LivingTree
                     Projectile.frame = 0;
                 }
             }
-            Player player = Main.LocalPlayer;
  
             if (Main.tile[(int)Projectile.position.X / 16, (int)Projectile.position.Y / 16].TileType == ModContent.TileType<LivingCoreCrystalTile>())
             {

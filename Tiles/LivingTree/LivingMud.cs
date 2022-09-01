@@ -10,17 +10,16 @@ using Aequus.Tiles;
 
 namespace DivergencyMod.Tiles.LivingTree
 {
-    public class LivingCoreWoodTile : ModTile
+    public class LivingMudTile : ModTile
     {
+
         public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileMerge[Type][TileID.LeafBlock] = true;
             Main.tileMerge[TileID.LeafBlock][Type] = true;
-            Main.tileMerge[Type][ModContent.TileType<LivingCoreCrystalTile>()] = true;
-            Main.tileMerge[ModContent.TileType<LivingCoreCrystalTile>()][Type] = true;
-            Main.tileMerge[Type][ModContent.TileType<LivingMudTile>()] = true;
-            Main.tileMerge[ModContent.TileType<LivingMudTile>()][Type] = true;
+            Main.tileMerge[Type][ModContent.TileType<LivingCoreWoodTile>()] = true;
+            Main.tileMerge[ModContent.TileType<LivingCoreWoodTile>()][Type] = true;
             TileID.Sets.ChecksForMerge[Type] = true;
             Main.tileBlendAll[Type] = true;
             Main.tileBlockLight[Type] = true;
@@ -35,8 +34,7 @@ namespace DivergencyMod.Tiles.LivingTree
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
             TileFramingHelper.MergeWithFrame(i, j, Type, TileID.LeafBlock);
-            TileFramingHelper.MergeWithFrame(i, j, Type, ModContent.TileType<LivingCoreCrystalTile>());
-
+            TileFramingHelper.MergeWithFrame(i, j, Type, ModContent.TileType<LivingCoreWoodTile>());
 
             return false;
         }
@@ -61,8 +59,10 @@ namespace DivergencyMod.Tiles.LivingTree
 
 
 
-    public class LivingCoreWoodItem : ModItem
+    public class LivingMud: ModItem
     {
+        public override string Texture => "DivergencyMod/Bosses/Forest/LivingFlameBlast";
+
         public override void SetStaticDefaults()
         {
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
@@ -81,7 +81,7 @@ namespace DivergencyMod.Tiles.LivingTree
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.rare = ItemRarityID.White;
-            Item.createTile = ModContent.TileType<LivingCoreWoodTile>();
+            Item.createTile = ModContent.TileType<LivingMudTile>();
         }
     }
 }
