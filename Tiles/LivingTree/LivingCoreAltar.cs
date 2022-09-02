@@ -15,7 +15,7 @@ using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.GameContent;
 using IL.Terraria.DataStructures;
 using System;
-
+using System.Collections.Generic;
 
 namespace DivergencyMod.Tiles.LivingTree
 {
@@ -24,7 +24,7 @@ namespace DivergencyMod.Tiles.LivingTree
         public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCoreAltar";
 
         private Vector2 zero = Vector2.Zero;
-
+        
 
         public override void SetStaticDefaults()
         {
@@ -100,7 +100,7 @@ namespace DivergencyMod.Tiles.LivingTree
                 if (Main.tileBouncy[Type] && !rewardactive)
                 {
                    
-                    Projectile.NewProjectile(null, left * 16 + 27, top * 16 + -10, 0, 0.0001f, ModContent.ProjectileType<AltarReward>(), 0, 0);
+                    Projectile.NewProjectile(null, left * 16 + 27, top * 16 + -40, 0, 0.0001f, ModContent.ProjectileType<AltarReward>(), 0, 0);
                     Main.tileBouncy[Type] = false;
                 }
 
@@ -175,14 +175,14 @@ namespace DivergencyMod.Tiles.LivingTree
     {
         public TrailRenderer prim;
         public TrailRenderer prim2;
-        private bool switchtimertime;
         public int timer;
+        public string path;
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 100;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
-        public override string Texture => "DivergencyMod/Effects/LivingCoreGlow";
+        public override string Texture => "DivergencyMod/Effects/LivingCoreSwordGlow";
 
         public override void SetDefaults()
         {
@@ -203,36 +203,64 @@ namespace DivergencyMod.Tiles.LivingTree
      
         public override void AI()
         {
+            Vector3 RGB = new Vector3(1.45f, 2.55f, 0.94f);
+            float multiplier = 0.4f;
+            float max = 1f;
+            float min = 1.0f;
+            RGB *= multiplier;
+            if (RGB.X > max)
+            {
+                multiplier = 0.5f;
+            }
+            if (RGB.X < min)
+            {
+                multiplier = 1.5f;
+            }
+            Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
+
             Projectile.gfxOffY = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2) * 10;
-            Projectile.active = true;
+            if (DownedHelper.ClearedAltar)
+            {
+                Projectile.Kill();
+
+            }
+            else
+            {
+                Projectile.active = true;
+            }
             timer++;
             Projectile.timeLeft = 10;
+            if (timer == 30)
+            { timer = 0;
+                Projectile.rotation++;
+                Main.NewText(Projectile.rotation);
+            }
           
+
+        }
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+        {
+           // behindNPCsAndTiles.Add(index);
 
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
-            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
-            if (prim == null)
-            {
-                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(30f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 0.9f * (float)Math.Pow(1f - p, 2f));
-                prim.drawOffset = Projectile.Size / 2f;
-            }
-            if (prim2 == null)
-            {
-                prim2 = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(20f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
-                prim2.drawOffset = Projectile.Size / 2f;
-            }
-            prim.Draw(Projectile.oldPos);
-            prim2.Draw(Projectile.oldPos);
+            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
 
-            //item drawing 
+            int frameHeight = texture.Height / Main.projFrames[Projectile.type];
+            int startY = frameHeight * Projectile.frame;
 
+            Rectangle sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
+            Vector2 origin = sourceRectangle.Size() / 2f;
+            Color drawColor = Projectile.GetAlpha(lightColor);
 
-            return true;
+            Main.EntitySpriteDraw(texture,
+                Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
+                sourceRectangle, drawColor, Projectile.rotation, origin, 0.8f, SpriteEffects.None, 0);
+
+            return false;
         }
-       
+
     }
 
     public class AltarHandler1 : ModNPC
@@ -263,6 +291,7 @@ namespace DivergencyMod.Tiles.LivingTree
                 
 
         }
+
         public int timer = 0;
         public int deathtimer = 0;
         public int spawntimer = 0;
@@ -277,6 +306,7 @@ namespace DivergencyMod.Tiles.LivingTree
         public override void AI()
         {
             timer++;
+            NPC.active = true;
             if (!stoptimerreset)
             {
                 spawntimer++;
@@ -458,7 +488,7 @@ namespace DivergencyMod.Tiles.LivingTree
 
 
             }
-
+           
 
 
             for (int i = 0; i < Main.maxPlayers; i++)
@@ -474,7 +504,7 @@ namespace DivergencyMod.Tiles.LivingTree
             }
            
 
-
+         
         }
         public override void OnKill()
         {

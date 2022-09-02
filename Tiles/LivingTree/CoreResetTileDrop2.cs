@@ -70,7 +70,11 @@ namespace DivergencyMod.Tiles.LivingTree
             player.GetModPlayer<CorePuzzle>().LivingCoreAmount = 1;
             ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<LivingCoreInsertParticle>(), Color.Purple, 1f);
             ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<LivingCoreInsertParticle2>(), Color.Purple, 1f);
-            ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<ResetParticle>(), Color.Purple, 8f);
+            for (int x = 0; x < 3; x++)
+            {
+                ParticleManager.NewParticle(player.Center, player.velocity * 0, ParticleManager.NewInstance<ResetParticle>(), Color.Purple, 8f);
+
+            }
             player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 20;
 
 

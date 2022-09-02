@@ -35,6 +35,7 @@ namespace DivergencyMod.Tiles.LivingTree
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
             TileFramingHelper.MergeWithFrame(i, j, Type, TileID.LeafBlock);
+            TileFramingHelper.MergeWithFrame(i, j, Type, ModContent.TileType<LivingMudTile>());
             TileFramingHelper.MergeWithFrame(i, j, Type, ModContent.TileType<LivingCoreCrystalTile>());
 
 

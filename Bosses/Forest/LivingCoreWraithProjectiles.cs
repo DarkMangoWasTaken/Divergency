@@ -63,9 +63,9 @@ namespace DivergencyMod.Bosses.Forest
             Projectile.DamageType = DamageClass.Generic; // Is the projectile shoot by a ranged weapon?
             Projectile.timeLeft = 360; // The live time for the projectile (60 = 1 second, so 600 is 10 seconds)
             Projectile.ignoreWater = true; // Does the projectile's speed be influenced by water?
-            Projectile.tileCollide = false; // Can the projectile collide with tiles?
+            Projectile.tileCollide = true; // Can the projectile collide with tiles?
 
-            Projectile.scale = 1.2f;    
+            Projectile.scale = 1f;    
         }
 
         public override void AI()

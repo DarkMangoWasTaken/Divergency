@@ -1,8 +1,10 @@
 using DivergencyMod.Base;
 using DivergencyMod.Bosses.Forest;
+using DivergencyMod.Dusts.Particles;
 using DivergencyMod.Tiles.LivingTree;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ParticleLibrary;
 using System;
 using System.Threading;
 using Terraria;
@@ -48,7 +50,7 @@ namespace DivergencyMod.NPCs.Forest
             NPC.knockBackResist = 1f;
             NPC.scale = Main.rand.NextFloat(0.65f,1.15f);
             NPC.noGravity = true;
-            NPC.noTileCollide = true;
+            NPC.noTileCollide = false;
         }
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
         {
@@ -81,39 +83,57 @@ namespace DivergencyMod.NPCs.Forest
             else
             {
                 Vector2 oldPos = Vector2.Zero;
+                if (Main.rand.NextBool(3))
+                {
+                    Beam_Timer++;
+                }
+                for (int j = 0; j < 1; j++)
+                {
+                    Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                Beam_Timer++;
-                int dustType = DustID.TerraBlade;
-                int dustIndex = Dust.NewDust(NPC.position, NPC.width, NPC.height ,0, 0, 0, dustType);
-                NPC.Move(player.Center, player.Distance(NPC.Center) / 300);
+                    ParticleManager.NewParticle(NPC.Center, speed * 20, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 1f);
 
+
+                }
+                NPC.Move(player.Center, player.Distance(NPC.Center) / rand * 0.5f);
+                
+                if (Beam_Timer == 60)
+                {
+                    oldPos = player.Center;
+                
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center,NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(5)) * Main.rand.NextFloat(9,10), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                        ParticleManager.NewParticle(NPC.Center, new Vector2 (0,0),ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1f);
+                        player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 2;
+                    Beam_Timer++;
+
+                    
+                }
                 if (Beam_Timer == 120)
                 {
                     oldPos = player.Center;
-                    for (int i = 0; i < 1; i++)
-                    {
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center,NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(5)) * Main.rand.NextFloat(9,10), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
-                    }
+
+                
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(10)) * Main.rand.NextFloat(5, 8), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                        ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1f);
+                        player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 2;
+                    Beam_Timer++;
+
+
                 }
-                if (Beam_Timer == 140)
+                if (Beam_Timer == 200)
                 {
                     oldPos = player.Center;
 
                     for (int i = 0; i < 2; i++)
                     {
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(10)) * Main.rand.NextFloat(5, 8), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
-                    }
-                }
-                if (Beam_Timer == 250)
-                {
-                    oldPos = player.Center;
-
-                    for (int i = 0; i < 3; i++)
-                    {
                         Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(20)) * Main.rand.NextFloat(4, 6), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                        ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 0.5f);
+                        player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 4;
+                        Beam_Timer++;
+
                     }
                 }
-                if (Beam_Timer > 350)
+                if (Beam_Timer > 201)
                 {
                     AI_Timer = 0;
                     Beam_Timer = 0;

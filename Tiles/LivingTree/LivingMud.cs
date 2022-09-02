@@ -31,13 +31,7 @@ namespace DivergencyMod.Tiles.LivingTree
             DustType = 7;
 
         }
-        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
-        {
-            TileFramingHelper.MergeWithFrame(i, j, Type, TileID.LeafBlock);
-            TileFramingHelper.MergeWithFrame(i, j, Type, ModContent.TileType<LivingCoreWoodTile>());
 
-            return false;
-        }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {

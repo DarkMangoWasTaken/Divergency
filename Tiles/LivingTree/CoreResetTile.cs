@@ -49,7 +49,11 @@ namespace DivergencyMod.Tiles.LivingTree
             Vector2 speed = new Vector2(-10f, 0f);
 
             Player player = Main.LocalPlayer;
-            ParticleManager.NewParticle(player.Center, player.velocity * 3, ParticleManager.NewInstance<ResetParticle>(), Color.Purple, 8f);
+            for (int x = 0; x < 3; x++)
+            {
+                ParticleManager.NewParticle(player.Center, player.velocity * 0, ParticleManager.NewInstance<ResetParticle>(), Color.Purple, 8f);
+
+            }
 
 
             Main.tileLighted[ModContent.TileType<XORCoreTile>()] = false;
