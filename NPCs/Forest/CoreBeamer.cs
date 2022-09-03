@@ -105,6 +105,8 @@ namespace DivergencyMod.NPCs.Forest
                         Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(5)) * Main.rand.NextFloat(9, 10), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
                         ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1f);
                         player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 2;
+                        Beam_Timer++;
+
                     }
                     Beam_Timer++;
 
@@ -119,6 +121,8 @@ namespace DivergencyMod.NPCs.Forest
                         Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(10)) * Main.rand.NextFloat(5, 8), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
                         ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1f);
                         player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 2;
+                        Beam_Timer++;
+
                     }
                     Beam_Timer++;
 

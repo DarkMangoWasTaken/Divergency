@@ -69,19 +69,17 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             //Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 32, ModContent.ItemType<Items.Placeable.Furniture.MinionBossTrophy>());
         }
-        public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY)
-        {
-            offsetY = 2;
-        }
+      
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/XORCoreTile").Value;
             Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/XORCoreTileCharged1").Value;
             Texture2D tex3 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/XORCoreTileCharged2").Value;
-            
+            int left = i - Main.tile[i, j].TileFrameX / 18;
+            int top = j - Main.tile[i, j].TileFrameY / 18;
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            Vector2 pos = new Vector2(i * 16 + 16f, j * 16 + 16f);
+            Vector2 pos = new Vector2(left * 16 + 16f, top * 16 + 16f);
             Vector2 speed = new Vector2(3, 0);
             if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {

@@ -97,7 +97,7 @@ namespace DivergencyMod.Tiles.LivingTree
             
             if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
-                if (Main.tileBouncy[Type] && !rewardactive)
+                if (Main.tileBouncy[Type]) //&& !rewardactive)
                 {
                    
                     Projectile.NewProjectile(null, left * 16 + 33, top * 16 + -50, 0, 0.0001f, ModContent.ProjectileType<AltarReward>(), 0, 0);

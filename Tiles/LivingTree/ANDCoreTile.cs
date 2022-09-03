@@ -2,6 +2,7 @@
 using DivergencyMod.Dusts.Particles.CorePuzzleParticles;
 using DivergencyMod.Helpers;
 using DivergencyMod.Items.Weapons.Melee.NaturesWrath;
+using Humanizer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ParticleLibrary;
@@ -46,10 +47,7 @@ namespace DivergencyMod.Tiles.LivingTree
             DustType = 7;
 
         }
-        public override void RandomUpdate(int i, int j)
-        {
-            base.RandomUpdate(i, j);
-        }
+   
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
@@ -67,16 +65,16 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             //Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 32, ModContent.ItemType<Items.Placeable.Furniture.MinionBossTrophy>());
         }
-        public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY)
-        {
-            offsetY = 2;
-        }
+       
         public int timer2 = 0;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Texture2D tex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/ANDCoreTile").Value;
             Texture2D tex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/ANDCoreTileCharged1").Value;
             Texture2D tex3 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/ANDCoreTileCharged2").Value;
+            int left = i - Main.tile[i, j].TileFrameX / 18;
+            int top = j - Main.tile[i, j].TileFrameY / 18;  
+            Vector2 pos = new Vector2(left * 16 + 16f, top * 16 + 16f);
 
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
@@ -97,7 +95,6 @@ namespace DivergencyMod.Tiles.LivingTree
                     spriteBatch.Draw(tex3, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, Color.White);
                     if (!Shoot)
                     {
-                        Vector2 pos = new Vector2(i * 16, j * 16);
                         Vector2 speed = new Vector2(3, 0);
 
                         timer2++;
@@ -252,6 +249,10 @@ namespace DivergencyMod.Tiles.LivingTree
                         Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
                         WorldGen.KillTile(checkX, checkY);
+                        WorldGen.KillTile(checkX, checkY + 1);
+                        WorldGen.KillTile(checkX, checkY - 1);
+
+
                         player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 20;
                         for (int j = 0; j < 10; j++)
                         {
