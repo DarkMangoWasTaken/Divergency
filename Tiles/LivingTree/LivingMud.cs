@@ -6,7 +6,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using DivergencyMod.Helpers;    
 using static Terraria.ModLoader.ModContent;
-using Aequus.Tiles;
 
 namespace DivergencyMod.Tiles.LivingTree
 {
@@ -33,21 +32,8 @@ namespace DivergencyMod.Tiles.LivingTree
         }
 
 
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-        {
-            Tile tile = Main.tile[i, j];
-            Vector2 zero = new Vector2(Main.offScreenRange, Main.offScreenRange);
-            if (Main.drawToScreen)
-            {
-                zero = Vector2.Zero;
-            }
-            Texture2D tex = Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreWoodGlow").Value;
-            int height = tile.TileFrameY == 36 ? 18 : 16;
-            if (tile.Slope == 0 && !tile.IsHalfBlock)
-            {
-                Main.spriteBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y + 2) + zero, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, height), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            }
-        }
+       
+        
     }
 
 
@@ -55,7 +41,6 @@ namespace DivergencyMod.Tiles.LivingTree
 
     public class LivingMud: ModItem
     {
-        public override string Texture => "DivergencyMod/Bosses/Forest/LivingFlameBlast";
 
         public override void SetStaticDefaults()
         {

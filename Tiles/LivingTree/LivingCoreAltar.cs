@@ -100,7 +100,7 @@ namespace DivergencyMod.Tiles.LivingTree
                 if (Main.tileBouncy[Type] && !rewardactive)
                 {
                    
-                    Projectile.NewProjectile(null, left * 16 + 27, top * 16 + -40, 0, 0.0001f, ModContent.ProjectileType<AltarReward>(), 0, 0);
+                    Projectile.NewProjectile(null, left * 16 + 33, top * 16 + -50, 0, 0.0001f, ModContent.ProjectileType<AltarReward>(), 0, 0);
                     Main.tileBouncy[Type] = false;
                 }
 
@@ -232,8 +232,7 @@ namespace DivergencyMod.Tiles.LivingTree
             Projectile.timeLeft = 10;
             if (timer == 30)
             { timer = 0;
-                Projectile.rotation++;
-                Main.NewText(Projectile.rotation);
+                Projectile.rotation = 5.48f;
             }
           
 

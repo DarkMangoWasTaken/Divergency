@@ -6,7 +6,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using DivergencyMod.Helpers;    
 using static Terraria.ModLoader.ModContent;
-using Aequus.Tiles;
 
 namespace DivergencyMod.Tiles.LivingTree
 {

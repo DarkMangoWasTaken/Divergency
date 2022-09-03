@@ -100,10 +100,12 @@ namespace DivergencyMod.NPCs.Forest
                 if (Beam_Timer == 60)
                 {
                     oldPos = player.Center;
-                
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center,NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(5)) * Main.rand.NextFloat(9,10), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
-                        ParticleManager.NewParticle(NPC.Center, new Vector2 (0,0),ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1f);
+                    for (int j = 0; j < 2; j++)
+                    {
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(5)) * Main.rand.NextFloat(9, 10), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                        ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1f);
                         player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 2;
+                    }
                     Beam_Timer++;
 
                     
@@ -112,10 +114,12 @@ namespace DivergencyMod.NPCs.Forest
                 {
                     oldPos = player.Center;
 
-                
+                    for (int j = 0; j < 3; j++)
+                    {
                         Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(10)) * Main.rand.NextFloat(5, 8), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
                         ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1f);
                         player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 2;
+                    }
                     Beam_Timer++;
 
 
@@ -124,10 +128,10 @@ namespace DivergencyMod.NPCs.Forest
                 {
                     oldPos = player.Center;
 
-                    for (int i = 0; i < 2; i++)
+                    for (int i = 0; i < 4; i++)
                     {
                         Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(oldPos).RotatedByRandom(MathHelper.ToRadians(20)) * Main.rand.NextFloat(4, 6), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
-                        ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 0.5f);
+                        ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 0.8f);
                         player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 4;
                         Beam_Timer++;
 
