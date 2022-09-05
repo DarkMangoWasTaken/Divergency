@@ -26,7 +26,7 @@ namespace DivergencyMod.Dusts.Particles
         {
             rotation = velocity.ToRotation();
 
-            Scale *= 1.2f;
+            Scale *= 1.3f;
             if (Scale <= 0f)
                 active = false;
         }

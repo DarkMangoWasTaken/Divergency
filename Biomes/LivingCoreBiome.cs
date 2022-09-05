@@ -15,6 +15,7 @@ using Terraria.GameInput;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 using DivergencyMod.Tiles.LivingTree;
+using Terraria.GameContent;
 
 namespace DivergencyMod
 {
@@ -39,8 +40,9 @@ namespace DivergencyMod
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Example Underground");
+	       
 		}
-
+		public override ModWaterStyle WaterStyle => base.WaterStyle;
 		// Calculate when the biome is active.
 		public override bool IsBiomeActive(Player player)
 		{
