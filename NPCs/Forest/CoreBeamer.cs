@@ -94,37 +94,41 @@ namespace DivergencyMod.NPCs.Forest
                     Beam_Timer++;
 
                 }
-                for (int j = 0; j < 1; j++)
+                if (Beam_Timer >= 0 && Beam_Timer <= 80)
                 {
-                    Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
+                    for (int j = 0; j < 1; j++)
 
-                    ParticleManager.NewParticle(NPC.Center, speed * 20, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 1f);
+                    {
+                        Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
+
+                        ParticleManager.NewParticle(NPC.Center, speed * 20, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 1f);
 
 
+                    }
+                    //ParticleManager.NewParticle(NPC.Center -  Main.rand.NextVector2Circular(-10f, 10f), new Vector2(0, 0), ParticleManager.NewInstance<CoreLoadParticle>(), Color.Purple, 0.3f, NPC.whoAmI, NPC.whoAmI);
+                    //ParticleManager.NewParticle(NPC.Center + Main.rand.NextVector2Circular(-10f, 10f), new Vector2(0, 0), ParticleManager.NewInstance<CoreLoadParticle>(), Color.Purple, 0.3f, NPC.whoAmI,NPC.whoAmI); }
                 }
-                //ParticleManager.NewParticle(NPC.Center -  Main.rand.NextVector2Circular(-10f, 10f), new Vector2(0, 0), ParticleManager.NewInstance<CoreLoadParticle>(), Color.Purple, 0.3f, NPC.whoAmI, NPC.whoAmI);
-                //ParticleManager.NewParticle(NPC.Center + Main.rand.NextVector2Circular(-10f, 10f), new Vector2(0, 0), ParticleManager.NewInstance<CoreLoadParticle>(), Color.Purple, 0.3f, NPC.whoAmI,NPC.whoAmI);
 
-                if (Beam_Timer == 10)
+                if (Beam_Timer == 20)
                 {
                     playAnim = true;
                     frame = 4;
                 }
                
-                if (Beam_Timer == 100)
+                if (Beam_Timer == 40)
                 {
                     playAnim = true;
                     frame = 4;
                 }
              
-                if (Beam_Timer == 190)
+                if (Beam_Timer == 60)
                 {
                     playAnim = true;
                     frame = 4;
 
                 }
                 
-                if (Beam_Timer > 220)
+                if (Beam_Timer > 80)
                 {
                     AI_Timer = 0;
                     Beam_Timer = 0;
