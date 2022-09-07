@@ -433,9 +433,7 @@ namespace DivergencyMod.Tiles.LivingTree
             }
 
         }
-        public TrailRenderer prim;
-
-        public TrailRenderer prim2;
+      
 
         public bool TryFindNearPodest(Vector2 position, out Vector2 result)
         {
@@ -480,7 +478,10 @@ namespace DivergencyMod.Tiles.LivingTree
             result = default;
             return false;
         }
-          public override bool PreDraw(ref Color lightColor)
+        public TrailRenderer prim;
+
+        public TrailRenderer prim2;
+        public override bool PreDraw(ref Color lightColor)
         {
             var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
             Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);

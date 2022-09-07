@@ -1,6 +1,8 @@
 using DivergencyMod.Base;
 using DivergencyMod.Bosses.Forest;
 using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Dusts.Particles.CorePuzzleParticles;
+using DivergencyMod.Helpers;
 using DivergencyMod.Tiles.LivingTree;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -198,7 +200,7 @@ namespace DivergencyMod.NPCs.Forest
                     {
                         for (int j = 0; j < 2; j++)
                         {
-                            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(player.Center).RotatedByRandom(MathHelper.ToRadians(5)) * Main.rand.NextFloat(9, 10), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(player.Center).RotatedByRandom(MathHelper.ToRadians(5)) * Main.rand.NextFloat(9, 10), ModContent.ProjectileType<LivingCoreBeamerProj>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
                             ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1f);
                             player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 2;
                             Beam_Timer++;
@@ -215,7 +217,7 @@ namespace DivergencyMod.NPCs.Forest
                     {
                         for (int j = 0; j < 3; j++)
                         {
-                            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(player.Center).RotatedByRandom(MathHelper.ToRadians(10)) * Main.rand.NextFloat(5, 8), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(player.Center).RotatedByRandom(MathHelper.ToRadians(10)) * Main.rand.NextFloat(5, 8), ModContent.ProjectileType<LivingCoreBeamerProj>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
                             ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1f);
                             player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 2;
                             Beam_Timer++;
@@ -232,7 +234,7 @@ namespace DivergencyMod.NPCs.Forest
                     {
                         for (int j = 0; j < 4; j++)
                         {
-                            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(player.Center).RotatedByRandom(MathHelper.ToRadians(20)) * Main.rand.NextFloat(4, 6), ModContent.ProjectileType<LivingFlameBlast>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
+                            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.Center.DirectionTo(player.Center).RotatedByRandom(MathHelper.ToRadians(20)) * Main.rand.NextFloat(4, 6), ModContent.ProjectileType<LivingCoreBeamerProj>(), 60 / (Main.expertMode || Main.masterMode ? 4 : 2), 0, player.whoAmI);
                             ParticleManager.NewParticle(NPC.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 0.8f);
                             player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 4;
                             Beam_Timer++;
@@ -256,6 +258,13 @@ namespace DivergencyMod.NPCs.Forest
         public override void OnKill()
         {
             Projectile.NewProjectile(null, NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<AltarKiller>(), 0, 0);
+
+            int goreType = Mod.Find<ModGore>("CorelingGore").Type;
+
+            if (Main.netMode != NetmodeID.Server)
+            {
+                Gore.NewGore(null, NPC.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType, NPC.scale);
+            }
         }
 
     }
@@ -298,6 +307,111 @@ namespace DivergencyMod.NPCs.Forest
                 }
             }
             
+        }
+    }
+   public class LivingCoreBeamerProj : ModProjectile
+    {
+        public float timer;
+        public float Timer;
+        private Vector2 unmodifiedVelocity;
+
+        public override string Texture => "DivergencyMod/Items/Weapons/Magic/Invoker/InvokedProj";
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("get phucked loser");
+            Main.projFrames[Projectile.type] = 1;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 25;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 15; // The width of projectile hitbox
+            Projectile.height = 15; // The height of projectile hitbox
+
+            Projectile.friendly = false; // Can the projectile deal damage to enemies?
+            Projectile.hostile = true; // Can the projectile deal damage to the player?
+            Projectile.DamageType = DamageClass.Generic; // Is the projectile shoot by a ranged weapon?
+            Projectile.timeLeft = 180; // The live time for the projectile (60 = 1 second, so 600 is 10 seconds)
+            Projectile.ignoreWater = true; // Does the projectile's speed be influenced by water?
+            Projectile.tileCollide = true; // Can the projectile collide with tiles?
+
+            Projectile.scale = 1f;
+        }
+        public override void AI()
+        {
+            Timer++;
+            if (Timer == 1)
+            {
+                unmodifiedVelocity = Projectile.velocity;
+            }
+
+            Projectile.velocity = unmodifiedVelocity.RotatedBy(Math.Sin((Timer - 40) * 0.3f) * 0.3f);
+            Vector3 RGB = new Vector3(1.45f, 2.55f, 0.94f);
+            float multiplier = 0.4f;
+            float max = 1f;
+            float min = 1.0f;
+            RGB *= multiplier;
+            if (RGB.X > max)
+            {
+                multiplier = 0.5f;
+            }
+            if (RGB.X < min)
+            {
+                multiplier = 1.5f;
+            }
+            Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
+            timer++;
+       
+            if (Timer == 1)
+            {
+                ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 3, ParticleManager.NewInstance<PodestProjBase>(), Color.Purple, 0.3f, Projectile.whoAmI, Projectile.whoAmI);
+
+            }
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(90);
+            Projectile.spriteDirection = Projectile.direction;
+
+            if (timer == 2)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
+
+                    ParticleManager.NewParticle(Projectile.Center, speed * 3, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f, Projectile.whoAmI, Projectile.whoAmI);
+
+
+                }
+                timer = 0;
+            }
+
+
+
+
+
+        }
+        public TrailRenderer prim;
+
+        public TrailRenderer prim2;
+        public override bool PreDraw(ref Color lightColor)
+        {
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
+            if (prim == null)
+            {
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(30f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = Projectile.Size / 2f;
+            }
+            if (prim2 == null)
+            {
+                prim2 = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(15f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim2.drawOffset = Projectile.Size / 2f;
+            }
+            prim.Draw(Projectile.oldPos);
+            prim2.Draw(Projectile.oldPos);
+
+
+            return false;
         }
     }
 }

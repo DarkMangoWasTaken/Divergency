@@ -47,7 +47,7 @@ namespace DivergencyMod.Tiles.LivingTree
                 type = tileAbove.TileType;
             }
 
-            if (type == ModContent.TileType<LivingMudTile>() || type == Type)
+            if (type == ModContent.TileType<LivingMudTile>() || type == Type || type == ModContent.TileType<LivingCoreWoodTile>())
             {
                 return true;
             }
@@ -59,7 +59,7 @@ namespace DivergencyMod.Tiles.LivingTree
         public override void RandomUpdate(int i, int j)
         {
             Tile tileBelow = Framing.GetTileSafely(i, j + 1);
-            if (WorldGen.genRand.NextBool(2) && !tileBelow.HasTile)
+            if (WorldGen.genRand.NextBool(1) && !tileBelow.HasTile)
             {
                 bool placeVine = false;
                 int yTest = j;
@@ -70,7 +70,7 @@ namespace DivergencyMod.Tiles.LivingTree
                     {
                         break;
                     }
-                    else if (testTile.TileType == ModContent.TileType<LivingMudTile>())
+                    else if (testTile.TileType == ModContent.TileType<LivingMudTile>() || testTile.TileType == ModContent.TileType<LivingCoreWoodTile>())
                     {
                         yTest--;
                         continue;
@@ -110,11 +110,11 @@ namespace DivergencyMod.Tiles.LivingTree
         {
             float sin = (float)Math.Sin((Main.time + (i * 24) + (j * 19)) * (0.04f * (!Lighting.NotRetro ? 0f : 1)) + sOffset) * 1.4f;
             if (Framing.GetTileSafely(i, j - 1).TileType != Type) //Adjusts the sine wave offset to make it look nicer when closer to ground
-                sin *= 0.25f;
+                sin *= 0.50f;
             else if (Framing.GetTileSafely(i, j - 2).TileType != Type)
-                sin *= 0.5f;
-            else if (Framing.GetTileSafely(i, j - 3).TileType != Type)
                 sin *= 0.75f;
+            else if (Framing.GetTileSafely(i, j - 3).TileType != Type)
+                sin *= 1.1f;
 
             return sin;
         }
