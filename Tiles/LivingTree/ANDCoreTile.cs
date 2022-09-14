@@ -10,6 +10,7 @@ using System;
 using System.IO;
 using System.Threading;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
@@ -111,7 +112,10 @@ namespace DivergencyMod.Tiles.LivingTree
 
                         }
                         Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<GateProjectile>(), 0, 0);
-                           
+                        SoundEngine.PlaySound(SoundID.NPCDeath44 with { Volume = 1.1f, Pitch = Main.rand.NextFloat(1f), MaxInstances = 400 });
+                        SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
+
                         Shoot = true;
                     }
                 }

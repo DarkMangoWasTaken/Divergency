@@ -18,11 +18,12 @@ namespace DivergencyMod.Tiles.LivingTree
         public override void SetStaticDefaults()
         {
             Main.tileCut[Type] = true;
-            Main.tileBlockLight[Type] = true;
+            Main.tileBlockLight[Type] = false;
             Main.tileLavaDeath[Type] = true;
             Main.tileNoFail[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileLighted[Type] = false;
+
             HitSound = SoundID.Grass;
             DustType = DustID.Ash;
 

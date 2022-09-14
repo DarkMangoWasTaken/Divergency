@@ -9,6 +9,7 @@ using ParticleLibrary;
 using System;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
@@ -54,6 +55,15 @@ namespace DivergencyMod.Tiles.LivingTree
                 ParticleManager.NewParticle(player.Center, player.velocity * 0, ParticleManager.NewInstance<ResetParticle>(), Color.Purple, 8f);
 
             }
+            SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/Reset")
+
+            {
+                Pitch = Main.rand.NextFloat(1f),
+                Volume = 1f,
+                MaxInstances = 1,
+
+            });
+            SoundEngine.PlaySound(SoundID.Item34 with { Volume = 1.4f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
 
 
             Main.tileLighted[ModContent.TileType<XORCoreTile>()] = false;

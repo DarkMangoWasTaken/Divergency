@@ -279,6 +279,7 @@ namespace DivergencyMod.Tiles.LivingTree
 
                 // Position being checked;
 
+                SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Volume = 0.7f, Pitch = Main.rand.NextFloat(0.8f, 2f), MaxInstances = 400 });
 
 
                 int checkX = x;
@@ -293,10 +294,10 @@ namespace DivergencyMod.Tiles.LivingTree
 
                     if (Main.tile[checkX, checkY].TileType == ModContent.TileType<CoreMirrorTileDown>())
 
-                    {
+                    {   
                         Projectile.velocity = new Vector2(0, 10);
                     }
-                    if (tile.TileType == (ushort)ModContent.TileType<CoreMirrorTileUp>())
+                    if (tile.TileType == ModContent.TileType<CoreMirrorTileUp>())
 
                     {
                         Projectile.velocity = new Vector2(0, -10);
