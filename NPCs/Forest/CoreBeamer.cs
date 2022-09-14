@@ -67,10 +67,19 @@ namespace DivergencyMod.NPCs.Forest
 				new FlavorTextBestiaryInfoElement("They HATE normal attacks, will only use fancy and flashy attacks because of the 'funny'. What an idiot.")
             });
         }
+        public override void OnSpawn(IEntitySource source)
+        {
+            if (source is EntitySource_SpawnNPC spawnNPC && spawnNPC.Context == "Corelossus")
+            {
+                Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
+                NPC.velocity += speed * 15;
+            }
+        }
         public override void AI()
         {
             timer++;
+            AI_Timer++;
 
             NPC.TargetClosest();
             if (timer == 60)
@@ -80,12 +89,11 @@ namespace DivergencyMod.NPCs.Forest
             }
             Player player = Main.player[NPC.target];
 
-            if(AI_Timer < 360)
+            if(AI_Timer < 360 && AI_Timer > 30)
             {
-                AI_Timer++;
                 NPC.Move(player.Center, NPC.Distance(player.Center) / rand);
             }
-            else
+            else if (AI_Timer > 360)
             {
                 NPC.velocity *= 0.98f;
 

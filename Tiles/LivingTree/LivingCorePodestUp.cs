@@ -10,6 +10,7 @@ using System;
 using System.Drawing.Drawing2D;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
@@ -62,6 +63,8 @@ namespace DivergencyMod.Tiles.LivingTree
                     Projectile.NewProjectile(null, pos, speed, ModContent.ProjectileType<PodestProjectile>(), 0, 0);
                     player.GetModPlayer<CorePuzzle>().LivingCoreAmount--;
                     Main.tileLighted[Type] = true;
+                    SoundEngine.PlaySound(SoundID.NPCDeath44 with { Volume = 1f, Pitch = Main.rand.NextFloat(0.5f, 2f), MaxInstances = 400 });
+
 
 
                 }
