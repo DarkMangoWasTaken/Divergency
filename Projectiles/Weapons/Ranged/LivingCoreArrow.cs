@@ -14,8 +14,8 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
         {
             Projectile.aiStyle = Terraria.ID.ProjAIStyleID.Arrow;
             Projectile.damage = 10;
-            Projectile.width = 14;
-            Projectile.height = 14;
+            Projectile.width = 18;
+            Projectile.height = 18;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
             Projectile.arrow = true;
@@ -30,6 +30,18 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
 
         public override void AI()
         {
+            if (Projectile.ai[1] == 2)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Vector2 dir = Main.rand.NextVector2Unit() * 0.1f;
+                    Dust.NewDust(Projectile.Center, 2, 2, Terraria.ID.DustID.YellowStarDust, dir.X, dir.Y, newColor: new Color(11, 46, 59));
+                }
+            }
+
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0.8f, 1f);
+            Utils.PlotTileLine(Projectile.position, Projectile.position - (Projectile.velocity.SafeNormalize(Vector2.Zero) * 24f), 0, DelegateMethods.CastLight);
+
             if (Projectile.ai[1] == 0)
             {
                 if (Projectile.ai[0] < 0)
@@ -56,9 +68,9 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
 
                         if (Projectile.rotation == 0)
                         {
-                            Projectile.ai[0] = 16;
+                            Projectile.ai[0] = 300;
                             Projectile.ai[1] = 1;
-                            Projectile.ai[2] = 6;
+                            Projectile.ai[2] = 12;
 
                             Projectile.tileCollide = true; // might not want this, idk
                         }
@@ -69,15 +81,22 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
             {
                 if (Projectile.ai[2] == 0)
                 {
+                    Mod.Logger.Info(Projectile.ai[0]);
                     Projectile.ai[0]--;
 
                     Mod.Logger.Info(Projectile.rotation);
 
-                    Projectile.position -= (Projectile.rotation - MathF.PI / 2).ToRotationVector2() * 20f; // size
+                    Projectile.position -= (Projectile.rotation - MathF.PI / 2).ToRotationVector2() * 24f; // size
 
-                    Projectile.rotation += Projectile.ai[0]/4;
+                    Projectile.rotation += 1; //Projectile.ai[0]/4;
 
-                    Projectile.position += (Projectile.rotation - MathF.PI / 2).ToRotationVector2() * 20f; // size
+                    Projectile.position += (Projectile.rotation - MathF.PI / 2).ToRotationVector2() * 24f; // size
+
+                    for (int i = 0; i < 6; i++)
+                    {
+                        Vector2 dir = Main.rand.NextVector2Unit() * Main.rand.NextFloat();
+                        Dust.NewDust(Projectile.position, 2, 2, Terraria.ID.DustID.YellowStarDust, dir.X, dir.Y, newColor: new Color(11, 46, 59));
+                    }
 
                     if (Projectile.ai[0] == 0)
                     {
@@ -100,6 +119,8 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
                     Projectile.ai[2]--;
             }
             //else if (Projectile.ai[1] == 2)
+
+
         }
 
         public NPC FindClosestNPC(float maxDetectDistance)
@@ -145,6 +166,17 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
+            for (int i = 0; i < 10; i++)
+            {
+                Vector2 dir = (-oldVelocity).RotatedBy(Main.rand.NextFloat()* MathF.PI - MathF.PI/2);
+                dir.Normalize();
+                dir *= 0.3f;
+                Dust.NewDust(Projectile.position+oldVelocity, 2, 2, Terraria.ID.DustID.YellowStarDust, dir.X, dir.Y, newColor: new Color(11, 46, 59));
+            }
+
+            if (Projectile.ai[1] != 0)
+                return true;
+
             Projectile.ai[0] = -1;
 
             Projectile.position += oldVelocity;
