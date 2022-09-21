@@ -155,7 +155,7 @@ namespace DivergencyMod
                 }
             }
 
-            if (BranchReload == 0 || BranchReload == 1 || BranchReload == 2)
+            if ((BranchReload == 0 || BranchReload == 1 || BranchReload == 2) && Player.HasItem(ModContent.ItemType<NaturesWrath>()))
             {
                 BranchCooldown--;
             }
@@ -168,7 +168,7 @@ namespace DivergencyMod
                 }
 
                 BranchReload++;
-                BranchCooldown = 300;
+                BranchCooldown = 150;
 
                 //ParticleManager.NewParticle(Player.position, Player.velocity* 0, ParticleManager.NewInstance<TestParticle>(), Color.Green, 1f, 0);
                 SoundEngine.PlaySound(SoundID.NPCHit3);

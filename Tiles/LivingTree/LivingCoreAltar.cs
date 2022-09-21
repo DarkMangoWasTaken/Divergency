@@ -16,6 +16,7 @@ using Terraria.GameContent;
 using IL.Terraria.DataStructures;
 using System;
 using System.Collections.Generic;
+using DivergencyMod.Items.Weapons.Melee.LivingCoreSword;
 
 namespace DivergencyMod.Tiles.LivingTree
 {
@@ -37,6 +38,7 @@ namespace DivergencyMod.Tiles.LivingTree
             Main.tileAxe[Type] = false;
             Main.tileBrick[Type] = false;
             Main.tileHammer[Type] = false;
+            Main.tileAlch[Type] = false;
             
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
 
@@ -59,10 +61,26 @@ namespace DivergencyMod.Tiles.LivingTree
             player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 50;
 
             NPC.NewNPC(null, left * 16 + 30, top * 16, ModContent.NPCType<AltarHandler1>());
-            WorldGen.PlaceTile(left  - 10, top , ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left  + 10, top , ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 10, top -1, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 10, top-1, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 10, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 11, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 12, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 13, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 14, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 15, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 16, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 17, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 18, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 19, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left - 74, top - 20, ModContent.TileType<LivingCoreWoodTile>());
+
+
+
+
+
+
+
+
+
 
 
             return true;
@@ -133,6 +151,13 @@ namespace DivergencyMod.Tiles.LivingTree
                     Main.tileLighted[Type] = false;
                     Main.tileAxe[Type] = false;
                     Main.tileBrick[Type] = false;
+                }
+                if (Main.tileAlch[Type])
+                {
+                    WorldGen.KillTile(left - 74, top - 10);
+                  
+                    Main.tileAlch[Type] = false;
+
                 }
 
 
@@ -507,12 +532,20 @@ namespace DivergencyMod.Tiles.LivingTree
         }
         public override void OnKill()
         {
+            if (!DownedHelper.ClearedAltar)
+            {
+                Item.NewItem(null, NPC.position, ModContent.ItemType<LivingCoreSword>());
+            }
             NPC.SetEventFlagCleared(ref DownedHelper.ClearedAltar, -1);
             Main.NewText("Cleared!");
             Main.tileLighted[ModContent.TileType<LivingCoreAltarTile1>()] = false;
             Main.tileAxe[ModContent.TileType<LivingCoreAltarTile1>()] = false;
             Main.tileBrick[ModContent.TileType<LivingCoreAltarTile1>()] = false;
             Main.tileHammer[ModContent.TileType<LivingCoreAltarTile1>()] = false;
+
+            Main.tileAlch[ModContent.TileType<LivingCoreAltarTile1>()] = true;
+
+
 
         }
 

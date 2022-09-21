@@ -219,7 +219,7 @@ namespace DivergencyMod.Items.Weapons.Melee.NaturesWrath
         {
             if (StepSis != null)
             {
-                StepSis.StrikeNPC(20, 0f, 0, false, false, false);
+                StepSis.StrikeNPC(40, 0f, 0, false, false, false);
             }
             const int numberDust = 40;
 

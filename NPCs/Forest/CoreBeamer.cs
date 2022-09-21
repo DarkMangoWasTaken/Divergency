@@ -333,7 +333,7 @@ namespace DivergencyMod.NPCs.Forest
         {
             DisplayName.SetDefault("get phucked loser");
             Main.projFrames[Projectile.type] = 1;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 25;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 25; // in SetStaticDefaults()
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -403,7 +403,6 @@ namespace DivergencyMod.NPCs.Forest
 
         }
         public TrailRenderer prim;
-
         public TrailRenderer prim2;
         public override bool PreDraw(ref Color lightColor)
         {
