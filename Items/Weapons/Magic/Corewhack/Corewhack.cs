@@ -30,12 +30,12 @@ namespace DivergencyMod.Items.Weapons.Magic.Corewhack
             Item.damage = 12;
             Item.crit = 0;
             Item.shootSpeed = 12f;
-            Item.mana = 3;
+            Item.mana = 10;
             Item.width = 52;
             Item.height = 84;
-            Item.useTime = 36;
-            Item.useAnimation = 36;
-            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 16;
+            Item.useAnimation = 16;
+            Item.useStyle = ItemUseStyleID.HoldUp; //ItemUseStyleID.Swing;
 
             Item.shoot = ModContent.ProjectileType<Projectiles.Weapons.Magic.Minions.Corewhack_Summon>();
 
