@@ -2,6 +2,8 @@
 using Terraria.ModLoader;
 using Terraria;
 using System;
+using ParticleLibrary;
+using DivergencyMod.Dusts.Particles;
 
 namespace DivergencyMod.Projectiles.Weapons.Ranged
 {
@@ -107,6 +109,8 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
                         float rot = 0;
                         if (closestNPC != null)
                             rot = (closestNPC.position - Projectile.position).ToRotation();
+                        else
+                            rot = Main.rand.NextFloat() * MathF.PI*2;
 
                         Projectile.rotation = rot;
 
@@ -135,7 +139,7 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
 
                 if (target.CanBeChasedBy())
                 {
-                    float sqrDistanceToTarget = Vector2.DistanceSquared(target.Center, Projectile.Center); // maby proritise boss * (target.boss ? 1 : 10);
+                    float sqrDistanceToTarget = Vector2.DistanceSquared(target.Center, Projectile.Center) * (target.boss ? 0.1f : 1);
 
                     if (sqrDistanceToTarget < sqrMaxDetectDistance)
                     {
