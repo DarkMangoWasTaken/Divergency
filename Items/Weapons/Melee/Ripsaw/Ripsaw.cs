@@ -1,5 +1,6 @@
 ﻿using DivergencyMod;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -56,6 +57,7 @@ namespace DivergencyMod.Items.Weapons.Melee.Ripsaw
 
     public class RipsawPro : ModProjectile
     {
+        public float rot ;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Ripsaw");
@@ -81,12 +83,17 @@ namespace DivergencyMod.Items.Weapons.Melee.Ripsaw
 
         public override void AI()
         {
+            rot += 0.2f;
+    
             Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Torch, Projectile.velocity.X * 0.2f, Projectile.velocity.Y * 0.2f, 0, default, 1.2f);
             dust.noGravity = true;
+            Player player = Main.player[Projectile.owner];
+            //  Projectile.rotation = Projectile.rotation + MathHelper.ToRadians(90);   
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+
             Player player = Main.player[Projectile.owner];
             player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 2;
 
@@ -107,6 +114,24 @@ namespace DivergencyMod.Items.Weapons.Melee.Ripsaw
                 //PitchVariance = 0.1f,
                 //MaxInstances = 3,
             //});
+        }
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Player player = Main.player[Projectile.owner];
+
+            Texture2D texture = ModContent.Request<Texture2D>("DivergencyMod/Items/Weapons/Melee/Ripsaw/Saw").Value;
+            int frameHeight = texture.Height / Main.projFrames[Projectile.type];
+            int startY = frameHeight * Projectile.frame;
+
+            Rectangle sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
+            Vector2 origin = sourceRectangle.Size() / 2f;
+            Color drawColor = Projectile.GetAlpha(lightColor);
+
+            Main.EntitySpriteDraw(texture,
+                Projectile.Center - Main.screenPosition + new Vector2(20f * player.direction, Projectile.gfxOffY),
+                sourceRectangle, drawColor, rot, origin, Projectile.scale, SpriteEffects.None, 0);
+
+            return true;
         }
     }
 }
