@@ -37,9 +37,8 @@ namespace DivergencyMod.NPCs.Forest
             NPC.height = 40;
             NPC.aiStyle = -1;
             NPC.damage = 30;
-            NPC.life = 40;
             NPC.defense = 2;
-            NPC.lifeMax = 1;
+            NPC.lifeMax = 40;
             NPC.HitSound = SoundID.NPCHit2;
             NPC.DeathSound = SoundID.LucyTheAxeTalk;
 
