@@ -80,6 +80,7 @@ namespace DivergencyMod.Projectiles.Weapons.Magic.Minions
             }
         }
     }
+    /*
     public class Corewhack_Summon_Shot : ModProjectile
     {
         public override void SetStaticDefaults()
@@ -98,5 +99,5 @@ namespace DivergencyMod.Projectiles.Weapons.Magic.Minions
             Projectile.tileCollide = true;
             Projectile.ignoreWater = true;
         }
-    }
+    }*/
 }
