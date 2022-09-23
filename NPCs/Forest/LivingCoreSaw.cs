@@ -37,6 +37,7 @@ namespace DivergencyMod.NPCs.Forest
             NPC.height = 40;
             NPC.aiStyle = -1;
             NPC.damage = 30;
+            NPC.life = 40;
             NPC.defense = 2;
             NPC.lifeMax = 1;
             NPC.HitSound = SoundID.NPCHit2;
@@ -52,19 +53,9 @@ namespace DivergencyMod.NPCs.Forest
 
             NPC.direction = (Main.rand.Next(3)*2)-1; // left(-1)/right(1)
 
+            NPC.knockBackResist = 0;
+
             NPC.behindTiles = true;
-
-            NPC.dontTakeDamage = true;
-        }
-
-        public override bool? CanBeHitByProjectile(Projectile projectile)
-        {
-            return false;
-        }
-
-        public override bool? CanBeHitByItem(Player player, Item item)
-        {
-            return false;
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
