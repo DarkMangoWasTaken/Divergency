@@ -2,6 +2,7 @@ using DivergencyMod.Base;
 using DivergencyMod.Bosses.Forest;
 using DivergencyMod.Dusts.Particles;
 using DivergencyMod.Dusts.Particles.CorePuzzleParticles;
+using DivergencyMod.Events.LivingCore;
 using DivergencyMod.Helpers;
 using DivergencyMod.Tiles.LivingTree;
 using Microsoft.Xna.Framework;
@@ -269,7 +270,8 @@ namespace DivergencyMod.NPCs.Forest
         }
         public override void OnKill()
         {
-            Projectile.NewProjectile(null, NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<AltarKiller>(), 0, 0);
+            LivingCoreEvent.AddProgress(1);
+            // TODO: Netsync progress signal
 
             int goreType = Mod.Find<ModGore>("CorelingGore").Type;
 
@@ -280,47 +282,7 @@ namespace DivergencyMod.NPCs.Forest
         }
 
     }
-    public class AltarKiller : ModProjectile
-    {
-        public override string Texture => "DivergencyMod/Tiles/LivingTree/LivingCore";
 
-        public override void SetDefaults()
-        {
-            Projectile.height = Projectile.width = 10;
-            Projectile.timeLeft = 300;
-            Projectile.alpha = 255;
-            Projectile.friendly = true;
-        }
-        public override void AI()
-        {
-            for (int i = 0; i < Main.maxNPCs; i++)
-            {
-                NPC altar = Main.npc[i];
-                if (altar.type == ModContent.NPCType<AltarHandler1>())
-                {
-                    Projectile.Center = altar.Center;
-
-                    if (Projectile.Hitbox.Intersects(altar.Hitbox))
-                    {
-                        if (altar.life == 1)
-                        {
-                            altar.dontTakeDamage = false;
-                            altar.immortal = false;
-                            altar.StrikeNPC(1, 0, 0);
-                          
-                        }
-                        else
-                        {
-                            altar.life--;
-
-                        }
-                        Projectile.Kill();
-                    }
-                }
-            }
-            
-        }
-    }
    public class LivingCoreBeamerProj : ModProjectile
     {
         public float timer;
@@ -426,6 +388,3 @@ namespace DivergencyMod.NPCs.Forest
         }
     }
 }
-
-
-
