@@ -270,9 +270,6 @@ namespace DivergencyMod.NPCs.Forest
         }
         public override void OnKill()
         {
-            LivingCoreEvent.AddProgress(1);
-            // TODO: Netsync progress signal
-
             int goreType = Mod.Find<ModGore>("CorelingGore").Type;
 
             if (Main.netMode != NetmodeID.Server)

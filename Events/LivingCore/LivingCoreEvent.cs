@@ -85,6 +85,7 @@ namespace DivergencyMod.Events.LivingCore
 
         public static void AddProgress(int amount)
         {
+            return;
             if (Room != null)
                 Room.Kills += amount;
         }

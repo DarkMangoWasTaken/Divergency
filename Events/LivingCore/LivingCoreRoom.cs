@@ -8,18 +8,24 @@ using ParticleLibrary;
 using System;
 using Terraria;
 using Terraria.ModLoader;
+using System.Collections.Generic;
 
 namespace DivergencyMod.Events.LivingCore
 {
     public abstract class LivingCoreRoom
     {
+        List<NPC> currentNPCs = new List<NPC>();
+
         public int Kills = 0;
-        public float Progress => (float)Kills / (CurWaveObject != null ? CurWaveObject.enemies.Length : 999);
+        public float Progress => (float)TotalKills / (TotalEnemies);
         private int KillsRemaining { get => CurWaveObject != null ? CurWaveObject.enemies.Length - Kills : 0; }
 
         private int Timer = 0;
         private int SpawnTimer = 0;
         private int CurWave = 0;
+
+        private int TotalEnemies = 0;
+        private int TotalKills = 0;
 
         private bool Intermission = false;
 
@@ -31,6 +37,21 @@ namespace DivergencyMod.Events.LivingCore
             "DivergencyMod/Tiles/LivingTree/LivingCoreAltar3",
             "DivergencyMod/Tiles/LivingTree/LivingCoreAltar4"
         };
+
+        public LivingCoreRoom()
+        {
+            TotalEnemies = 0;
+
+            int curWaveTest = 1;
+            Wave wave = getWave(curWaveTest);
+
+            while (wave != null)
+            {
+                TotalEnemies += wave.enemies.Length;
+                curWaveTest++;
+                wave = getWave(curWaveTest);
+            }
+        }
 
         public virtual int Music { get { return 0; } }
 
@@ -50,7 +71,7 @@ namespace DivergencyMod.Events.LivingCore
 
             Rectangle textPosition = new(LivingCoreEvent.X * 16 + 24, LivingCoreEvent.Y * 16 + 24, 0, 0);
 
-            Console.WriteLine(Timer + " | " + SpawnTimer + " | " + CurWave + " | " + KillsRemaining);
+            Console.WriteLine(Timer + " | " + SpawnTimer + " | " + CurWave + " | " + KillsRemaining + " | " + TotalEnemies);
 
             if (SpawnTimer == 0 && KillsRemaining == 0)
             {
@@ -93,7 +114,7 @@ namespace DivergencyMod.Events.LivingCore
                 {
                     Vector2 spawnPosition = LivingCoreEvent.Position + instance.SpawnOffset;
 
-                    NPC.NewNPCDirect(null, spawnPosition, instance.NPCID);
+                    currentNPCs.Add(NPC.NewNPCDirect(null, spawnPosition, instance.NPCID));
 
                     ParticleManager.NewParticle<ResetParticle>(spawnPosition, Vector2.Zero, Color.White, 1f, 1.05f);
                 }
@@ -133,6 +154,23 @@ namespace DivergencyMod.Events.LivingCore
                 if (player.active && player.dead)
                 {
                     LivingCoreEvent.End();
+                    return;
+                }
+            }
+
+            clearList();
+        }
+
+        private void clearList()
+        {
+            foreach (NPC npc in currentNPCs)
+            {
+                if (npc.active == false)
+                {
+                    currentNPCs.Remove(npc);
+                    clearList();
+                    Kills++;
+                    TotalKills++;
                     return;
                 }
             }
