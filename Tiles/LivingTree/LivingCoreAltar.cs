@@ -75,6 +75,26 @@ namespace DivergencyMod.Tiles.LivingTree
 
 
 
+            WorldGen.PlaceTile(left + 74, top, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top -1, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top - 2, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top - 3, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top - 4, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top - 5, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top - 6, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top - 7, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top - 8, ModContent.TileType<LivingCoreWoodTile>());
+
+            WorldGen.PlaceTile(left + 74, top + 1, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top + 2, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top + 3, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top + 4, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top + 5, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top + 6, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top + 7, ModContent.TileType<LivingCoreWoodTile>());
+            WorldGen.PlaceTile(left + 74, top + 8, ModContent.TileType<LivingCoreWoodTile>());
+
+
 
 
 
@@ -99,17 +119,58 @@ namespace DivergencyMod.Tiles.LivingTree
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
+            int left = i - Main.tile[i, j].TileFrameX / 18;
+            int top = j - Main.tile[i, j].TileFrameY / 18;
             Texture2D itemglow = ModContent.Request<Texture2D>("DivergencyMod/Effects/LivingCoreGlow").Value;
             Texture2D tiletex = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar").Value;
             Texture2D tiletex1 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar4").Value;
             Texture2D tiletex2 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar3").Value;
             Texture2D tiletex3 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar2").Value;
             Texture2D tiletex4 = ModContent.Request<Texture2D>("DivergencyMod/Tiles/LivingTree/LivingCoreAltar1").Value;
+            for (int ii = 0; ii < Main.maxPlayers; ii++)
+            {
+               
+                Player player = Main.player[ii];
+                if (player.dead)
+                {
+
+                  
+                    WorldGen.KillTile(left - 74, top - 10);
+                    WorldGen.KillTile(left - 74, top - 11);
+                    WorldGen.KillTile(left - 74, top - 12);
+                    WorldGen.KillTile(left - 74, top - 13);
+                    WorldGen.KillTile(left - 74, top - 14);
+                    WorldGen.KillTile(left - 74, top - 15);
+                    WorldGen.KillTile(left - 74, top - 16);
+                    WorldGen.KillTile(left - 74, top - 17);
+                    WorldGen.KillTile(left - 74, top - 18);
+                    WorldGen.KillTile(left - 74, top - 19);
+                    WorldGen.KillTile(left - 74, top - 20);
 
 
 
-            int left = i - Main.tile[i, j].TileFrameX / 18;
-            int top = j - Main.tile[i, j].TileFrameY / 18;
+                    WorldGen.KillTile(left + 74, top);
+                    WorldGen.KillTile(left + 74, top - 1);
+                    WorldGen.KillTile(left + 74, top - 2);
+                    WorldGen.KillTile(left + 74, top - 3);
+                    WorldGen.KillTile(left + 74, top - 4);
+                    WorldGen.KillTile(left + 74, top - 5);
+                    WorldGen.KillTile(left + 74, top - 6);
+                    WorldGen.KillTile(left + 74, top - 7);
+
+                    WorldGen.KillTile(left + 74, top + 1);
+                    WorldGen.KillTile(left + 74, top + 2);
+                    WorldGen.KillTile(left + 74, top + 3);
+                    WorldGen.KillTile(left + 74, top + 4);
+                    WorldGen.KillTile(left + 74, top + 5);
+                    WorldGen.KillTile(left + 74, top + 6);
+                    WorldGen.KillTile(left + 74, top + 7);
+                    WorldGen.KillTile(left + 74, top + 8);
+                }
+
+            }
+
+           
             Tile tile = Framing.GetTileSafely(i, j);
             Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             
@@ -312,7 +373,8 @@ namespace DivergencyMod.Tiles.LivingTree
 
 
 
-                
+
+
 
         }
 
@@ -326,7 +388,10 @@ namespace DivergencyMod.Tiles.LivingTree
         public bool stoppls3 = false;
         private bool wave3;
         private bool wave4;
-
+        public override bool CheckActive()
+        {
+            return false;
+        }
         public override void AI()
         {
             timer++;
