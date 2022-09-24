@@ -29,7 +29,7 @@ namespace DivergencyMod
 		public override int Music => MusicLoader.GetMusicSlot("DivergencyMod/Sounds/Music/LivingCoreTheme");
 
 		// Sets how the Scene Effect associated with this biome will be displayed with respect to vanilla Scene Effects. For more information see SceneEffectPriority & its values.
-		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeLow; // We have set the SceneEffectPriority to be BiomeLow for purpose of example, however default behavour is BiomeLow.
+		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh; // We have set the SceneEffectPriority to be BiomeLow for purpose of example, however default behavour is BiomeLow.
 
 		// Populate the Bestiary Filter
 		public override string BestiaryIcon => base.BestiaryIcon;
@@ -47,7 +47,7 @@ namespace DivergencyMod
 		public override bool IsBiomeActive(Player player)
 		{
 			// Limit the biome height to be underground in either rock layer or dirt layer
-			return (player.ZoneRockLayerHeight || player.ZoneDirtLayerHeight) &&
+			return (player.ZoneRockLayerHeight || player.ZoneDirtLayerHeight || player.ZoneOverworldHeight) &&
 				// Check how many tiles of our biome are present, such that biome should be active
 				ModContent.GetInstance<BiomeTileCount>().BlockCount >= 100;
 		}
