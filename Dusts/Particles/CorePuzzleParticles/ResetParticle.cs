@@ -26,7 +26,8 @@ namespace DivergencyMod.Dusts.Particles
         {
             rotation = velocity.ToRotation();
 
-            Scale *= 1.3f;
+            // Allows custom scaling upon spawn
+            Scale *= ai[0] != 0f ? ai[0] : 1.3f;
             if (Scale <= 0f)
                 active = false;
         }

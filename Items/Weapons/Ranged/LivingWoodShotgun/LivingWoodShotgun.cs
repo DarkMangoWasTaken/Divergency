@@ -1,3 +1,4 @@
+using DivergencyMod.Helpers;
 using DivergencyMod.Items.Ammo;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -34,7 +35,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingWoodShotgun
 
             Item.useAmmo = ModContent.ItemType<WoodenBullet>();
             Item.shoot = ModContent.ProjectileType<LivingWoodBullet>();
-            Item.shootSpeed = 19f;
+            Item.shootSpeed = 12f;
 
             Item.width = Item.height = 16;
             Item.scale = 1f;
@@ -103,9 +104,8 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingWoodShotgun
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Forest Ripper");
-            DisplayName.AddTranslation((int)CultureName.German, "Waldreiﬂer");
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5; // The length of old position to be recorded
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 0; // The recording mode
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 35; // The length of old position to be recorded
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2; // The recording mode
         }
 
         public override void SetDefaults()
@@ -114,12 +114,13 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingWoodShotgun
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            DrawOriginOffsetX = 8;
+          //  DrawOriginOffsetX = 8;
             Projectile.width = Projectile.height = 4;
+            Projectile.scale = 1.5f;
 
             Projectile.ignoreWater = false;
             Projectile.tileCollide = true;
-            Projectile.timeLeft = 180;
+            Projectile.timeLeft = 400;
             Projectile.aiStyle = 0;
             Projectile.extraUpdates = 2;
         }
@@ -130,10 +131,8 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingWoodShotgun
         {
             for (int i = 0; i < 2; i++)
             {
-                Dust dust = Dust.NewDustDirect(Projectile.position - Projectile.velocity, Projectile.width, Projectile.height, DustID.WoodFurniture, 0, 0, 100, Color.SandyBrown, 1f);
-                dust.noGravity = true;
-                dust.velocity *= 2f;
-                dust = Dust.NewDustDirect(Projectile.position - Projectile.velocity, Projectile.width, Projectile.height, DustID.WoodFurniture, 0f, 0f, 1000, Color.SandyBrown, 1f);
+             
+              //  dust = Dust.NewDustDirect(Projectile.position - Projectile.velocity, Projectile.width, Projectile.height, DustID.WoodFurniture, 0f, 0f, 1000, Color.SandyBrown, 1f);
             }
         }
 
@@ -146,7 +145,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingWoodShotgun
             }
 
             Vector2 move = Vector2.Zero;
-            float distance = 100f;
+            float distance = 200f;
 
             for (int k = 0; k < 200; k++)
             {
@@ -164,8 +163,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingWoodShotgun
             }
             if (target)
             {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.ChlorophyteWeapon, Vector2.Zero, 0, default, 1.5f);
-                dust.noGravity = true;
+              
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(90);
                 Projectile.spriteDirection = Projectile.direction;
                 if (Projectile.localAI[0] == 0f)
@@ -189,8 +187,8 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingWoodShotgun
             {
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(90);
                 Projectile.spriteDirection = Projectile.direction;
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.ChlorophyteWeapon, Vector2.Zero, 0, default, 1.5f);
-                dust.noGravity = true;
+              //  Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.ChlorophyteWeapon, Vector2.Zero, 0, default, 1.5f);
+              //  dust.noGravity = true;
             }
         }
 
@@ -203,19 +201,26 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingWoodShotgun
             }
         }
 
+       public TrailRenderer prim;
+        public TrailRenderer prim2;
         public override bool PreDraw(ref Color lightColor)
         {
-            Main.instance.LoadProjectile(Projectile.type);
-            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-
-            // Redraw the projectile with the color not influenced by light
-            Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, Projectile.height * 0.5f);
-            for (int k = 0; k < Projectile.oldPos.Length; k++)
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
+            if (prim == null)
             {
-                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
-                Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(25f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 1f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = Projectile.Size / 2f;
             }
+            if (prim2 == null)
+            {
+                prim2 = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(18f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim2.drawOffset = Projectile.Size / 2f;
+            }
+            prim.Draw(Projectile.oldPos);
+            prim2.Draw(Projectile.oldPos);
+
+
             return true;
         }
     }

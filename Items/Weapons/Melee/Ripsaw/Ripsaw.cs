@@ -126,10 +126,18 @@ namespace DivergencyMod.Items.Weapons.Melee.Ripsaw
             Rectangle sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
             Vector2 origin = sourceRectangle.Size() / 2f;
             Color drawColor = Projectile.GetAlpha(lightColor);
-
-            Main.EntitySpriteDraw(texture,
-                Projectile.Center - Main.screenPosition + new Vector2(20f * player.direction, Projectile.gfxOffY),
-                sourceRectangle, drawColor, rot, origin, Projectile.scale, SpriteEffects.None, 0);
+            if (player.direction == 1)
+            {
+                Main.EntitySpriteDraw(texture,
+                Projectile.Center - Main.screenPosition + new Vector2(5 * player.direction, Projectile.gfxOffY),
+                sourceRectangle, drawColor, rot + Projectile.velocity.ToRotation(), origin, Projectile.scale, SpriteEffects.None, 0);
+            }
+            else
+            {
+                Main.EntitySpriteDraw(texture,
+                Projectile.Center - Main.screenPosition + new Vector2(13 * player.direction, Projectile.gfxOffY),
+                sourceRectangle, drawColor, rot + Projectile.velocity.ToRotation(), origin, Projectile.scale, SpriteEffects.None, 0);
+            }
 
             return true;
         }

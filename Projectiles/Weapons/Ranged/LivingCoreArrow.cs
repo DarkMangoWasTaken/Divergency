@@ -4,6 +4,9 @@ using Terraria;
 using System;
 using ParticleLibrary;
 using DivergencyMod.Dusts.Particles;
+using Terraria.ID;
+using DivergencyMod.Helpers;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DivergencyMod.Projectiles.Weapons.Ranged
 {
@@ -12,6 +15,12 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
         private static float size = 40f;
         private static float maxRotateVal = 0.1f;
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Living Core Blast   ");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
         public override void SetDefaults()
         {
             Projectile.aiStyle = Terraria.ID.ProjAIStyleID.Arrow;
@@ -22,6 +31,8 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
             Projectile.friendly = true;
             Projectile.arrow = true;
             Projectile.tileCollide = true;
+            Projectile.penetrate = 2;
+
 
             Projectile.timeLeft = 240;
 
@@ -37,7 +48,12 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
                 for (int i = 0; i < 4; i++)
                 {
                     Vector2 dir = Main.rand.NextVector2Unit() * 0.1f;
-                    Dust.NewDust(Projectile.Center, 2, 2, Terraria.ID.DustID.YellowStarDust, dir.X, dir.Y, newColor: new Color(11, 46, 59));
+            
+
+                  ParticleManager.NewParticle(Projectile.Center, dir * 60, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+
+
+                    
                 }
             }
 
@@ -97,7 +113,6 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
                     for (int i = 0; i < 6; i++)
                     {
                         Vector2 dir = Main.rand.NextVector2Unit() * Main.rand.NextFloat();
-                        Dust.NewDust(Projectile.position, 2, 2, Terraria.ID.DustID.YellowStarDust, dir.X, dir.Y, newColor: new Color(11, 46, 59));
                     }
 
                     if (Projectile.ai[0] == 0)
@@ -167,15 +182,39 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
             AI();
             return false;
         }
+        public TrailRenderer prim;
+        public TrailRenderer prim2;
+        public override bool PreDraw(ref Color lightColor)
+        {
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/MotionTrail").Value;
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
+            if (prim == null)
+            {
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(10f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 1f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = Projectile.Size / 2f;
+            }
+            if (prim2 == null)
+            {
+                prim2 = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(5f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 1f * (float)Math.Pow(1f - p, 2f));
+                prim2.drawOffset = Projectile.Size / 2f;
+            }
+            prim.Draw(Projectile.oldPos);
+            prim2.Draw(Projectile.oldPos);
 
-        public override bool OnTileCollide(Vector2 oldVelocity)
+
+            return true;
+        }
+    
+
+
+    public override bool OnTileCollide(Vector2 oldVelocity)
         {
             for (int i = 0; i < 10; i++)
             {
                 Vector2 dir = (-oldVelocity).RotatedBy(Main.rand.NextFloat()* MathF.PI - MathF.PI/2);
                 dir.Normalize();
                 dir *= 0.3f;
-                Dust.NewDust(Projectile.position+oldVelocity, 2, 2, Terraria.ID.DustID.YellowStarDust, dir.X, dir.Y, newColor: new Color(11, 46, 59));
+                ParticleManager.NewParticle(Projectile.Center, dir * 60, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
             }
 
             if (Projectile.ai[1] != 0)
@@ -190,4 +229,6 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
             return false;
         }
     }
+
+
 }

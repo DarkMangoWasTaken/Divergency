@@ -42,8 +42,8 @@ namespace DivergencyMod.NPCs.Forest
         }
         public override void SetDefaults()
         {
-            NPC.width = 120; // The width of the NPC's hitbox (in pixels)
-            NPC.height = 120; // The height of the NPC's hitbox (in pixels)
+            NPC.width = 60; // The width of the NPC's hitbox (in pixels)
+            NPC.height = 60; // The height of the NPC's hitbox (in pixels)
             NPC.aiStyle = -1; // This NPC has a completely unique AI, so we set this to -1. The default aiStyle 0 will face the player, which might conflict with custom AI code.
             NPC.damage = 30; // The amount of damage that this NPC deals
             NPC.defense = 2; // The amount of defense that this NPC has
