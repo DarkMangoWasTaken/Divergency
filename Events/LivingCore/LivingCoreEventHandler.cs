@@ -30,6 +30,7 @@ namespace DivergencyMod.Events.LivingCore
 			NPC.boss = true;
 			NPC.BossBar = ModContent.GetInstance<LivingCoreProgressBar>();
 			NPC.ShowNameOnHover = false;
+			NPC.alpha = 255;
 		}
 
 		public override void AI()
