@@ -42,7 +42,7 @@ namespace DivergencyMod.Tiles.LivingTree
 			int left = i - Main.tile[i, j].TileFrameX / 18;
 			int top = j - Main.tile[i, j].TileFrameY / 18;
 
-			LivingCoreEvent.Begin(left, top, LivingCoreEvent.LivingCoreAltarRoom.RoomOne);
+			LivingCoreEvent.Begin(left, top, new Events.LivingCore.Rooms.FirstRoom());
 			// TODO: Netsync begin signal
 
             return true;

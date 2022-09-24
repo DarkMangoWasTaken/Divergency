@@ -24,26 +24,21 @@ namespace DivergencyMod.Events.LivingCore
         public static int X { get; private set; }
         public static int Y { get; private set; }
         public static Vector2 Position { get => new(X * 16f, Y * 16f); }
-        public static LivingCoreAltarRoom Room { get; private set; }
-
-        public enum LivingCoreAltarRoom
-        {
-            RoomOne
-        }
+        public static LivingCoreRoom Room { get; private set; }
 
         public static void Update()
         {
-            if (Room == LivingCoreAltarRoom.RoomOne)
-                LivingCoreRoom1.Update();
+            if (Room != null)
+                Room.Update();
         }
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            if (Room == LivingCoreAltarRoom.RoomOne)
-                LivingCoreRoom1.Draw(spriteBatch);
+            if (Room != null)
+                Room.Draw(spriteBatch);
         }
 
-        public static void Begin(int i, int j, LivingCoreAltarRoom room = LivingCoreAltarRoom.RoomOne)
+        public static void Begin(int i, int j, LivingCoreRoom room)
         {
             if (Active)
                 return;
@@ -62,15 +57,14 @@ namespace DivergencyMod.Events.LivingCore
 
             int left = i - Main.tile[i, j].TileFrameX / 18;
             int top = j - Main.tile[i, j].TileFrameY / 18;
-
-            if (room == LivingCoreAltarRoom.RoomOne)
-                LivingCoreRoom1.Begin(left, top);
+            
+            room.Begin(left, top);
         }
 
         public static void End()
         {
-            if (Room == LivingCoreAltarRoom.RoomOne)
-                LivingCoreRoom1.End();
+            if (Room != null)
+                Room.End();
 
             Active = false;
             Altar = default;
@@ -91,20 +85,20 @@ namespace DivergencyMod.Events.LivingCore
 
         public static void AddProgress(int amount)
         {
-            if (Room == LivingCoreAltarRoom.RoomOne)
-                LivingCoreRoom1.Kills += amount;
+            if (Room != null)
+                Room.Kills += amount;
         }
 
         public static void RemoveProgress(int amount)
         {
-            if (Room == LivingCoreAltarRoom.RoomOne)
-                LivingCoreRoom1.Kills -= amount;
+            if (Room != null)
+                Room.Kills -= amount;
         }
 
         public static float GetProgress()
         {
-            if (Room == LivingCoreAltarRoom.RoomOne)
-                return LivingCoreRoom1.Progress;
+            if (Room != null)
+                return Room.Progress;
             return 0f;
         }
     }

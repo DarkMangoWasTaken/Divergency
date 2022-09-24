@@ -21,8 +21,10 @@ namespace DivergencyMod.Events.LivingCore
 			NPC.immortal = true;
 			NPC.friendly = false;
 			NPC.dontTakeDamage = true;
-			if (LivingCoreEvent.Room == LivingCoreEvent.LivingCoreAltarRoom.RoomOne)
-				Music = MusicLoader.GetMusicSlot("DivergencyMod/Sounds/Music/CoreBattle");
+
+			if (LivingCoreEvent.Room != null)
+				Music = LivingCoreEvent.Room.Music;
+
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.boss = true;
