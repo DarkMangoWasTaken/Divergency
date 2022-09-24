@@ -35,7 +35,7 @@ namespace DivergencyMod.Items.Weapons.Magic.Corewhack
             Item.height = 84;
             Item.useTime = 16;
             Item.useAnimation = 16;
-            Item.useStyle = ItemUseStyleID.HoldUp; //ItemUseStyleID.Swing;
+            Item.useStyle = ItemUseStyleID.RaiseLamp; //ItemUseStyleID.Swing;
 
             Item.shoot = ModContent.ProjectileType<Projectiles.Weapons.Magic.Minions.Corewhack_Summon>();
 
@@ -53,7 +53,10 @@ namespace DivergencyMod.Items.Weapons.Magic.Corewhack
 
             return false;
         }
-
+        public override Vector2? HoldoutOffset()
+        {
+            return new Vector2(-10, -30);
+        }
     }
 
 

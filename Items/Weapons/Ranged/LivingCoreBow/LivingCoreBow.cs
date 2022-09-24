@@ -17,7 +17,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingCoreBow
 
         public override void SetDefaults()
         {
-            Item.damage = 12;
+            Item.damage = 25;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 0;
             Item.height = 0;
@@ -45,7 +45,7 @@ namespace DivergencyMod.Items.Weapons.Ranged.LivingCoreBow
 
         public override Vector2? HoldoutOffset()
         {
-            return new Vector2(-8, 0);
+            return new Vector2(-3, 0);
         }
     }
 }

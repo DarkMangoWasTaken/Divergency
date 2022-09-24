@@ -79,7 +79,7 @@ namespace DivergencyMod.NPCs.Forest
         public override void AI()
         {
             timer++;
-            AI_Timer++;
+            AI_Timer++; 
 
             NPC.TargetClosest();
             if (timer == 60)
