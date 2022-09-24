@@ -80,11 +80,12 @@ namespace DivergencyMod.NPCs.Forest
 
         private void jumpAI()
         {
+            // here it should rotate... maby...
 
             Vector2 move = new Vector2(NPC.ai[3], NPC.ai[4]);
             move.Normalize();
             move *= 10f;
-            Vector2 moveWithCollision = Collision.TileCollision(NPC.position, move, 40, 40);
+            Vector2 moveWithCollision = Collision.TileCollision(NPC.position, move, 40, 40); // might also want to add fx new vector2(10, 10) to position and set 40 -> 20
 
             if (moveWithCollision.Length() < 0.001f)
             {;
