@@ -22,10 +22,6 @@ namespace DivergencyMod.NPCs.Forest
             {3, new Vector2(0f, -1f)}, // up
         };
 
-        private Vector2 collisionOffset = new Vector2(12, 12);
-        private int collisionWidth = 22;
-        private int collisionHeight = 22;
-
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Living Core Saw");
@@ -35,24 +31,19 @@ namespace DivergencyMod.NPCs.Forest
         {
             NPC.width = 40;
             NPC.height = 40;
-            NPC.aiStyle = -1;
             NPC.damage = 30;
             NPC.defense = 2;
             NPC.lifeMax = 40;
             NPC.HitSound = SoundID.NPCHit2;
             NPC.DeathSound = SoundID.LucyTheAxeTalk;
 
-            NPC.aiStyle = -1; //Terraria.ID.NPCAIStyleID.BlazingWheel; this bs makes a little light :/
+            NPC.aiStyle = -1;
+
+            NPC.maxAI = 5;
 
             NPC.noGravity = true;
 
-            NPC.velocity = new Vector2(0f, 0f);
-            NPC.ai[0] = 0; // rotation
-            NPC.ai[1] = 0; // did hit ground 0 = false
-
-            NPC.direction = (Main.rand.Next(3)*2)-1; // left(-1)/right(1)
-
-            NPC.knockBackResist = 0;
+            NPC.knockBackResist = 0f;
 
             NPC.behindTiles = true;
         }
@@ -64,88 +55,137 @@ namespace DivergencyMod.NPCs.Forest
 
         public override void AI()
         {
-            NPC.rotation += 0.15f * NPC.direction;
-
-            // Mod.Logger.Info(NPC.ai[2]);
             if (NPC.ai[2] == 0)
-            {
-                baseAI();
-            }
-            else if (NPC.ai[2] != -1)
-            {
-                // some rotation maby, also spawn particles NPC.rotation += 0.35f * NPC.direction;
-                NPC.ai[2]++;
-            }
+                gameAI();
             else if (NPC.ai[2] == -1)
-            {
                 jumpAI();
+            else
+            {
+                // add some rotation stuff and maby some wind-up particles or stuff
+                NPC.ai[2]++;
+                NPC.velocity = new Vector2(0, 0);
             }
+
+            return;
         }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+
+            spriteBatch.Draw(texture, NPC.Center - Main.screenPosition, new Rectangle(0, 0, NPC.width, NPC.height), Color.White, NPC.rotation, new Vector2(NPC.width / 2, NPC.height / 2), NPC.scale, SpriteEffects.None, 0f);
+
+            return false;
+        }
+
         private void jumpAI()
         {
-            Vector2 move = rotations[((int)NPC.ai[0] - 1 + 4) % 4] * 6f;
 
-            Vector2 moveWithCollision = Collision.TileCollision(NPC.position + collisionOffset, move, collisionWidth, collisionHeight);
+            Vector2 move = new Vector2(NPC.ai[3], NPC.ai[4]);
+            move.Normalize();
+            move *= 10f;
+            Vector2 moveWithCollision = Collision.TileCollision(NPC.position, move, 40, 40);
 
             if (moveWithCollision.Length() < 0.001f)
-            {
+            {;
                 NPC.ai[2] = 0;
-
-                NPC.ai[0] = (NPC.ai[0] + 2) % 4; // flip direction
             }
             else
                 NPC.position += moveWithCollision;
         }
 
-        private void baseAI()
+        public override bool PreAI()
         {
-            Vector2 orgVel = rotations[(int)NPC.ai[0]] * 6f;
-            Vector2 orgVel2 = rotations[((int)NPC.ai[0] + 1 + 4) % 4] * 6f;
+            NPC.type = NPCID.BlazingWheel;
+            return true;
+        }
 
-            orgVel *= NPC.direction;
-
-            Vector2 vel = Collision.TileCollision(NPC.position + collisionOffset, orgVel, collisionWidth, collisionHeight);
-            Vector2 vel2 = Collision.TileCollision(NPC.position + collisionOffset, orgVel2, collisionWidth, collisionHeight);
-
-            NPC.position += vel + vel2;
-            // Mod.Logger.Info(vel2.Length());
-
-            if (vel2.Length() < 0.001f)
-                NPC.ai[1] = 1;
+        private void gameAI()
+        {
+            if (NPC.ai[0] == 0f)
+            {
+                NPC.TargetClosest();
+                NPC.directionY = 1;
+                NPC.ai[0] = 1f;
+            }
+            int num810 = 6;
+            if (NPC.ai[1] == 0f)
+            {
+                NPC.rotation += (float)(NPC.direction * NPC.directionY) * 0.13f;
+                if (NPC.collideY)
+                {
+                    NPC.ai[0] = 2f;
+                }
+                if (!NPC.collideY && NPC.ai[0] == 2f)
+                {
+                    NPC.direction = -NPC.direction;
+                    NPC.ai[1] = 1f;
+                    NPC.ai[0] = 1f;
+                }
+                if (NPC.collideX)
+                {
+                    NPC.directionY = -NPC.directionY;
+                    NPC.ai[1] = 1f;
+                }
+            }
             else
             {
-                if (NPC.ai[1] == 1)
-                    NPC.ai[0] += NPC.direction;
-
-                NPC.ai[1] = 0;
+                NPC.rotation -= (float)(NPC.direction * NPC.directionY) * 0.13f;
+                if (NPC.collideX)
+                {
+                    NPC.ai[0] = 2f;
+                }
+                if (!NPC.collideX && NPC.ai[0] == 2f)
+                {
+                    NPC.directionY = -NPC.directionY;
+                    NPC.ai[1] = 0f;
+                    NPC.ai[0] = 1f;
+                }
+                if (NPC.collideY)
+                {
+                    NPC.direction = -NPC.direction;
+                    NPC.ai[1] = 0f;
+                }
             }
-
-            if (vel.Length() < 0.001f)
-                NPC.ai[0]++;
+            NPC.velocity.X = num810 * NPC.direction;
+            NPC.velocity.Y = num810 * NPC.directionY;
 
             Player plr = Main.player[NPC.target];
 
-            Vector2 diff = plr.Center - NPC.Center;
-
-            orgVel2 *= -1; // only for check
-
-            Mod.Logger.Info(diff + " | " + orgVel2);
+            Vector2 diff = NPC.Center - plr.Center;
 
             if (Collision.CanHit(NPC, plr))
             {
-                if (orgVel2.X == 0)
+                if (NPC.ai[1] == 0)
                 {
-                    if (MathF.Abs(diff.X) < 10 && (diff.Y < -16 && orgVel2.Y < 0 || diff.Y > 16 && orgVel2.Y > 0)) // 40 is the width of 'i will attack'
+                    if (MathF.Abs(diff.X) < 6 && diff.Length() > 20f)
+                    {
                         NPC.ai[2] = -21;
+                        NPC.directionY *= -1;
+                    }
                 }
-                else if (orgVel2.Y == 0)
+                else if (NPC.ai[1] == 1)
                 {
-                    if (MathF.Abs(diff.Y) < 10 && (diff.X < -16 && orgVel2.X < 0 || diff.X > 16 && orgVel2.X > 0)) // 40 is the width of 'i will attack'
+                    if (MathF.Abs(diff.Y) < 6 && diff.Length() > 20f)
+                    {
                         NPC.ai[2] = -21;
+                        NPC.direction *= -1;
+                    }
                 }
             }
 
-            NPC.ai[0] = (NPC.ai[0] + 4) % 4;
+            if (NPC.ai[2] == -21)
+            {
+                diff.Normalize();
+
+                NPC.ai[3] = 0;
+                NPC.ai[4] = 0;
+
+                if (MathF.Abs(diff.X) > MathF.Abs(diff.Y))
+                    NPC.ai[3] = -diff.X;
+                else
+                    NPC.ai[4] = -diff.Y;
+            }
         }
     }
 }
