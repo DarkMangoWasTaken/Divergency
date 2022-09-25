@@ -60,7 +60,7 @@ namespace DivergencyMod.Events.LivingCore
             
             room.Begin(left, top);
         }
-
+            
         public static void End()
         {
             if (Room != null)
