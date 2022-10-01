@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
@@ -12,12 +13,14 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
         public static bool swung = false;
         public int SwingTime = 30;
         public float holdOffset = 60f;
+        public bool _initialized;
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSword/LivingCoreSword";
 
         public override void SetDefaults()
         {
             Projectile.damage = 100;
-            Projectile.timeLeft = SwingTime;
+
+            
             Projectile.penetrate = -1;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
@@ -38,49 +41,60 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
         {
             return val == 1f ? 1f : (val == 1f ? 1f : (float)Math.Pow(2, val * 10f - 10f) / 2f);
         }
+      
+      
 
         public override void AI()
         {
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10000;
-            AttachToPlayer();
-        }
+            Player player = Main.player[Projectile.owner];
+            if (!_initialized && Main.myPlayer == Projectile.owner)
+            {
+                SwingTime = (int)(30 / player.GetAttackSpeed(DamageClass.Melee));
 
+                Projectile.timeLeft = SwingTime;
+                _initialized = true;
+                Projectile.netUpdate = true;
+
+            }
+            else if (_initialized)
+            {
+                Projectile.usesLocalNPCImmunity = true;
+                Projectile.localNPCHitCooldown = 10000;
+                Timer++;
+                if (!player.active || player.dead || player.CCed || player.noItems)
+                {
+                    return;
+                }
+
+                int dir = (int)Projectile.ai[1];
+                float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
+                // the actual rotation it should have
+                float defRot = Projectile.velocity.ToRotation();
+                // starting rotation
+                float endSet = ((MathHelper.PiOver2) / 0.2f);
+                float start = defRot - endSet;
+
+                // ending rotation
+                float end = defRot + endSet;
+                // current rotation obv
+                float rotation = dir == 1 ? start.AngleLerp(end, swingProgress) : start.AngleLerp(end, 1f - swingProgress);
+                // offsetted cuz sword sprite
+                Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
+                position += rotation.ToRotationVector2() * holdOffset;
+                Projectile.Center = position;
+                Projectile.rotation = (position - player.Center).ToRotation() + MathHelper.PiOver4;
+
+                player.heldProj = Projectile.whoAmI;
+                player.ChangeDir(Projectile.velocity.X < 0 ? -1 : 1);
+                player.itemRotation = rotation * player.direction;
+                player.itemTime = 2;
+                player.itemAnimation = 2;
+                Projectile.netUpdate = true;
+            }
+        }
         public override bool ShouldUpdatePosition() => false;
 
-        public void AttachToPlayer()
-        {
-            Player player = Main.player[Projectile.owner];
-            if (!player.active || player.dead || player.CCed || player.noItems)
-            {
-                return;
-            }
-
-            int dir = (int)Projectile.ai[1];
-            float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
-            // the actual rotation it should have
-            float defRot = Projectile.velocity.ToRotation();
-            // starting rotation
-            float endSet = ((MathHelper.PiOver2) / 0.2f);
-            float start = defRot - endSet;
-
-            // ending rotation
-            float end = defRot + endSet;
-            // current rotation obv
-            float rotation = dir == 1 ? start.AngleLerp(end, swingProgress) : start.AngleLerp(end, 1f - swingProgress);
-            // offsetted cuz sword sprite
-            Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
-            position += rotation.ToRotationVector2() * holdOffset;
-            Projectile.Center = position;
-            Projectile.rotation = (position - player.Center).ToRotation() + MathHelper.PiOver4;
-
-            player.heldProj = Projectile.whoAmI;
-            player.ChangeDir(Projectile.velocity.X < 0 ? -1 : 1);
-            player.itemRotation = rotation * player.direction;
-            player.itemTime = 2;
-            player.itemAnimation = 2;
-            Projectile.netUpdate = true;
-        }
+        
 
         public override bool PreDraw(ref Color lightColor)
         {

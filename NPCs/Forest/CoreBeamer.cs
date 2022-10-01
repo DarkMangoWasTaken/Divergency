@@ -33,7 +33,7 @@ namespace DivergencyMod.NPCs.Forest
         public override void SetStaticDefaults()
         {
 
-            DisplayName.SetDefault("Coreling"); // Automatic from localization files
+            DisplayName.SetDefault("Coreling");
             Main.npcFrameCount[NPC.type] = 10; // make sure to set this for your modNPCs.
             NPCID.Sets.NPCBestiaryDrawModifiers value = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
             { // Influences how the NPC looks in the Bestiary
@@ -68,7 +68,7 @@ namespace DivergencyMod.NPCs.Forest
 				new FlavorTextBestiaryInfoElement("They HATE normal attacks, will only use fancy and flashy attacks because of the 'funny'. What an idiot.")
             });
         }
-        public override void OnSpawn(IEntitySource source)
+        public override void OnSpawn(IEntitySource source) // move this to ai later
         {
             if (source is EntitySource_SpawnNPC spawnNPC && spawnNPC.Context == "Corelossus")
             {

@@ -54,6 +54,9 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
 
         public override void AI()
         {
+            Timer++;
+            
+
             Vector3 RGB = new Vector3(1.45f, 2.55f, 0.94f);
             float multiplier = 1;
             float max = 2.25f;
@@ -82,7 +85,6 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             {
                 return;
             }
-
             {
                 
 

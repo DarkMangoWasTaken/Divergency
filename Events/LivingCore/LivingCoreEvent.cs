@@ -31,13 +31,11 @@ namespace DivergencyMod.Events.LivingCore
             if (Room != null)
                 Room.Update();
         }
-
         public static void Draw(SpriteBatch spriteBatch)
         {
             if (Room != null)
                 Room.Draw(spriteBatch);
         }
-
         public static void Begin(int i, int j, LivingCoreRoom room)
         {
             if (Active)
@@ -60,8 +58,6 @@ namespace DivergencyMod.Events.LivingCore
             
             room.Begin(left, top);
         }
-                
-
         public static void End()
         {
             if (Room != null)
@@ -73,12 +69,10 @@ namespace DivergencyMod.Events.LivingCore
             Y = 0;
             Room = default;
         }
-
         public static void Load()
         {
             End();
         }
-
         public static void Unload()
         {
             End();

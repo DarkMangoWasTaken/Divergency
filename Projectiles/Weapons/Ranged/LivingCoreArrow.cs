@@ -17,7 +17,7 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Living Core Blast   ");
+            DisplayName.SetDefault("Living Core Blast");
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }

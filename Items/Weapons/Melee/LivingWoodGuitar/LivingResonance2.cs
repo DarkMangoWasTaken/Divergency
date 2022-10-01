@@ -62,7 +62,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingWoodGuitar
 
             Projectile.Center = playerCenter;// customization of the hitbox position
 
-            if (++Projectile.frameCounter >= 6)
+            if (++Projectile.frameCounter >= 7)
             {
                 Projectile.frameCounter = 0;
                 if (++Projectile.frame >= 6)
