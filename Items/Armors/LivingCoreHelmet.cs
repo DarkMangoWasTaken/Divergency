@@ -171,7 +171,7 @@ namespace DivergencyMod.Items.Armors
 				player.statDefense = player.statDefense - 5;
 
 				Projectile.Kill();
-				ParticleManager.NewParticle(player.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingAura>(), Color.Purple, 1f);
+				//ParticleManager.NewParticle(player.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingAura>(), Color.Purple, 1f);
 				//  ParticleManager.NewParticle(player.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingRageParticle>(), Color.Purple, 1f);
 				for (int j = 0; j < 60; j++)
 				{
@@ -181,7 +181,7 @@ namespace DivergencyMod.Items.Armors
 
 
 				}
-				ParticleManager.NewParticle(player.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingAura>(), Color.Purple, 1f);
+				//ParticleManager.NewParticle(player.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingAura>(), Color.Purple, 1f);
 
 				player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 30;
 
