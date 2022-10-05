@@ -1,8 +1,12 @@
+using DivergencyMod.Helpers;
+using IL.Terraria.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
@@ -16,6 +20,12 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
         public bool _initialized;
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSword/LivingCoreSword";
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Living Core Sword");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 50;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
         public override void SetDefaults()
         {
             Projectile.damage = 100;
@@ -29,6 +39,8 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             Projectile.width = 74;
             Projectile.friendly = true;
             Projectile.scale = 1f;
+            Projectile.aiStyle = 0;
+
         }
 
         public float Timer
@@ -50,7 +62,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             if (!_initialized && Main.myPlayer == Projectile.owner)
             {
                 SwingTime = (int)(30 / player.GetAttackSpeed(DamageClass.Melee));
-
+                Projectile.alpha = 254;
                 Projectile.timeLeft = SwingTime;
                 _initialized = true;
                 Projectile.netUpdate = true;
@@ -58,6 +70,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             }
             else if (_initialized)
             {
+                Projectile.alpha = 0;
                 Projectile.usesLocalNPCImmunity = true;
                 Projectile.localNPCHitCooldown = 10000;
                 Timer++;
@@ -94,10 +107,38 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
         }
         public override bool ShouldUpdatePosition() => false;
 
-        
 
+        public TrailRenderer prim;
+        public TrailRenderer prim4;
         public override bool PreDraw(ref Color lightColor)
         {
+          
+
+            Main.spriteBatch.End();
+
+
+
+          
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/MotionTrail").Value;
+            var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/FireTrail").Value;
+            var TrailTex3 = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
+            if (prim == null)
+            {
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(100f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = Projectile.Size / 2f;
+            }
+         
+            if (prim4 == null)
+            {
+                prim4 = new TrailRenderer(TrailTex3, TrailRenderer.DefaultPass, (p) => new Vector2(50f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim4.drawOffset = Projectile.Size / 2f;
+            }
+            Main.spriteBatch.Begin(SpriteSortMode.Texture, null, null, null, null, null, Main.GameViewMatrix.ZoomMatrix);
+            prim.Draw(Projectile.oldPos);
+                prim4.Draw(Projectile.oldPos); // drawing the trai
+          
+
             Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
 
             int frameHeight = texture.Height / Main.projFrames[Projectile.type];
@@ -106,12 +147,24 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             Rectangle sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
             Vector2 origin = sourceRectangle.Size() / 2f;
             Color drawColor = Projectile.GetAlpha(lightColor);
+          
 
             Main.EntitySpriteDraw(texture,
-                Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
-                sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+               Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
+               sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0); // drawing the sword itself
+            Main.instance.LoadProjectile(Projectile.type);
+            Texture2D texture2 = TextureAssets.Projectile[Projectile.type].Value;
+
+            // Redraw the projectile with the color not influenced by light
+            Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, Projectile.height * 0.5f);
+         
+            Main.spriteBatch.End();
+
+            Main.spriteBatch.Begin();
 
             return false;
+
         }
+        
     }
 }

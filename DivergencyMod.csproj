@@ -11,6 +11,7 @@
     <None Remove="Sounds\Music\RedSus.mp3" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="SlackAPI" Version="1.1.14" />
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
 
