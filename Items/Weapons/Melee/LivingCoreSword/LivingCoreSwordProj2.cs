@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static ParticleLibrary.Particle;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
 {
@@ -96,12 +97,17 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
                 }
                 Spawned++;
             }
-
+            
             if (Spawned == 1)
             {
-                ParticleManager.NewParticle(player.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreSwordTrail>(), Color.Purple, 1f);
+                ParticleManager.NewParticle(player.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreSwordTrail>(), Color.Purple,1f, (float)Layer.BeforeProjectiles);
+                
             }
- 
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
+                ParticleManager.NewParticle(Projectile.Center + new Vector2(Main.rand.NextFloat(-50, 50)), speed * 30, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 1f, Projectile.whoAmI, Layer: Layer.BeforeProjectiles);
+            }
             Vector2 oldMouseWorld = Main.MouseWorld;
             Timer++;
             if (!DamageRose)

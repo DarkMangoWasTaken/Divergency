@@ -1,8 +1,11 @@
+using DivergencyMod.Dusts.Particles;
 using Microsoft.Xna.Framework;
+using ParticleLibrary;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static ParticleLibrary.Particle;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
 {
@@ -82,6 +85,8 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
                 combowombo = 0;
                 player.GetModPlayer<DivergencyPlayer>().itemCombo = 0;
             }
+            ParticleManager.NewParticle(position, velocity / 4f, ParticleManager.NewInstance<SlashParticleGreen>(), Color.LimeGreen, 2f, Layer: Layer.BeforeProjectiles);
+
             return false;
         }
 

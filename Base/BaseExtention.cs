@@ -27,6 +27,31 @@ namespace DivergencyMod.Base
                 frameTick++;
             return new Rectangle(0, overrideHeight != 0 ? overrideHeight * frame : (texture.Height / frameCount) * frame, texture.Width, texture.Height / frameCount);
         }
+        // use:
+        // public Rectangle FrameData;
+        // public int FrameTick;
+        //
+        // Texture tex;
+        // int frameTime = 6; // how long each frame lasts
+        // tex.Animate(ref FrameData, ref FrameTick, frameTime);
+        public static Rectangle Animate(this Texture2D texture, ref Rectangle frameData, ref int frameTick, int frameTime, int horizontalFrames = 1, int verticalFrames = 1, int sizeOffsetX = 0, int sizeOffsetY = 0)
+        {
+            frameData.Width = horizontalFrames;
+            frameData.Height = verticalFrames;
+
+            if (frameTick >= frameTime)
+            {
+                frameTick = 0;
+                frameData.X = frameData.X == frameData.Width - 1 ? 0 : frameData.X + 1;
+                frameData.Y = frameData.Y == frameData.Height - 1 ? 0 : frameData.Y + 1;
+            }
+            frameTick++;
+
+            return new Rectangle(sizeOffsetX != 0 ? sizeOffsetX * frameData.X : (texture.Width / frameData.Width) * frameData.X,   // Horizontal frame position
+                                 sizeOffsetY != 0 ? sizeOffsetY * frameData.Y : (texture.Height / frameData.Height) * frameData.Y, // Vertical frame position
+                                 texture.Width / frameData.Width,                   // Horizontal frame width
+                                 texture.Height / frameData.Height);                // Vertical frame width
+        }
 
 
         public static float Magnitude(Vector2 mag)

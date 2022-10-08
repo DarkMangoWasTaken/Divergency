@@ -135,6 +135,7 @@ namespace DivergencyMod.Items.Armors
 			Projectile.alpha = 100;
 			Projectile.width = Projectile.height = 1;
 			Projectile.scale = 2f;
+			Projectile.tileCollide = false;
 
 		}
 		public override void AI()

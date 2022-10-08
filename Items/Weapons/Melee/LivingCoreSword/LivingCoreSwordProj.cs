@@ -1,13 +1,16 @@
+using DivergencyMod.Dusts.Particles;
 using DivergencyMod.Helpers;
 using IL.Terraria.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ParticleLibrary;
 using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static ParticleLibrary.Particle;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
 
@@ -23,7 +26,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Living Core Sword");
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 50;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
         public override void SetDefaults()
@@ -79,6 +82,12 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
                     return;
                 }
 
+                if (Projectile.timeLeft >= 15 && Projectile.timeLeft <= 27)
+                for (int i = 0; i < 3; i++)
+                {
+                    Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
+                    ParticleManager.NewParticle(Projectile.Center + new Vector2(Main.rand.NextFloat(10,-10)), speed * 10, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 1f, Projectile.whoAmI, Layer: Layer.BeforeProjectiles);
+                }
                 int dir = (int)Projectile.ai[1];
                 float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
                 // the actual rotation it should have
@@ -108,8 +117,11 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
         public override bool ShouldUpdatePosition() => false;
 
 
-        public TrailRenderer prim;
-        public TrailRenderer prim4;
+      
+        public TrailRenderer SwordSlash;
+        public TrailRenderer SwordSlash2;
+        public TrailRenderer SwordSlash3;
+
         public override bool PreDraw(ref Color lightColor)
         {
           
@@ -119,25 +131,42 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
 
 
           
-            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/MotionTrail").Value;
-            var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/FireTrail").Value;
-            var TrailTex3 = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
+            var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
+            var TrailTex3 = ModContent.Request<Texture2D>("DivergencyMod/Trails/gravytrail").Value;
             Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
-            if (prim == null)
+           
+
+            if (SwordSlash == null)
             {
-                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(100f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 0.9f * (float)Math.Pow(1f - p, 2f));
-                prim.drawOffset = Projectile.Size / 2f;
+                SwordSlash = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(14f), (p) => new Color(100, 255, 100, 10) * (1f - p));
+                SwordSlash.drawOffset = Projectile.Size / 1.9f;
             }
-         
-            if (prim4 == null)
+            if (SwordSlash2 == null)
             {
-                prim4 = new TrailRenderer(TrailTex3, TrailRenderer.DefaultPass, (p) => new Vector2(50f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
-                prim4.drawOffset = Projectile.Size / 2f;
+                SwordSlash2 = new TrailRenderer(TrailTex2, TrailRenderer.DefaultPass, (p) => new Vector2(35f), (p) => new Color(10, 150, 50, 50) * (1f - p));
+                SwordSlash2.drawOffset = Projectile.Size / 1.9f;
+
             }
+            if (SwordSlash3 == null)
+            {
+                SwordSlash3 = new TrailRenderer(TrailTex3, TrailRenderer.DefaultPass, (p) => new Vector2(20f), (p) => new Color(10, 255, 50, 40) * (1f - p));
+                SwordSlash3.drawOffset = Projectile.Size / 2f;
+
+            }
+
             Main.spriteBatch.Begin(SpriteSortMode.Texture, null, null, null, null, null, Main.GameViewMatrix.ZoomMatrix);
-            prim.Draw(Projectile.oldPos);
-                prim4.Draw(Projectile.oldPos); // drawing the trai
           
+            if (_initialized && Projectile.timeLeft >= 18)
+            {
+                SwordSlash.Draw(Projectile.oldPos);
+                SwordSlash2.Draw(Projectile.oldPos);
+               
+                //SwordSlash3.Draw(Projectile.oldPos);
+
+
+            }
+
 
             Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
 
