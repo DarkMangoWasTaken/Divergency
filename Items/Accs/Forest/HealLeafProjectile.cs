@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using System;
 using ParticleLibrary;
 using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Buffs;
 
 namespace DivergencyMod.Items.Accs.Forest
 {
@@ -47,8 +48,16 @@ namespace DivergencyMod.Items.Accs.Forest
          
             if (Projectile.active && player.Hitbox.Intersects(Projectile.Hitbox))
             {
-                player.Heal(2);
-                player.HealEffect(2);
+                if (!player.HasBuff(ModContent.BuffType<HealerStance>()))
+                {
+                    player.Heal(2);
+                }
+                else
+                {
+                    player.Heal(5);
+                    player.HealEffect(5);
+                }
+               
                 Projectile.Kill();
             }
                 Projectile.damage = 0;

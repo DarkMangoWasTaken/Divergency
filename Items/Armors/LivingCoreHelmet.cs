@@ -305,6 +305,8 @@ namespace DivergencyMod.Items.Armors
 		private int healingMultiplier = 10;
 		private bool showHealEffect;
 
+		public bool ActivateTimer = false;
+
 		public override void ResetEffects()
 		{
 			initialize = false;
@@ -313,19 +315,43 @@ namespace DivergencyMod.Items.Armors
 		{
 			if (initialize)
 			{
-
-                if (Player.releaseDown)
+				Main.NewText(DoubleTapCounter);
+				if (ActivateTimer)
 				{
-					DoubleTapCounter++;
 					DoubleTapTimer--;
 				}
-
-				if (DoubleTapCounter == 3 && DoubleTapTimer >= 0)
+				if (DoubleTapTimer == -1)
 				{
-
+					DoubleTapTimer = 120;
+					DoubleTapCounter = 0;
+					ActivateTimer = false;
 				}
 
-			}
+                if (Player.controlDown)
+				{
+					DoubleTapCounter++;
+					ActivateTimer = true;
+				}
+
+				if (DoubleTapCounter >= 120 && DoubleTapTimer <= 0 && !Player.HasBuff(ModContent.BuffType<HealerStance>()) && !Player.HasBuff(ModContent.BuffType<DamageStance>()))
+				{
+					Player.AddBuff(ModContent.BuffType<HealerStance>(), 1);
+                    DoubleTapTimer = 0;
+                }
+				else if (DoubleTapCounter >= 120 && DoubleTapTimer <= 0 && Player.HasBuff(ModContent.BuffType<HealerStance>()))
+				{
+                    Player.ClearBuff(ModContent.BuffType<HealerStance>());
+                    Player.AddBuff(ModContent.BuffType<DamageStance>(), 1);
+                    DoubleTapTimer = 0;
+                }
+                else if (DoubleTapCounter >= 120 && DoubleTapTimer <= 0 && Player.HasBuff(ModContent.BuffType<DamageStance>()))
+                {
+                    Player.ClearBuff(ModContent.BuffType<DamageStance>());
+                    DoubleTapTimer = 0;
+                }
+
+
+            }
 		}
        
     
