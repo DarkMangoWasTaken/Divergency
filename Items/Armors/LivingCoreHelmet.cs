@@ -27,8 +27,8 @@ namespace DivergencyMod.Items.Armors
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Living Core War Helmet");
 			Tooltip.SetDefault("'It's a perfect fit!'"
-				+ "\nIncreases damage dealt by 10%'"
-				+ "\nIncreases your crit chance by 8%");
+				+ "\nIncreases melee damage dealt by 10%'"
+				+ "\nIncreases your melee crit chance by 8%");
 		}
 
 		public override void SetDefaults()
@@ -44,8 +44,8 @@ namespace DivergencyMod.Items.Armors
 		{
 
 
-			player.GetDamage(DamageClass.Generic) += 0.10f; // Increase dealt damage for all weapon classes by 5%
-			player.GetCritChance(DamageClass.Generic) += 8;
+			player.GetDamage(DamageClass.Melee) += 0.10f; // Increase dealt damage for all weapon classes by 5%
+			player.GetCritChance(DamageClass.Melee) += 8;
 			
 			//player.GetAttackSpeed(DamageClass.Melee) += 0.7f;
 
@@ -249,6 +249,88 @@ namespace DivergencyMod.Items.Armors
             return false;
         }
     }
+
+    [AutoloadEquip(EquipType.Head)]
+    public class LivingCoreHelmetMage : ModItem
+    {
+        public override void SetStaticDefaults()
+        {
+            base.SetStaticDefaults();
+            DisplayName.SetDefault("Living Core Mage Cowl");
+			Tooltip.SetDefault("'It's a perfect fit!'");
+           
+        }
+
+        public override void SetDefaults()
+        {
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 10000;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 0;
+        }
+
+        public override void UpdateEquip(Player player)
+        {
+
+        }
+        public override bool IsArmorSet(Item head, Item body, Item legs)
+        {
+            return body.type == ModContent.ItemType<LivingCoreChestplate>() && legs.type == ModContent.ItemType<LivingCoreGreaves>();
+
+        }
+        public override void UpdateArmorSet(Player player)
+        {
+
+            player.setBonus = "Gain a defensive shield, if the shield breaks it lowers your defense but increases offensive stats greatly"// This is the setbonus tooltip
+                            + "\nShield increases defense up to 20, if the shields breaks, the player loses defense'"
+                            + "\nin exchange of bonus melee speed, movement speed and damage)";
+
+
+
+            player.GetModPlayer<LivingCoreArmorMage>().initialize = true;
+
+        }
+
+    }
+	public class LivingCoreArmorMage : ModPlayer
+	{
+		public bool initialize;
+		public bool noStance;
+		public bool HealerStance;
+		public bool DamageStance;
+
+		public int DoubleTapTimer = 15;
+		public byte DoubleTapCounter;
+		private int healingMultiplier = 10;
+		private bool showHealEffect;
+
+		public override void ResetEffects()
+		{
+			initialize = false;
+		}
+		public override void PreUpdate()
+		{
+			if (initialize)
+			{
+
+                if (Player.releaseDown)
+				{
+					DoubleTapCounter++;
+					DoubleTapTimer--;
+				}
+
+				if (DoubleTapCounter == 3 && DoubleTapTimer >= 0)
+				{
+
+				}
+
+			}
+		}
+       
+    
+
+	}
 }
 		
  

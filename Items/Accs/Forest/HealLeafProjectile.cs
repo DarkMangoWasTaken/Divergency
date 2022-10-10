@@ -34,11 +34,7 @@ namespace DivergencyMod.Items.Accs.Forest
             Projectile.scale = 1.1f;
         }
         
-        public override void OnSpawn(IEntitySource source)
-        {
-            
-                   //change this to increase the speed of the projectile while rising upwards
-        }
+    
 
         public override void AI()
         {
@@ -51,8 +47,8 @@ namespace DivergencyMod.Items.Accs.Forest
          
             if (Projectile.active && player.Hitbox.Intersects(Projectile.Hitbox))
             {
-                player.statLife += 3;
-                player.HealEffect(3);
+                player.Heal(2);
+                player.HealEffect(2);
                 Projectile.Kill();
             }
                 Projectile.damage = 0;

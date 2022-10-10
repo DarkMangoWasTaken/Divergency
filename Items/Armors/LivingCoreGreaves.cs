@@ -23,7 +23,7 @@ namespace DivergencyMod.Items.Armors
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Living Core Greaves");
 			Tooltip.SetDefault("'Feels oddly comfortable in places that should feel comfortable :)'"
-				+ "\nIncreases movement speed by 15%'");
+				+ "\nIncreases movement speed by 12%'");
 				
 		}
 
@@ -40,7 +40,7 @@ namespace DivergencyMod.Items.Armors
 		{
 
 		
-			player.moveSpeed += 0.10f;
+			player.moveSpeed += 0.12f;
 			//will allow a double jump
 
 		}
