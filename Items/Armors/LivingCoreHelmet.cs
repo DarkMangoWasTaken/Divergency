@@ -13,6 +13,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static ParticleLibrary.Particle;
 using static Terraria.Localization.GameCulture;
 using static Terraria.ModLoader.ModContent;
 
@@ -329,7 +330,12 @@ namespace DivergencyMod.Items.Armors
 
                 if (Player.controlDown)
 				{
-					DoubleTapCounter++;
+                    for (int i = 0; i < 1; i++)
+                    {
+                        Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
+                        ParticleManager.NewParticle(Player.Center + new Vector2(Main.rand.NextFloat(-10, 10)), speed * Main.rand.NextFloat(15, 30), ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 2f, Player.whoAmI, Layer: Layer.BeforeProjectiles);
+                    }
+                    DoubleTapCounter++;
 					ActivateTimer = true;
 				}
 
@@ -337,17 +343,32 @@ namespace DivergencyMod.Items.Armors
 				{
 					Player.AddBuff(ModContent.BuffType<HealerStance>(), 1);
                     DoubleTapTimer = 0;
+                    for (int i = 0; i < 30; i++)
+                    {
+                        Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
+                        ParticleManager.NewParticle(Player.Center + new Vector2(Main.rand.NextFloat(-10, 10)), speed * Main.rand.NextFloat(15, 30), ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 2f, Player.whoAmI, Layer: Layer.BeforeProjectiles);
+                    }
                 }
 				else if (DoubleTapCounter >= 120 && DoubleTapTimer <= 0 && Player.HasBuff(ModContent.BuffType<HealerStance>()))
 				{
                     Player.ClearBuff(ModContent.BuffType<HealerStance>());
                     Player.AddBuff(ModContent.BuffType<DamageStance>(), 1);
                     DoubleTapTimer = 0;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
+                        ParticleManager.NewParticle(Player.Center + new Vector2(Main.rand.NextFloat(-10, 10)), speed * Main.rand.NextFloat(15, 30), ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 2f, Player.whoAmI, Layer: Layer.BeforeProjectiles);
+                    }
                 }
                 else if (DoubleTapCounter >= 120 && DoubleTapTimer <= 0 && Player.HasBuff(ModContent.BuffType<DamageStance>()))
                 {
                     Player.ClearBuff(ModContent.BuffType<DamageStance>());
                     DoubleTapTimer = 0;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
+                        ParticleManager.NewParticle(Player.Center + new Vector2(Main.rand.NextFloat(-10, 10)), speed * Main.rand.NextFloat(15, 30), ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 2f, Player.whoAmI, Layer: Layer.BeforeProjectiles);
+                    }
                 }
 
 
