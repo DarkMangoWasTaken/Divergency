@@ -55,7 +55,6 @@ namespace DivergencyMod.Items.Accs.Forest
                 else
                 {
                     player.Heal(5);
-                    player.HealEffect(5);
                 }
                
                 Projectile.Kill();
