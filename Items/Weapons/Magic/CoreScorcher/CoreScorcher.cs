@@ -87,7 +87,7 @@ namespace DivergencyMod.Items.Weapons.Magic.CoreScorcher
             Projectile.hostile = false;
             Projectile.width = Projectile.height = 60;
             Projectile.scale = 1f;
-            Projectile.penetrate = -1;
+            Projectile.penetrate = 3;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = false;
             Projectile.alpha = 255;
