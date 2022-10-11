@@ -333,7 +333,7 @@ namespace DivergencyMod.Items.Armors
                     for (int i = 0; i < 1; i++)
                     {
                         Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
-                        ParticleManager.NewParticle(Player.Center + new Vector2(Main.rand.NextFloat(-10, 10)), speed * Main.rand.NextFloat(15, 30), ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 2f, Player.whoAmI, Layer: Layer.BeforeProjectiles);
+                        ParticleManager.NewParticle(Player.Center + new Vector2(Main.rand.NextFloat(-20, 20)), speed * Main.rand.NextFloat(25, 30), ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 1f, Player.whoAmI, Layer: Layer.BeforeProjectiles);
                     }
                     DoubleTapCounter++;
 					ActivateTimer = true;
