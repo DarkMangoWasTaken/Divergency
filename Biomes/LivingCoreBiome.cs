@@ -16,8 +16,9 @@ using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 using DivergencyMod.Tiles.LivingTree;
 using Terraria.GameContent;
+using ReLogic.Content;
 
-namespace DivergencyMod
+namespace DivergencyMod.Biomes
 {
 	public class LivingCoreBiome : ModBiome
 	{
@@ -29,7 +30,7 @@ namespace DivergencyMod
 		public override int Music => MusicLoader.GetMusicSlot("DivergencyMod/Sounds/Music/LivingCoreTheme");
 
 		// Sets how the Scene Effect associated with this biome will be displayed with respect to vanilla Scene Effects. For more information see SceneEffectPriority & its values.
-		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh; // We have set the SceneEffectPriority to be BiomeLow for purpose of example, however default behavour is BiomeLow.
+		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeLow; // We have set the SceneEffectPriority to be BiomeLow for purpose of example, however default behavour is BiomeLow.
 
 		// Populate the Bestiary Filter
 		public override string BestiaryIcon => base.BestiaryIcon;
@@ -39,12 +40,12 @@ namespace DivergencyMod
 		// Use SetStaticDefaults to assign the display name
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Example Underground");
-	       
+			DisplayName.SetDefault("Living Core Biome");
+	        
 		}
-		public override ModWaterStyle WaterStyle => base.WaterStyle;
-		// Calculate when the biome is active.
-		public override bool IsBiomeActive(Player player)
+		
+        public override ModWaterStyle WaterStyle => ModContent.GetInstance<LivingCoreWater>();
+        public override bool IsBiomeActive(Player player)
 		{
 			// Limit the biome height to be underground in either rock layer or dirt layer
 			return (player.ZoneRockLayerHeight || player.ZoneDirtLayerHeight || player.ZoneOverworldHeight) &&
@@ -61,4 +62,6 @@ namespace DivergencyMod
 			BlockCount = tileCounts[ModContent.TileType<LivingCoreWoodTile>()];
 		}
 	}
+   
+   
 }

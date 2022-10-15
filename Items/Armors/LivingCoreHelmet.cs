@@ -88,7 +88,25 @@ namespace DivergencyMod.Items.Armors
 			{
 				if (ShieldReactivateCooldown == 0)
 					ShieldDamage++;
-			}
+                int goreType1 = Mod.Find<ModGore>("CrystalGore1").Type;
+                int goreType2 = Mod.Find<ModGore>("CrystalGore2").Type;
+                int goreType3 = Mod.Find<ModGore>("CrystalGore3").Type;
+                int goreType4 = Mod.Find<ModGore>("CrystalGore4").Type;
+                int goreType5 = Mod.Find<ModGore>("CrystalGore5").Type;
+                int goreType6 = Mod.Find<ModGore>("CrystalGore6").Type;
+                int goreType7 = Mod.Find<ModGore>("CrystalGore7").Type;
+
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType1);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType2);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType3);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType4);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType5);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType6);
+
+                }
+            }
 		}
 		public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
 		{
@@ -96,8 +114,28 @@ namespace DivergencyMod.Items.Armors
 			{
 				if (ShieldReactivateCooldown == 0)
 					ShieldDamage++;
-			}
-		}
+                int goreType1 = Mod.Find<ModGore>("CrystalGore1").Type;
+                int goreType2 = Mod.Find<ModGore>("CrystalGore2").Type;
+                int goreType3 = Mod.Find<ModGore>("CrystalGore3").Type;
+                int goreType4 = Mod.Find<ModGore>("CrystalGore4").Type;
+                int goreType5 = Mod.Find<ModGore>("CrystalGore5").Type;
+                int goreType6 = Mod.Find<ModGore>("CrystalGore6").Type;
+                int goreType7 = Mod.Find<ModGore>("CrystalGore7").Type;
+
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType1);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType2);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType3);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType4);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType5);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType6);
+                    Gore.NewGore(null, Player.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType7);
+
+                }
+            }
+            
+        }
 		public override void PreUpdate()
 		{
 			if (Shieldactive)
@@ -115,6 +153,7 @@ namespace DivergencyMod.Items.Armors
 				}
 				if (ShieldReactivateCooldown == 0 && ShieldReactivate)
 				{
+
 					RageActive = false;
 					Projectile.NewProjectile(null, Player.Center + new Vector2(-20, -30), new Vector2(0), ModContent.ProjectileType<LivingCoreShield>(), 0, 0, Player.whoAmI);
 					ShieldReactivate = false;
@@ -133,17 +172,21 @@ namespace DivergencyMod.Items.Armors
 		}
 		public override void SetDefaults()
 		{
-			Projectile.alpha = 100;
+			Projectile.alpha = 255;
 			Projectile.width = Projectile.height = 1;
-			Projectile.scale = 2f;
+			Projectile.scale = 1.5f;
 			Projectile.tileCollide = false;
 
 		}
 		public override void AI()
 		{
-			Player player = Main.player[Projectile.owner];
+			if (Projectile.alpha >= 100)
+            {
+                Projectile.alpha -= 5;
+            }
+            Player player = Main.player[Projectile.owner];
 			Projectile.timeLeft = 10;
-			Projectile.Center = player.Center + new Vector2(-30, -35);
+			Projectile.Center = player.Center + new Vector2(-29, -45);
 			//Projectile.rotation += 0.02f;
 			if (player.GetModPlayer<LivingCoreArmorMelee>().ShieldDamage == 0)
 			{
@@ -178,11 +221,26 @@ namespace DivergencyMod.Items.Armors
 				for (int j = 0; j < 60; j++)
 				{
 					Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
+                    int goreType1 = Mod.Find<ModGore>("CrystalGore1").Type;
+                    int goreType2 = Mod.Find<ModGore>("CrystalGore2").Type;
+                    int goreType3 = Mod.Find<ModGore>("CrystalGore3").Type;
+                    int goreType4 = Mod.Find<ModGore>("CrystalGore4").Type;
+                    int goreType5 = Mod.Find<ModGore>("CrystalGore5").Type;
+                    int goreType6 = Mod.Find<ModGore>("CrystalGore6").Type;
+                    int goreType7 = Mod.Find<ModGore>("CrystalGore7").Type;
 
-					ParticleManager.NewParticle(Projectile.Center, speed * 30, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 2f, Projectile.whoAmI, Projectile.whoAmI);
+                    ParticleManager.NewParticle(Projectile.Center, speed * 30, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 2f, Projectile.whoAmI, Projectile.whoAmI);
+                    if (Main.netMode != NetmodeID.Server)
+                    {
+                        Gore.NewGore(null, Projectile.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType1);
+                        Gore.NewGore(null, Projectile.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType2);
+         
+                        Gore.NewGore(null, Projectile.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType5);
+                        Gore.NewGore(null, Projectile.position, new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-1, -3)), goreType6);
 
+                    }
 
-				}
+                }
 				//ParticleManager.NewParticle(player.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingAura>(), Color.Purple, 1f);
 
 				player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 30;
@@ -443,71 +501,8 @@ namespace DivergencyMod.Items.Armors
 			}
 		}
 	}
-    [AutoloadEquip(EquipType.Head)]
-    public class LivingCoreHelmetRanged : ModItem
-    {
-        public int timer;
-
-        public override void SetStaticDefaults()
-        {
-            base.SetStaticDefaults();
-            DisplayName.SetDefault("Living Core Summoner Headgear");
-            Tooltip.SetDefault("'It's a perfect fit!'"
-                + "\nIncreases your max minions by 2'");
-        }
-
-        public override void SetDefaults()
-        {
-            Item.width = 18;
-            Item.height = 18;
-            Item.value = 10000;
-            Item.rare = ItemRarityID.Green;
-            Item.defense = 0;
-        }
-
-        public override void UpdateEquip(Player player)
-        {
-            player.maxMinions += 2;
-
-        }
-
-        public override bool IsArmorSet(Item head, Item body, Item legs)
-        {
-            return body.type == ModContent.ItemType<LivingCoreChestplate>() && legs.type == ModContent.ItemType<LivingCoreGreaves>();
-
-        }
-        public override void UpdateArmorSet(Player player)
-        {
-
-            player.setBonus = "Increases all summoner stats in the near of Sentries";
-            player.maxTurrets += 1;
-
-            for (int i = 0; i < Main.maxProjectiles; i++)
-            {
-                Projectile proj = Main.projectile[i];
-
-                if (proj.active && player.Distance(proj.Center) <= 300 && proj.sentry)
-                {
-                    timer++;
-                    player.whipRangeMultiplier += 0.2f;
-                    player.GetAttackSpeed(DamageClass.SummonMeleeSpeed) *= 1.2f;
-                    player.GetDamage(DamageClass.Summon) *= 1.15f;
-                    if (timer == 5)
-                    {
-                        for (int i2 = 0; i2 < 10; i2++)
-                        {
-                            Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
-                            ParticleManager.NewParticle(proj.Center + new Vector2(Main.rand.NextFloat(-10, 10)), speed * Main.rand.NextFloat(15, 30), ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 0.5f, proj.whoAmI, Layer: Layer.BeforeProjectiles);
-                        }
-                        timer = 0;
-                    }
-
-
-
-                }
-            }
-        }
-    }
+   
+    
 }
 		
  

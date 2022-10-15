@@ -33,9 +33,9 @@ namespace DivergencyMod.Tiles.LivingTree
         
 
 
-                r = 0.08f;
-                g = 1.99f;
-                b = 0f; 
+                r = 0.2f * 0.2f;
+                g = 2.55f * 0.2f;
+                b = 1.33f * 0.2f; 
         }
      
 
