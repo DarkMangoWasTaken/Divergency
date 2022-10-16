@@ -99,10 +99,7 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
             {
                 if (Projectile.ai[2] == 0)
                 {
-                    Mod.Logger.Info(Projectile.ai[0]);
                     Projectile.ai[0]--;
-
-                    Mod.Logger.Info(Projectile.rotation);
 
                     Projectile.position -= (Projectile.rotation - MathF.PI / 2).ToRotationVector2() * 24f; // size
 

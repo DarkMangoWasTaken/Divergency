@@ -332,15 +332,6 @@ namespace DivergencyMod.Events.LivingCore
             Timer = 0;
             SpawnTimer = 0;
 
-            if (State == WaveState.Cleared)
-            {
-                if (!DownedHelper.ClearedAltar)
-                {
-                    Item.NewItem(null, LivingCoreEvent.Position, ModContent.ItemType<LivingCoreSword>());
-                }
-                NPC.SetEventFlagCleared(ref DownedHelper.ClearedAltar, -1);
-                Main.NewText("Cleared!");
-            }
 
             State = WaveState.Intermission;
 

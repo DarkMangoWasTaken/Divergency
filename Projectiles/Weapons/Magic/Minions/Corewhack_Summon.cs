@@ -70,7 +70,6 @@ namespace DivergencyMod.Projectiles.Weapons.Magic.Minions
 
             if (target != -1 && CanShoot && Collision.CanHit(Projectile, Main.npc[target]))
             {
-                Mod.Logger.Info(Projectile.damage);
 
                 // shoot target
 

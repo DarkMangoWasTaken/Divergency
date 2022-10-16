@@ -1,4 +1,6 @@
-﻿using DivergencyMod.NPCs.Forest;
+﻿using DivergencyMod.Events.LivingCore.Rooms;
+using DivergencyMod.Helpers;
+using DivergencyMod.NPCs.Forest;
 using DivergencyMod.Tiles.LivingTree;
 using Humanizer;
 using Microsoft.Xna.Framework;
@@ -18,6 +20,39 @@ namespace DivergencyMod.Events.LivingCore
     {
         // TODO: Make progress bar since BossBar may not work without an NPC
         // TODO: Play music
+
+        public static Type[] lcrList = new Type[] // add future room to this
+        {
+            typeof(FirstRoom)
+        };
+
+        public static bool HasRoomBeenCleared(Type t)
+        {
+            if (!lcrList.Contains(t))
+                return false;
+
+            for (int i = 0; i < lcrList.Length; i++)
+            {
+                if (lcrList[i] == t)
+                    return DownedHelper.livingCoreRoomCompletionTracker[i];
+            }
+
+            return false;
+        }
+
+        public static void RoomCleared(Type t)
+        {
+            for (int i = 0; i < lcrList.Length; i++)
+            {
+                if (lcrList[i] == t)
+                {
+                    DownedHelper.livingCoreRoomCompletionTracker[i] = true;
+                    return;
+                }
+            }
+
+            Console.WriteLine("Room missing from lcrList");
+        }
 
         public static bool Active { get; private set; }
         public static Tile Altar { get; private set; }
@@ -97,5 +132,5 @@ namespace DivergencyMod.Events.LivingCore
                 return Room.Progress;
             return 0f;
         }
-    }
+	}
 }

@@ -4,6 +4,7 @@ using DivergencyMod.Items.Weapons.Melee.LivingCoreSword;
 using DivergencyMod.Tiles.LivingTree;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DivergencyMod;
 using ParticleLibrary;
 using System;
 using Terraria;
@@ -19,6 +20,8 @@ namespace DivergencyMod.Events.LivingCore
         public int Kills = 0;
         public float Progress => (float)TotalKills / (TotalEnemies);
         private int KillsRemaining { get => CurWaveObject != null ? CurWaveObject.enemies.Length - Kills : 0; }
+
+        public static bool hasBeenCleared = false;
 
         private int Timer = 0;
         private int SpawnTimer = 0;
@@ -38,6 +41,8 @@ namespace DivergencyMod.Events.LivingCore
             "DivergencyMod/Tiles/LivingTree/LivingCoreAltar4"
         };
 
+        private int[] savedTiles = new int[0];
+
         public LivingCoreRoom()
         {
             TotalEnemies = 0;
@@ -54,6 +59,9 @@ namespace DivergencyMod.Events.LivingCore
         }
 
         public virtual int Music { get { return 0; } }
+        public virtual string RewardTexturePath { get { return "DivergencyMod/Effects/LivingCoreSwordGlow"; } }
+        public virtual int RewardID { get { return 0; } }
+        public virtual Vector2[] BlockingBlocks { get { return new Vector2[] {}; } }
 
         public virtual Wave? getWave(int wave)
         {
@@ -65,13 +73,43 @@ namespace DivergencyMod.Events.LivingCore
             return 0;
         }
 
+        private void updateAltarReward()
+        {
+            Texture2D altarWave = ModContent.Request<Texture2D>(Textures[CurWave - 1]).Value;
+            Vector2 position = new Vector2(LivingCoreEvent.X * 16f, LivingCoreEvent.Y * 16f) - Main.screenPosition + altarWave.Size() / 2;
+
+            Vector3 RGB = new Vector3(1.45f, 2.55f, 0.94f);
+			float multiplier = 0.4f;
+			RGB *= multiplier;
+
+			Lighting.AddLight(position, RGB.X, RGB.Y, RGB.Z);
+        }
+
+        private void drawAltarReward(Vector2 pos)
+        {
+            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(RewardTexturePath);
+
+            int width, height;
+            width = texture.Width;
+            height = texture.Height;
+
+            Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
+            Vector2 origin = new Vector2(width / 2f, height / 2f);
+
+            float addY = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2) * 10;
+
+            Main.EntitySpriteDraw(texture,
+                pos + new Vector2(0f, -80f + addY), sourceRectangle,
+                Color.White, -MathF.PI / 4f, origin, 0.8f, SpriteEffects.None, 0);
+        }
+
         public void Update()
         {
             Timer++;
 
             Rectangle textPosition = new(LivingCoreEvent.X * 16 + 24, LivingCoreEvent.Y * 16 + 24, 0, 0);
 
-            Console.WriteLine(Timer + " | " + SpawnTimer + " | " + CurWave + " | " + KillsRemaining + " | " + TotalEnemies);
+            //Console.WriteLine(Timer + " | " + SpawnTimer + " | " + CurWave + " | " + KillsRemaining + " | " + TotalEnemies);
 
             if (SpawnTimer == 0 && KillsRemaining == 0)
             {
@@ -159,6 +197,8 @@ namespace DivergencyMod.Events.LivingCore
             }
 
             clearList();
+            if (!LivingCoreEvent.HasRoomBeenCleared(this.GetType()))
+                updateAltarReward();
         }
 
         private void clearList()
@@ -208,7 +248,14 @@ namespace DivergencyMod.Events.LivingCore
             }
 
             spriteBatch.Draw(altar, LivingCoreEvent.Position, Color.White);
+
+            // texture for reward
+
+            if (!LivingCoreEvent.HasRoomBeenCleared(this.GetType()))
+                drawAltarReward(position + altarWave.Size() / 2);
         }
+
+
 
         public void Begin(int i, int j)
         {
@@ -217,36 +264,15 @@ namespace DivergencyMod.Events.LivingCore
             int left = i - Main.tile[i, j].TileFrameX / 18;
             int top = j - Main.tile[i, j].TileFrameY / 18;
 
-            WorldGen.PlaceTile(left - 74, top - 10, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 11, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 12, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 13, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 14, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 15, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 16, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 17, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 18, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 19, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left - 74, top - 20, ModContent.TileType<LivingCoreWoodTile>());
-
-            WorldGen.PlaceTile(left + 74, top, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top - 1, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top - 2, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top - 3, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top - 4, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top - 5, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top - 6, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top - 7, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top - 8, ModContent.TileType<LivingCoreWoodTile>());
-
-            WorldGen.PlaceTile(left + 74, top + 1, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top + 2, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top + 3, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top + 4, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top + 5, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top + 6, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top + 7, ModContent.TileType<LivingCoreWoodTile>());
-            WorldGen.PlaceTile(left + 74, top + 8, ModContent.TileType<LivingCoreWoodTile>());
+            savedTiles = new int[BlockingBlocks.Length];
+            int counter = 0;
+            foreach (Vector2 vec in BlockingBlocks)
+            {
+                savedTiles[counter] = WorldGen.TileType(left - (int)vec.X, top - (int)vec.Y);
+                WorldGen.KillTile(left - (int)vec.X, top - (int)vec.Y, noItem: true);
+                WorldGen.PlaceTile(left - (int)vec.X, top - (int)vec.Y, ModContent.TileType<LivingCoreWoodTile>());
+                counter++;
+            }
 
             Kills = 0;
             Timer = 0;
@@ -256,54 +282,56 @@ namespace DivergencyMod.Events.LivingCore
 
         public void End()
         {
+            if (CurWave == getWaves() + 1)
+            {
+                Texture2D altarWave = ModContent.Request<Texture2D>(Textures[CurWave - 2]).Value;
+                Vector2 position = new Vector2(LivingCoreEvent.X * 16f, LivingCoreEvent.Y * 16f) + altarWave.Size() / 2;
+
+                bool roomCleared = LivingCoreEvent.HasRoomBeenCleared(this.GetType());
+
+                Console.WriteLine(roomCleared);
+
+                if (!roomCleared)
+                {
+                    LivingCoreEvent.RoomCleared(this.GetType());
+                    Item.NewItem(null, position, RewardID);
+                }
+
+                Main.NewText("Cleared!");
+            }
+
             Kills = 0;
             Timer = 0;
             CurWave = 0;
             SpawnTimer = 0;
 
-            if (CurWave == getWaves() + 1)
-            {
-                if (!DownedHelper.ClearedAltar)
-                {
-                    Item.NewItem(null, LivingCoreEvent.Position, ModContent.ItemType<LivingCoreSword>());
-                }
-
-                NPC.SetEventFlagCleared(ref DownedHelper.ClearedAltar, -1);
-                Main.NewText("Cleared!");
-            }
+            killSpawnedEnemies();
 
             int left = LivingCoreEvent.X - LivingCoreEvent.Altar.TileFrameX / 18;
             int top = LivingCoreEvent.Y - LivingCoreEvent.Altar.TileFrameY / 18;
 
-            WorldGen.KillTile(left - 74, top - 10);
-            WorldGen.KillTile(left - 74, top - 11);
-            WorldGen.KillTile(left - 74, top - 12);
-            WorldGen.KillTile(left - 74, top - 13);
-            WorldGen.KillTile(left - 74, top - 14);
-            WorldGen.KillTile(left - 74, top - 15);
-            WorldGen.KillTile(left - 74, top - 16);
-            WorldGen.KillTile(left - 74, top - 17);
-            WorldGen.KillTile(left - 74, top - 18);
-            WorldGen.KillTile(left - 74, top - 19);
-            WorldGen.KillTile(left - 74, top - 20);
+            int counter = 0;
+            foreach (Vector2 vec in BlockingBlocks)
+            {
+                if (savedTiles[counter] != -1)
+                {
+                    WorldGen.KillTile(left - (int)vec.X, top - (int)vec.Y, noItem: true);
+                    WorldGen.PlaceTile(left - (int)vec.X, top - (int)vec.Y, savedTiles[counter]);
+                }
+                else
+                    WorldGen.KillTile(left - (int)vec.X, top - (int)vec.Y, noItem: true);
 
-            WorldGen.KillTile(left + 74, top);
-            WorldGen.KillTile(left + 74, top - 1);
-            WorldGen.KillTile(left + 74, top - 2);
-            WorldGen.KillTile(left + 74, top - 3);
-            WorldGen.KillTile(left + 74, top - 4);
-            WorldGen.KillTile(left + 74, top - 5);
-            WorldGen.KillTile(left + 74, top - 6);
-            WorldGen.KillTile(left + 74, top - 7);
 
-            WorldGen.KillTile(left + 74, top + 1);
-            WorldGen.KillTile(left + 74, top + 2);
-            WorldGen.KillTile(left + 74, top + 3);
-            WorldGen.KillTile(left + 74, top + 4);
-            WorldGen.KillTile(left + 74, top + 5);
-            WorldGen.KillTile(left + 74, top + 6);
-            WorldGen.KillTile(left + 74, top + 7);
-            WorldGen.KillTile(left + 74, top + 8);
+                counter++;
+            }
+        }
+
+        private void killSpawnedEnemies()
+        {
+            foreach (NPC npc in currentNPCs)
+            {
+                npc.active = false;
+            }
         }
     }
 }
