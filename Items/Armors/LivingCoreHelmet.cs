@@ -2,6 +2,7 @@
 using DivergencyMod.Dusts.Particles;
 using DivergencyMod.Helpers;
 using DivergencyMod.Items.Armors.Vanity;
+using DivergencyMod.NPCs.Forest;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ParticleLibrary;
@@ -505,8 +506,65 @@ namespace DivergencyMod.Items.Armors
 			}
 		}
 	}
-   
-    
+    [AutoloadEquip(EquipType.Head)]
+    public class LivingCoreHelmetRanged : ModItem
+    {
+        public int timer;
+
+        public override void SetStaticDefaults()
+        {
+            base.SetStaticDefaults();
+            DisplayName.SetDefault("Living Core Summoner Headgear");
+            Tooltip.SetDefault("'It's a perfect fit!'"
+                + "\nIncreases your max minions by 2'");
+        }
+
+        public override void SetDefaults()
+        {
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 10000;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 0;
+        }
+
+        public override void UpdateEquip(Player player)
+        {
+            player.maxMinions += 2;
+
+        }
+
+        public override bool IsArmorSet(Item head, Item body, Item legs)
+        {
+            return body.type == ModContent.ItemType<LivingCoreChestplate>() && legs.type == ModContent.ItemType<LivingCoreGreaves>();
+
+        }
+        public override void UpdateArmorSet(Player player)
+        {
+
+            player.setBonus = "Increases all summoner stats in the near of Sentries";
+			player.GetModPlayer<LivingCoreArmorRanged>().initialized = true;
+            
+            
+        }
+    }
+	public class LivingCoreArmorRanged : ModPlayer
+	{
+		public bool initialized;
+		public override void ResetEffects()
+		{
+			initialized = false;
+		}
+		public override void OnHitAnything(float x, float y, Entity victim)
+		{
+			if (initialized)
+			{
+				Projectile.NewProjectile(null, position: Player.Center, Player.velocity, ModContent.ProjectileType<LivingCoreBeamerProj>(), 10, 1);
+			}
+		}
+	}
+
+
 }
 		
  
