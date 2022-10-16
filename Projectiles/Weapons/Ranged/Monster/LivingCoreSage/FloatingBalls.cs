@@ -15,7 +15,7 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged.Monster.LivingCoreSage
     internal class FloatingBalls : ModProjectile
     {
         private int Counter { get { return (int)Projectile.ai[1]; } set { Projectile.ai[1] = value; } }
-        private bool FistPhase { get { return (int)Projectile.ai[1] > 0; } }
+        private bool FistPhase { get { return (int)Projectile.ai[1] >= 0; } }
 
 
         public override void SetStaticDefaults()
@@ -33,19 +33,18 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged.Monster.LivingCoreSage
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
-
-            Projectile.maxAI = 3;
+            Projectile.maxAI = 5;
         }
 
         public override void AI()
         {
-            Player plr = Main.CurrentPlayer; //should be the owner entity;
+            NPC owner = Main.npc[(int)Projectile.ai[4]];
 
             if (Counter == 0)
             { // first itteration of ai
                 int dir = Main.rand.Next(2)*2-1;
 
-                Projectile.position = plr.Center + new Vector2(10f, 0f)* dir;
+                Projectile.position = owner.Center + new Vector2(10f, 0f)* dir;
                 Projectile.velocity = new Vector2(dir*8f, (Main.rand.NextFloat()*2-1)*12f);
                 Projectile.velocity.Normalize();
                 Projectile.velocity *= 8f;
@@ -65,11 +64,11 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged.Monster.LivingCoreSage
 
         private void FirstPhaseAI()
         {
-            Player plr = Main.CurrentPlayer; //should be the owner entity;
+            NPC owner = Main.npc[(int)Projectile.ai[4]];
 
             float speed = Projectile.velocity.Length();
 
-            Vector2 flaotPoint = plr.Center + new Vector2(0f, -160f);
+            Vector2 flaotPoint = owner.Center + new Vector2(0f, -160f);
             Vector2 floatPointDiff = flaotPoint - Projectile.Center;
 
             // apply slow at center
@@ -88,7 +87,7 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged.Monster.LivingCoreSage
             if (speed == 0)
             {
                 Counter = -1;
-                Projectile.ai[2] = plr.Center.X - Projectile.Center.X;
+                Projectile.ai[2] = owner .Center.X - Projectile.Center.X;
                 Projectile.velocity = new Vector2(0, 16f);
             }
         }
@@ -97,8 +96,8 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged.Monster.LivingCoreSage
         {
             if (Projectile.ai[0] != -1)
             {
-                Player plr = Main.CurrentPlayer; //should be the owner entity;
-                Vector2 targetPosition = Main.npc[plr.MinionAttackTargetNPC].Center; // should be player
+                NPC owner = Main.npc[(int)Projectile.ai[4]];
+                Vector2 targetPosition = Main.player[(int)Projectile.ai[3]].Center; // should be player
                 Vector2 vecForRot = targetPosition - Projectile.Center;
 
                 float rot = vecForRot.ToRotation() + MathHelper.PiOver2;

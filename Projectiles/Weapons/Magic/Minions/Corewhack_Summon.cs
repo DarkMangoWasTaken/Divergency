@@ -42,23 +42,23 @@ namespace DivergencyMod.Projectiles.Weapons.Magic.Minions
                 Projectile.ai[0]--;
 
             Projectile.timeLeft = 100;
-            Player plr = Main.player[Projectile.owner];
+            Player owner  = Main.player[Projectile.owner];
 
-            if (!plr.HasBuff<Buffs.CorewhackBuff>())
+            if (!owner .HasBuff<Buffs.CorewhackBuff>())
             {
                 Projectile.Kill();
             }
 
-            int target = plr.MinionAttackTargetNPC;
+            int target = owner .MinionAttackTargetNPC;
             Vector2 offest = Vector2.Zero;
             if (target == -1)
-                offest = plr.Center;
+                offest = owner .Center;
             else
                 offest = Main.npc[target].Center;
 
-            int totalMinions = plr.ownedProjectileCounts[Projectile.type];
+            int totalMinions = owner .ownedProjectileCounts[Projectile.type];
 
-            int minionPos = plr.numMinions; // Projectile.minionPos + 1
+            int minionPos = owner .numMinions; // Projectile.minionPos + 1
 
             float minionOffset = (float)minionPos / (float)totalMinions * MathF.PI*2 + (float)Main.time/100f;
 

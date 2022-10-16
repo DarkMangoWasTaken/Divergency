@@ -14,14 +14,16 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged.Monster.LivingCoreSage
 {
     internal class DirectionalAttack : ModProjectile
     {
-        private int Counter { get { return (int)Projectile.ai[1]; } set { Projectile.ai[1] = value; } }
-        private int Direction { get { return (int)Projectile.ai[2] % 4;} }
+        private int Counter { get { return (int)Projectile.ai[2]; } set { Projectile.ai[2] = value; } }
+        private int Direction { get { return (int)Projectile.ai[1] % 4;} }
         private Vector2[] Directions = new Vector2[] {
             new Vector2(1, 0),
             new Vector2(0, 1),
             new Vector2(-1, 0),
             new Vector2(0, -1),
         };
+
+        public static int maxAI = 3;
 
         private int Delay = 60;
         private float StartDistance = 140f;
@@ -42,13 +44,11 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged.Monster.LivingCoreSage
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
-
-            Projectile.maxAI = 3;
         }
 
         public override void AI()
         {
-            Player plr = Main.CurrentPlayer; //Main.player[(int)Projectile.ai[0]];
+            Player owner  = Main.player[(int)Projectile.ai[0]];
 
             if (Counter == Delay)
             {
@@ -63,7 +63,7 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged.Monster.LivingCoreSage
 
                 Vector2 dir = Directions[Direction];
                 Projectile.rotation = dir.ToRotation()+MathHelper.PiOver2;
-                Projectile.Center = plr.Center + -dir * StartDistance;
+                Projectile.Center = owner .Center + -dir * StartDistance;
 
                 // this is stand still
             }

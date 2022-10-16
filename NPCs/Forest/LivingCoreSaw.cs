@@ -151,11 +151,11 @@ namespace DivergencyMod.NPCs.Forest
             NPC.velocity.X = num810 * NPC.direction;
             NPC.velocity.Y = num810 * NPC.directionY;
 
-            Player plr = Main.player[NPC.target];
+            Player owner  = Main.player[NPC.target];
 
-            Vector2 diff = NPC.Center - plr.Center;
+            Vector2 diff = NPC.Center - owner .Center;
 
-            if (Collision.CanHit(NPC, plr))
+            if (Collision.CanHit(NPC, owner ))
             {
                 if (NPC.ai[1] == 0)
                 {

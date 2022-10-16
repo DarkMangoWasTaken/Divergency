@@ -9,11 +9,12 @@ using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Utilities;
+using DivergencyMod.Projectiles.Weapons.Ranged.Monster.LivingCoreSage;
 
 
 namespace DivergencyMod.NPCs.Forest
 {
-    public class Core_MiniBoss : ModNPC
+    public class LivingCoreSage : ModNPC
     {
 
         public float State = 0;
@@ -23,7 +24,7 @@ namespace DivergencyMod.NPCs.Forest
         public override void SetStaticDefaults()
         {
 
-            DisplayName.SetDefault("Woodcore Guardian"); // Automatic from localization files
+            DisplayName.SetDefault("Living Core Sage"); // Automatic from localization files
             Main.npcFrameCount[NPC.type] = 1; // make sure to set this for your modNPCs.
             NPCID.Sets.NPCBestiaryDrawModifiers value = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
             { // Influences how the NPC looks in the Bestiary
@@ -66,15 +67,12 @@ namespace DivergencyMod.NPCs.Forest
             NPC.TargetClosest();
             Player player = Main.player[NPC.target];
 
-         switch (Phase)
-         {
+            switch (Phase)
+            {
                 case 0:
-
-                    NPC.velocity = new Vector2(0, -0.2f);
-
                     teleport ++;
 
-                    if(teleport >= 300)
+                    if(teleport >= 260)
                     {
                         for (int i = 0; i < 90; i++)
                         {
@@ -85,7 +83,8 @@ namespace DivergencyMod.NPCs.Forest
 
                         NPC.alpha = 255;
 
-                        NPC.Center = player.Center + new Vector2(Main.rand.Next(-300,300), Main.rand.Next(-80, 120));
+
+                        NPC.Center = player.Center + new Vector2(Main.rand.Next(150, 300) * (Main.rand.Next(2)*2-1), -Main.rand.Next(40, 200));
 
                         Phase = Main.rand.Next(3);
                     }
@@ -103,7 +102,29 @@ namespace DivergencyMod.NPCs.Forest
                             dust.velocity /= 1f;
                         }
 
-                        CombatText.NewText(NPC.getRect(), Color.LightGreen, "Insert attack 1 here", true, false);
+                        int dir1 = Main.rand.Next(4);
+                        int dir2 = Main.rand.Next(4);
+                        int dir3 = Main.rand.Next(4);
+
+                        while (dir1 == dir2)
+                            dir2 = Main.rand.Next(4);
+
+                        while (dir1 == dir3 || dir2 == dir3)
+                            dir3 = Main.rand.Next(4);
+
+                        int id1 = Projectile.NewProjectile(NPC.GetBossSpawnSource(NPC.target), NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<DirectionalAttack>(), 10, 10);
+                        int id2 = Projectile.NewProjectile(NPC.GetBossSpawnSource(NPC.target), NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<DirectionalAttack>(), 10, 10);
+                        int id3 = Projectile.NewProjectile(NPC.GetBossSpawnSource(NPC.target), NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<DirectionalAttack>(), 10, 10);
+
+                        Main.projectile[id1].ai[0] = NPC.target;
+                        Main.projectile[id1].ai[1] = dir1;
+
+                        Main.projectile[id2].ai[0] = NPC.target;
+                        Main.projectile[id2].ai[1] = dir2;
+
+                        Main.projectile[id3].ai[0] = NPC.target;
+                        Main.projectile[id3].ai[1] = dir3;
+
                         Phase = 0;
                         NPC.alpha = 0;
                         NPC.dontTakeDamage = false;
@@ -131,7 +152,13 @@ namespace DivergencyMod.NPCs.Forest
                             dust.velocity /= 1f;
                         }
 
-                        CombatText.NewText(NPC.getRect(), Color.LightGreen, "Insert attack 2 here", true, false);
+                        for (int i = 0; i < 10; i++)
+                        {
+                            int id = Projectile.NewProjectile(NPC.GetBossSpawnSource(NPC.target), NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<FloatingBalls>(), 10, 10);
+                            Main.projectile[id].ai[3] = NPC.target;
+                            Main.projectile[id].ai[4] = NPC.whoAmI;
+                        }
+
                         Phase = 0;
                         NPC.alpha = 0;
                         NPC.dontTakeDamage = false;
