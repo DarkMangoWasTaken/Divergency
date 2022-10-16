@@ -176,6 +176,7 @@ namespace DivergencyMod.Items.Armors
 			Projectile.width = Projectile.height = 1;
 			Projectile.scale = 1.5f;
 			Projectile.tileCollide = false;
+			
 
 		}
 		public override void AI()
@@ -187,14 +188,17 @@ namespace DivergencyMod.Items.Armors
             Player player = Main.player[Projectile.owner];
 			Projectile.timeLeft = 10;
 			Projectile.Center = player.Center + new Vector2(-29, -45);
-			//Projectile.rotation += 0.02f;
-			if (player.GetModPlayer<LivingCoreArmorMelee>().ShieldDamage == 0)
+			
+
+				 
+
+            if (player.GetModPlayer<LivingCoreArmorMelee>().ShieldDamage == 0)
 			{
 				player.statDefense = player.statDefense + 20;
 				Projectile.frame = 0;
 
 			}
-			if (player.GetModPlayer<LivingCoreArmorMelee>().ShieldDamage == 1)
+            if (player.GetModPlayer<LivingCoreArmorMelee>().ShieldDamage == 1)
 			{
 				player.statDefense = player.statDefense + 15;
 				Projectile.frame = 1;
