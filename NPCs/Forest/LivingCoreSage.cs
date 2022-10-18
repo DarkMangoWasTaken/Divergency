@@ -34,8 +34,8 @@ namespace DivergencyMod.NPCs.Forest
         }
         public override void SetDefaults()
         {
-            NPC.width = 168; // The width of the NPC's hitbox (in pixels)
-            NPC.height = 140; // The height of the NPC's hitbox (in pixels)
+            NPC.width = 100; // The width of the NPC's hitbox (in pixels)
+            NPC.height = 120; // The height of the NPC's hitbox (in pixels)
             NPC.aiStyle = -1; // This NPC has a completely unique AI, so we set this to -1. The default aiStyle 0 will face the player, which might conflict with custom AI code.
             NPC.damage = 0; // The amount of damage that this NPC deals
             NPC.defense = 2; // The amount of defense that this NPC has
@@ -56,7 +56,7 @@ namespace DivergencyMod.NPCs.Forest
       
 
 				// Sets the description of this NPC that is listed in the bestiary.
-				new FlavorTextBestiaryInfoElement("The guardian of the living core")
+				new FlavorTextBestiaryInfoElement("fucking this guy is way too tough...")
             });
         }
 
@@ -97,9 +97,9 @@ namespace DivergencyMod.NPCs.Forest
                     {
                         for (int i = 0; i < 90; i++)
                         {
-                            var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, 87, NPC.velocity.X * 0.4f, NPC.velocity.Y * 0.4f, DustID.TerraBlade, default, 2f);
-                            dust.noGravity = true;
-                            dust.velocity /= 1f;
+                            //var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, 87, NPC.velocity.X * 0.4f, NPC.velocity.Y * 0.4f, DustID.TerraBlade, default, 2f);
+                            //dust.noGravity = true;
+                            //dust.velocity /= 1f;
                         }
 
                         int dir1 = Main.rand.Next(4);
@@ -114,7 +114,7 @@ namespace DivergencyMod.NPCs.Forest
 
                         int id1 = Projectile.NewProjectile(NPC.GetBossSpawnSource(NPC.target), NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<DirectionalAttack>(), 10, 10);
                         int id2 = Projectile.NewProjectile(NPC.GetBossSpawnSource(NPC.target), NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<DirectionalAttack>(), 10, 10);
-                        int id3 = Projectile.NewProjectile(NPC.GetBossSpawnSource(NPC.target), NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<DirectionalAttack>(), 10, 10);
+                       // int id3 = Projectile.NewProjectile(NPC.GetBossSpawnSource(NPC.target), NPC.Center, new Vector2(0, 0), ModContent.ProjectileType<DirectionalAttack>(), 10, 10);
 
                         Main.projectile[id1].ai[0] = NPC.target;
                         Main.projectile[id1].ai[1] = dir1;
@@ -122,8 +122,8 @@ namespace DivergencyMod.NPCs.Forest
                         Main.projectile[id2].ai[0] = NPC.target;
                         Main.projectile[id2].ai[1] = dir2;
 
-                        Main.projectile[id3].ai[0] = NPC.target;
-                        Main.projectile[id3].ai[1] = dir3;
+                      //  Main.projectile[id3].ai[0] = NPC.target;
+                       // Main.projectile[id3].ai[1] = dir3;
 
                         Phase = 0;
                         NPC.alpha = 0;
@@ -147,9 +147,9 @@ namespace DivergencyMod.NPCs.Forest
                     {
                         for (int i = 0; i < 90; i++)
                         {
-                            var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, 87, NPC.velocity.X * 0.4f, NPC.velocity.Y * 0.4f, DustID.TerraBlade, default, 2f);
-                            dust.noGravity = true;
-                            dust.velocity /= 1f;
+                           //var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, 87, NPC.velocity.X * 0.4f, NPC.velocity.Y * 0.4f, DustID.TerraBlade, default, 2f);
+                            //dust.noGravity = true;
+                            //dust.velocity /= 1f;
                         }
 
                         for (int i = 0; i < 10; i++)

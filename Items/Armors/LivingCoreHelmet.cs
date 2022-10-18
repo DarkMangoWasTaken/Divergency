@@ -416,7 +416,7 @@ namespace DivergencyMod.Items.Armors
 					Player.ClearBuff(ModContent.BuffType<HealerStance>());
 					Player.AddBuff(ModContent.BuffType<DamageStance>(), 1);
 					DoubleTapTimer = 0;
-					for (int i = 0; i < 3; i++)
+					for (int i = 0; i < 30; i++)
 					{
 						Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
 						ParticleManager.NewParticle(Player.Center + new Vector2(Main.rand.NextFloat(-10, 10)), speed * Main.rand.NextFloat(15, 30), ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 2f, Player.whoAmI, Layer: Layer.BeforeProjectiles);
@@ -426,7 +426,7 @@ namespace DivergencyMod.Items.Armors
 				{
 					Player.ClearBuff(ModContent.BuffType<DamageStance>());
 					DoubleTapTimer = 0;
-					for (int i = 0; i < 3; i++)
+					for (int i = 0; i < 30; i++)
 					{
 						Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
 						ParticleManager.NewParticle(Player.Center + new Vector2(Main.rand.NextFloat(-10, 10)), speed * Main.rand.NextFloat(15, 30), ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 2f, Player.whoAmI, Layer: Layer.BeforeProjectiles);
@@ -514,9 +514,9 @@ namespace DivergencyMod.Items.Armors
         public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
-            DisplayName.SetDefault("Living Core Summoner Headgear");
+            DisplayName.SetDefault("Living Core Hunter's Hood");
             Tooltip.SetDefault("'It's a perfect fit!'"
-                + "\nIncreases your max minions by 2'");
+                + "\nIncreases ranged damage by 12%");
         }
 
         public override void SetDefaults()
@@ -530,8 +530,7 @@ namespace DivergencyMod.Items.Armors
 
         public override void UpdateEquip(Player player)
         {
-            player.maxMinions += 2;
-
+			player.GetDamage(DamageClass.Ranged) *= 1.2f;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -542,7 +541,7 @@ namespace DivergencyMod.Items.Armors
         public override void UpdateArmorSet(Player player)
         {
 
-            player.setBonus = "Increases all summoner stats in the near of Sentries";
+            player.setBonus = "Every fith shot heals you";
 			player.GetModPlayer<LivingCoreArmorRanged>().initialized = true;
             
             
@@ -551,15 +550,25 @@ namespace DivergencyMod.Items.Armors
 	public class LivingCoreArmorRanged : ModPlayer
 	{
 		public bool initialized;
+		public int heal = 0;
 		public override void ResetEffects()
 		{
 			initialized = false;
 		}
-		public override void OnHitAnything(float x, float y, Entity victim)
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
-			if (initialized)
+
+
+
+			if (initialized && Player.HeldItem.DamageType == DamageClass.Ranged)
 			{
-				Projectile.NewProjectile(null, position: Player.Center, Player.velocity, ModContent.ProjectileType<LivingCoreBeamerProj>(), 10, 1);
+				heal++;
+				if (heal == 8)
+				{
+					Player.Heal(damage / 3);
+					heal = 0;
+				}
+
 			}
 		}
 	}

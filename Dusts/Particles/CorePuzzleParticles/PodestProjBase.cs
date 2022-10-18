@@ -36,11 +36,11 @@ namespace DivergencyMod.Dusts.Particles.CorePuzzleParticles
 
                 countdownstop = true;
             }
-                    position = Main.projectile[(int)ai[1]].Center;
+            position = Main.projectile[(int)ai[1]].Center;
             if(!Main.projectile[(int)ai[1]].active)
             {
 
-                countdown = true;
+                active = false;
             }
             color = Color.Lerp(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), Color.Multiply(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0f), 0.5f), (360f - timeLeft) / 360f);
         }

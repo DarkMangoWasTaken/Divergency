@@ -61,15 +61,15 @@ namespace DivergencyMod.Events.LivingCore
                 }
                 if (SpawnTimer == 280)
                 {
-                    NPC.NewNPCDirect(null, new Vector2(LivingCoreEvent.Position.X - 300, LivingCoreEvent.Position.Y - 300), ModContent.NPCType<CoreBeamer>());
-                    NPC.NewNPCDirect(null, new Vector2(LivingCoreEvent.Position.X + 300, LivingCoreEvent.Position.Y - 300), ModContent.NPCType<CoreBeamer>());
-                    NPC.NewNPCDirect(null, new Vector2(LivingCoreEvent.Position.X - 300, LivingCoreEvent.Position.Y + 300), ModContent.NPCType<CoreBeamer>());
-                    NPC.NewNPCDirect(null, new Vector2(LivingCoreEvent.Position.X + 300, LivingCoreEvent.Position.Y + 300), ModContent.NPCType<CoreBeamer>());
+                    NPC.NewNPCDirect(null, new Vector2(LivingCoreEvent.Position.X - 300, LivingCoreEvent.Position.Y - 300), ModContent.NPCType<LivingCoreSage>());
+                   // NPC.NewNPCDirect(null, new Vector2(LivingCoreEvent.Position.X + 300, LivingCoreEvent.Position.Y - 300), ModContent.NPCType<CoreBeamer>());
+                    //NPC.NewNPCDirect(null, new Vector2(LivingCoreEvent.Position.X - 300, LivingCoreEvent.Position.Y + 300), ModContent.NPCType<CoreBeamer>());
+                   // NPC.NewNPCDirect(null, new Vector2(LivingCoreEvent.Position.X + 300, LivingCoreEvent.Position.Y + 300), ModContent.NPCType<CoreBeamer>());
 
                     ParticleManager.NewParticle<ResetParticle>(new Vector2(LivingCoreEvent.Position.X - 300, LivingCoreEvent.Position.Y - 300), Vector2.Zero, Color.White, 1f, 1.05f);
-                    ParticleManager.NewParticle<ResetParticle>(new Vector2(LivingCoreEvent.Position.X + 300, LivingCoreEvent.Position.Y - 300), Vector2.Zero, Color.White, 1f, 1.05f);
-                    ParticleManager.NewParticle<ResetParticle>(new Vector2(LivingCoreEvent.Position.X - 300, LivingCoreEvent.Position.Y + 300), Vector2.Zero, Color.White, 1f, 1.05f);
-                    ParticleManager.NewParticle<ResetParticle>(new Vector2(LivingCoreEvent.Position.X + 300, LivingCoreEvent.Position.Y + 300), Vector2.Zero, Color.White, 1f, 1.05f);
+                   // ParticleManager.NewParticle<ResetParticle>(new Vector2(LivingCoreEvent.Position.X + 300, LivingCoreEvent.Position.Y - 300), Vector2.Zero, Color.White, 1f, 1.05f);
+                    //ParticleManager.NewParticle<ResetParticle>(new Vector2(LivingCoreEvent.Position.X - 300, LivingCoreEvent.Position.Y + 300), Vector2.Zero, Color.White, 1f, 1.05f);
+                   // ParticleManager.NewParticle<ResetParticle>(new Vector2(LivingCoreEvent.Position.X + 300, LivingCoreEvent.Position.Y + 300), Vector2.Zero, Color.White, 1f, 1.05f);
 
                     SpawnTimer = 0;
                     State = WaveState.WaveOne;

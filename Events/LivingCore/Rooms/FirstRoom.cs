@@ -52,7 +52,7 @@ namespace DivergencyMod.Events.LivingCore.Rooms
                     return new Wave("WAVE 1!",
                         new Instance[]
                         {
-                            new Instance(ModContent.NPCType<CoreBeamer>(), new Vector2(300, 300)),
+                            new Instance(ModContent.NPCType<LivingCoreSage>(), new Vector2(300, 300)),
                             new Instance(ModContent.NPCType<CoreBeamer>(), new Vector2(300, -300)),
                             new Instance(ModContent.NPCType<CoreBeamer>(), new Vector2(-300, -300)),
                             new Instance(ModContent.NPCType<CoreBeamer>(), new Vector2(-300, 300)),
