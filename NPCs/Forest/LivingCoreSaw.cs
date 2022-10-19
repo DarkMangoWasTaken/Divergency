@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DivergencyMod.Helpers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,8 @@ namespace DivergencyMod.NPCs.Forest
         {
             DisplayName.SetDefault("Living Core Saw");
             Main.npcFrameCount[NPC.type] = 1;
+            NPCID.Sets.TrailCacheLength[NPC.type] = 50; // in SetStaticDefaults()
+            NPCID.Sets.TrailingMode[NPC.type] = 2;
         }
         public override void SetDefaults()
         {
@@ -69,14 +72,7 @@ namespace DivergencyMod.NPCs.Forest
             return;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-        {
-            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
-
-            spriteBatch.Draw(texture, NPC.Center - Main.screenPosition, new Rectangle(0, 0, NPC.width, NPC.height), Color.White, NPC.rotation, new Vector2(NPC.width / 2, NPC.height / 2), NPC.scale, SpriteEffects.None, 0f);
-
-            return false;
-        }
+       
 
         private void jumpAI()
         {
@@ -99,6 +95,35 @@ namespace DivergencyMod.NPCs.Forest
         {
             NPC.type = NPCID.BlazingWheel;
             return true;
+        }
+        public TrailRenderer prim;
+        public TrailRenderer prim2;
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            Main.spriteBatch.End();
+
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
+            if (prim == null)
+            {
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(60f) * (1f - p), (p) => NPC.GetAlpha(Color.LimeGreen) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = NPC.Size / 2f;
+            }
+            if (prim2 == null)
+            {
+                prim2 = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(30f) * (1f - p), (p) => NPC.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim2.drawOffset = NPC.Size / 2f;
+            }
+            Main.spriteBatch.Begin();
+            prim.Draw(NPC.oldPos);
+            prim2.Draw(NPC.oldPos);
+            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+
+            spriteBatch.Draw(texture, NPC.Center - Main.screenPosition, new Rectangle(0, 0, NPC.width, NPC.height), Color.White, NPC.rotation, new Vector2(NPC.width / 2, NPC.height / 2), NPC.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.End();
+
+            Main.spriteBatch.Begin();
+            return false;
         }
 
         private void gameAI()

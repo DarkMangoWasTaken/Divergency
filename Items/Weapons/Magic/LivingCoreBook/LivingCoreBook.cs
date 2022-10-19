@@ -1,6 +1,9 @@
 using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Helpers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using ParticleLibrary;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Creative;
@@ -20,11 +23,11 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Living Core Book");
-            DisplayName.AddTranslation((int)CultureName.German, "Wurzelbruch");
+            DisplayName.SetDefault("Vineboom");
 
             Tooltip.SetDefault("Summons up to 10 explosive leaves"
                 + "\nRight click to detonate instantly");
+
 
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 
@@ -60,7 +63,7 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
                 {
                     if (Main.projectile[i].type == Item.shoot && player.ownedProjectileCounts[Item.shoot] > 0)
                     {
-                        Main.projectile[i].Kill();
+                        Main.projectile[i].timeLeft /= 8;
                     }
                 }
 
@@ -81,6 +84,11 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
 
     public class LivingLeaf : ModProjectile
     {
+        public override void SetStaticDefaults()
+        {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 25; // in SetStaticDefaults()
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
         public override Color? GetAlpha(Color lightColor) => new(255, 255, 255, 100);
 
         public override void SetDefaults()
@@ -151,17 +159,25 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
             Player player = Main.player[Projectile.owner];
 
             SoundEngine.PlaySound(SoundID.Grass, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
-            player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 8;
+            SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/vineboom")
+            {
+                Volume = 3f,
+                PitchVariance = 0.2f,
+                MaxInstances = 10
+
+            });
+            player.GetModPlayer<DivergencyPlayer>().ScreenShakeIntensity = 8; //abizmal
+            ParticleManager.NewParticle(Projectile.Center, new Vector2(0, 0), ParticleManager.NewInstance<LivingCoreExplosionParticle>(), Color.Purple, 1.4f);
+
             for (int i = 0; i < 20; i++)
             {
                 Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                ParticleManager.NewParticle(Projectile.Center, speed * 7, ParticleManager.NewInstance<LivingCoreParticle2>(), Color.Purple, Main.rand.NextFloat(0.2f, 0.8f));
+                ParticleManager.NewParticle(Projectile.Center, speed * 10, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, Main.rand.NextFloat(0.5f, 1f));
             }
-           // ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<LivingCoreParticle>(), Color.Purple, 1);
 
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, Vector2.Zero, ProjectileType<LivingExplosion>(), Projectile.damage + player.ownedProjectileCounts[Projectile.type] * 4,
+
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, Vector2.Zero, ProjectileType<LivingExplosion>(), Projectile.damage + player.ownedProjectileCounts[Projectile.type] * 10,
                 Projectile.knockBack, Projectile.owner);
 
             int numberDust = 5;
@@ -170,9 +186,31 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
             {
                 Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.ChlorophyteWeapon, speed * 5, 0, default, 0.5f);
-                dust.noGravity = true;
+                ParticleManager.NewParticle(Projectile.Center, speed * 5, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, Main.rand.NextFloat(0.3f, 0.6f));
             }
+        }
+        public TrailRenderer prim;
+        public TrailRenderer prim2;
+        public override bool PreDraw(ref Color lightColor)
+        {
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/Trail").Value;
+            Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
+            if (prim == null)
+            {
+                prim = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(10f) * (1f - p), (p) => Projectile.GetAlpha(Color.LimeGreen) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim.drawOffset = Projectile.Size / 2f;
+            }
+            if (prim2 == null)
+            {
+                prim2 = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(5f) * (1f - p), (p) => Projectile.GetAlpha(Color.White) * 0.9f * (float)Math.Pow(1f - p, 2f));
+                prim2.drawOffset = Projectile.Size / 2f;
+            }
+            prim.Draw(Projectile.oldPos);
+           
+            //prim2.Draw(Projectile.oldPos);
+
+
+            return true;
         }
     }
 
@@ -187,7 +225,7 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
             Projectile.friendly = true;
             Projectile.hostile = false;
 
-            Projectile.width = Projectile.height = 120;
+            Projectile.width = Projectile.height = 200;
             Projectile.scale = 1f;
             Projectile.alpha = 255;
             Projectile.penetrate = -1;
