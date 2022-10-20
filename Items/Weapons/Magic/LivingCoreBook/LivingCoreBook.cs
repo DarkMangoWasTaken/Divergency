@@ -161,7 +161,7 @@ namespace DivergencyMod.Items.Weapons.Magic.LivingCoreBook
             SoundEngine.PlaySound(SoundID.Grass, Projectile.Center);
             SoundEngine.PlaySound(new SoundStyle($"{nameof(DivergencyMod)}/Sounds/vineboom")
             {
-                Volume = 3f,
+                Volume = 0.9f,
                 PitchVariance = 0.2f,
                 MaxInstances = 10
 
