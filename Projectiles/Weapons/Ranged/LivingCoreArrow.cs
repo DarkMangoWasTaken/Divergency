@@ -50,7 +50,7 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
                     Vector2 dir = Main.rand.NextVector2Unit() * 0.1f;
             
 
-                  ParticleManager.NewParticle(Projectile.Center, dir * 60, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+                  ParticleManager.NewParticle(Projectile.Center, dir * 60, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 0.9f);
 
 
                     
@@ -211,7 +211,7 @@ namespace DivergencyMod.Projectiles.Weapons.Ranged
                 Vector2 dir = (-oldVelocity).RotatedBy(Main.rand.NextFloat()* MathF.PI - MathF.PI/2);
                 dir.Normalize();
                 dir *= 0.3f;
-                ParticleManager.NewParticle(Projectile.Center, dir * 60, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+                ParticleManager.NewParticle(Projectile.Center, dir * 60, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 0.9f);
             }
 
             if (Projectile.ai[1] != 0)

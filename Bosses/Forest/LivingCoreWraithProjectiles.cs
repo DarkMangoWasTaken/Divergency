@@ -102,7 +102,7 @@ namespace DivergencyMod.Bosses.Forest
                 {
                     Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                    ParticleManager.NewParticle(Projectile.Center, speed * 3, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+                    ParticleManager.NewParticle(Projectile.Center, speed * 3, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 0.9f);
 
 
                 }
@@ -208,7 +208,7 @@ namespace DivergencyMod.Bosses.Forest
                 {
                     Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                    ParticleManager.NewParticle(Projectile.Center, speed * 10, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+                    ParticleManager.NewParticle(Projectile.Center, speed * 10, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 0.9f);
 
 
                 }
@@ -316,7 +316,7 @@ namespace DivergencyMod.Bosses.Forest
                 {
                     Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                    ParticleManager.NewParticle(Projectile.Center, speed * 3, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+                    ParticleManager.NewParticle(Projectile.Center, speed * 3, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 0.9f);
 
 
                 }

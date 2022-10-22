@@ -77,6 +77,7 @@ namespace DivergencyMod.NPCs.Forest
                 NPC.velocity += speed * 15;
             }
         }
+        public Vector2 ParticleSpawn;
         public override void AI()
         {
             timer++;
@@ -109,8 +110,8 @@ namespace DivergencyMod.NPCs.Forest
 
                     {
                         Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
-
-                        ParticleManager.NewParticle(NPC.Center, speed * 20, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 1f);
+                        Vector2 ParticleLoc = NPC.Center + Main.rand.NextVector2Circular(8, 8f) * 10;
+                        ParticleManager.NewParticle(ParticleLoc, ParticleLoc.DirectionTo(NPC.Center) * 1f, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 1f);
 
 
                     }
@@ -349,7 +350,7 @@ namespace DivergencyMod.NPCs.Forest
                 {
                     Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
 
-                    ParticleManager.NewParticle(Projectile.Center, speed * 3, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f, Projectile.whoAmI, Projectile.whoAmI);
+                    ParticleManager.NewParticle(Projectile.Center, speed * 3, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 0.9f, Projectile.whoAmI, Projectile.whoAmI);
 
 
                 }

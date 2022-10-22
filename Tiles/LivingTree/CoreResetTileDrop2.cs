@@ -84,7 +84,7 @@ namespace DivergencyMod.Tiles.LivingTree
             {
                 Vector2 speed2 = Main.rand.NextVector2Circular(1f, 1f);
 
-                ParticleManager.NewParticle(pos, speed2 * 50, ParticleManager.NewInstance<WraithFireParticle>(), Color.Purple, 0.9f);
+                ParticleManager.NewParticle(pos, speed2 * 50, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 0.9f);
 
 
             }
