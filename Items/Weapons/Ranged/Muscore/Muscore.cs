@@ -41,9 +41,9 @@ namespace DivergencyMod.Items.Weapons.Ranged.Muscore
             Item.knockBack = 2f;
             Item.noMelee = true;
 
-            Item.shoot = ProjectileID.PurificationPowder;
+            Item.shoot = ProjectileID.ChlorophyteBullet;
             Item.shootSpeed = 12f;
-            Item.useAmmo = AmmoID.None;
+            Item.useAmmo = AmmoID.Bullet;
 
             Item.width = 78;
             Item.height = 32;
