@@ -1,4 +1,4 @@
-﻿using DivergencyMod.Base;
+﻿    using DivergencyMod.Base;
 using DivergencyMod.Dusts.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

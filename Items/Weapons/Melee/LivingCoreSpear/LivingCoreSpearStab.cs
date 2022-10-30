@@ -11,6 +11,8 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Utilities;
+using DivergencyMod.Base;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
@@ -19,13 +21,14 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/LivingCoreSpear";
 
       
-
+        
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Living Core Spear");
-                Main.projFrames[Projectile.type] = 1; ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-        }
+                Main.projFrames[Projectile.type] = 1; 
+               ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
+               ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+            }
 
             private float MovementFactor = 40;
             private float ParticleTimer;
@@ -33,7 +36,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             public int charge;
 
         public float AttackTimer = 0;
-        public byte CurrentAttack;
+        public int CurrentAttack;
         public bool ProjectileGetBack;
         private bool initializeMouse;
         private Vector2 CurrentMouseWorld;
@@ -41,7 +44,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
         private bool chargereleaseIncrease;
         public float holdOffset = 1;
 
-        public byte Overcharge;
+        public int Overcharge;
         public override void SetDefaults()
             {
                 Projectile.damage = 18;
@@ -63,6 +66,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
                 get => Projectile.ai[0];
                 set => Projectile.ai[0] = value;
             }
+
         public float swordRotation;
 
         public override void AI()
@@ -70,141 +74,73 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Player player = Main.player[Projectile.owner];
             if (initialize)
             {
-                if (Main.mouseLeft && !mouseleftwasreleased && Overcharge < 3)
+               Main.NewText(DoingAttack);
+
+                {
+                    if (Main.mouseLeft && !DoingAttack && Overcharge < 3)
+                    {
+                        charge++;
+
+                    }
+                }
+                Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
+
+                if (Main.mouseLeft && !DoingAttack && Overcharge < 3)
                 {
                     charge++;
 
                 }
                 //handles the attack switching
-                if (charge == 60 && !mouseleftwasreleased && Overcharge < 3)
+                if (charge == 60 && !DoingAttack && Overcharge < 3)
                 {
                     Overcharge++;
                     charge = 0;
-                    AttackTimer = 0;
 
                 }
 
                 if (Main.mouseLeftRelease && !Main.mouseLeft)
                 {
-                    mouseleftwasreleased = true;
+                    DoingAttack = true;
                 }
-                if (mouseleftwasreleased)
+                if (DoingAttack)
                 {
+                    Timer++;
 
 
-                    mouseleftwasreleased = true;
+                    if (Timer == 30)
+                    {
+                        Overcharge--;
+                        Timer = 0;
+                    }
+                    if (Overcharge == -1)
+                    {
+                        Projectile.Kill();
+                    }
                     if (Overcharge == 0)
                     {
-                        CurrentAttack = 1;
+                        Projectile.GetSpearAttack(0,0,0,0,1);
+                    }
+                    if (Overcharge == 1)
+                    {
+                  
+                        Projectile.GetSpearAttack(0, 0, 0, 0,2);
 
                     }
-                    if (Overcharge == 1 && AttackTimer == 0)
+                    if (Overcharge == 2 )
                     {
-                        CurrentAttack = 2;
+                        Projectile.GetSpearAttack(0, 0, 0, 0,3);
 
                     }
-                    if (Overcharge == 2 && AttackTimer == 0)
+                    if (Overcharge == 3)
                     {
-                        CurrentAttack = 3;
-
-                    }
-                    if (Overcharge == 3 && AttackTimer == 0)
-                    {
-                        CurrentAttack = 4;
-
-                    }
-                }
-
-
-                //the attacks themselves
-
-                if (CurrentAttack == 1) //attack without charging
-                {
-                    AttackTimer++;
-                    if (AttackTimer < 5 && AttackTimer < 15)
-                    {
-                        MovementFactor += 15;
-
-                    }
-                    else if (AttackTimer < 19f)
-                    {
-                        MovementFactor -= 5f;
-                    }
-                    if (AttackTimer == 22)
-                    {
-                        AttackTimer = 1;
-
-                        Projectile.Kill();
+                        Projectile.GetSpearAttack(0, 0, 0, 0,4);
 
 
                     }
                 }
-                if (CurrentAttack == 2) //charged one time
-                {
-                    AttackTimer++;
-                    if (AttackTimer < 5 && AttackTimer < 15)
-                    {
-                        MovementFactor += 15;
+             
 
-                    }
-                    else if (AttackTimer < 19f)
-                    {
-                        MovementFactor -= 5f;
-                    }
-                    if (AttackTimer == 22)
-                    {
-                        CurrentAttack--;
-                        AttackTimer = 1;
-
-                    }
-                }
-                if (CurrentAttack == 3) //charged two times
-                {
-                    AttackTimer++;
-                    if (AttackTimer < 5 && AttackTimer < 15)
-                    {
-                        MovementFactor += 15;
-
-                    }
-                    else if (AttackTimer < 19f)
-                    {
-                        MovementFactor -= 5f;
-                    }
-                    if (AttackTimer == 22)
-                    {
-                        CurrentAttack--;
-                        AttackTimer = 1;
-
-                    }
-                }
-                if (CurrentAttack == 4) //charged three times
-                {
-                    AttackTimer++;
-                    if (AttackTimer < 5 && AttackTimer < 15)
-                    {
-                        MovementFactor += 15;
-
-                    }
-                    else if (AttackTimer < 19f)
-                    {
-                        MovementFactor -= 5f;
-                    }
-                    if (AttackTimer == 22)
-                    {
-                        CurrentAttack--;
-                        AttackTimer = 1;
-
-                    }
-                }
-
-
-
-
-                Timer++;
-                if (Timer == 1)
-                {
-                    CurrentMouseWorld = Main.MouseWorld;
-                }
+               
                 if (player.noItems || player.CCed || player.dead || !player.active)
                     Projectile.Kill();
                 //if (!player.channel)
@@ -222,10 +158,9 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
                 Projectile.spriteDirection = player.direction;
 
-                Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
+               // Projectile.Center = position + Projectile.velocity * MovementFactor;
 
                 position += new Vector2(holdOffset,0);
-                Projectile.Center = position + Projectile.velocity * MovementFactor; ;
 
                 player.heldProj = Projectile.whoAmI;
                 player.itemTime = 2;
@@ -240,7 +175,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
                 else 
                 {
 
-                    Projectile.rotation = (position - player.Center).ToRotation() + (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + (float)Math.PI * -3 / 4f;
+                    Projectile.rotation = (position - player.Center).ToRotation() + (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + (float)MathHelper.PiOver4;
 
                 }
 
@@ -267,7 +202,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
         public TrailRenderer SwordSlash3;
         private int backtimer;
         private byte chargeReleaseMax;
-        private bool mouseleftwasreleased = false;
+        private bool DoingAttack;
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -360,6 +295,8 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             return false;
 
         }
+
+       
     }
 
 

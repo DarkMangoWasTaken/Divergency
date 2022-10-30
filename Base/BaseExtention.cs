@@ -1,10 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DivergencyMod.Items.Weapons.Magic.Invoker;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Terraria;
 using Terraria.Graphics.Shaders;
+using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace DivergencyMod.Base
 {
@@ -129,6 +131,145 @@ namespace DivergencyMod.Base
         projectile.velocity = move;
     }
 
-}
+
+            
+        public static int AttackTimer;
+        public static bool mouseleftwasreleased;
+        public static float pos { get; set; }
+        public static byte CurrentAttack { get; set; }
+        public static void GetSpearAttack(this Projectile projectile, float Startup, float StabStart, float Stabpause, float StabBack, float CurrentAttackDeterminer)
+        {
+
+          //Main.NewText(CurrentAttack);
+
+            //the attacks themselves
+            Player player = Main.player[projectile.owner];
+            
+            Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
+
+            projectile.Center = position + projectile.velocity * pos * 5;
+
+            if (Main.mouseLeftRelease && !Main.mouseLeft)
+            {
+                mouseleftwasreleased = true;
+            }
+            if (mouseleftwasreleased)
+            {
+                if (CurrentAttack == 1 || CurrentAttackDeterminer == 1 && CurrentAttackDeterminer != -1) //attack without charging
+                {
+                    AttackTimer++;
+                    if (AttackTimer < 5 && AttackTimer < 15)
+                    {
+                        pos += 8;
+
+                    }
+                    if (AttackTimer > 15f)
+                    {
+                        pos -= 5f;
+                    }
+                    if (AttackTimer == 30)
+                    {
+
+                        projectile.Kill();
+                        AttackTimer = 0;
+                        CurrentAttackDeterminer = -1;
+                        CurrentAttack = 0;
+
+                        pos = 0;
+
+
+                    }
+                }
+
+                if (CurrentAttack == 2 || CurrentAttackDeterminer == 2 && CurrentAttackDeterminer != -2) //charged one time
+                {
+                    AttackTimer++;
+                    if (AttackTimer == 1)
+                    {
+                        CurrentAttack = 2;
+
+                    }
+                    if (AttackTimer < 5 && AttackTimer < 15)
+                    {
+                        pos += 8;
+                      
+                    }
+                    if (AttackTimer > 15f)
+                    {
+                        pos -= 5f;
+                    }
+                    if (AttackTimer == 30)
+                    {
+                        CurrentAttack--;
+                        AttackTimer = 0;
+                        CurrentAttackDeterminer = -2;
+                        pos = 0;
+                        Main.NewText("monghsfosdhgaoijfiojgpijfspdoi");
+
+
+                    }
+                }
+                if (CurrentAttack == 3 || CurrentAttackDeterminer == 3 && CurrentAttackDeterminer != -3)
+                { //charged two times
+                    AttackTimer++;
+                    if (AttackTimer == 1)
+                    {
+                        CurrentAttack = 3;
+
+                    }
+                    if (AttackTimer < 5 && AttackTimer < 15)
+                {
+                    pos += 8;
+
+                    }
+                    if (AttackTimer > 30f)
+                {
+                    pos -= 5f;
+                        pos = 0;
+                }
+                if (AttackTimer == 30)
+                {
+                    CurrentAttack = 2;
+                    AttackTimer = 0; 
+                    CurrentAttackDeterminer = -3;
+                        pos = 0;
+
+
+                    }
+                }
+                if (CurrentAttack == 4 || CurrentAttackDeterminer == 4 && CurrentAttackDeterminer != -4) //charged three times
+                {
+                    AttackTimer++;
+                    if (AttackTimer == 1)
+                    {
+                        CurrentAttack = 4;
+
+                    }
+                    if (AttackTimer < 5 && AttackTimer < 15)
+                    {
+                        pos += 8;
+
+                    }
+                    if (AttackTimer > 30f)
+                    {
+                        pos -= 5f;      
+                    }
+                    if (AttackTimer == 30)
+                    {
+                        CurrentAttack--;
+                        AttackTimer = 0;
+                        CurrentAttackDeterminer = -4;
+                        pos = 0;
+
+                    }
+                }
+          
+
+            }
+
+
+        }
+
+    }
 	
 }
