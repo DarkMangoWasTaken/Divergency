@@ -254,7 +254,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
                 }
                 else
                 {
-                    swordRotation = 1.53f;
+                    swordRotation = (float)Math.PI;
                     initialize = true;
                 }
             }
