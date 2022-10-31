@@ -108,7 +108,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
                     if (Timer == 20)
                     {
-                        Overcharge--;
+                        //Overcharge--;
                         Timer = 0;
                     }
                     if (Overcharge == -1)
