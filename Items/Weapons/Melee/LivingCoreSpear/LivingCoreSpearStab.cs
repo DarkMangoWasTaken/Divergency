@@ -46,7 +46,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Projectile.velocity = new Vector2(0, 0);
         }
 
-        private int projectileChargeLoopTime = 60;
+        private int projectileChargeLoopTime = 60; // the amount of frames between each charge step
 
         private float Timer
         {
@@ -70,14 +70,14 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             set => Projectile.ai[1] = value;
         }
 
-        private int attackActualFrames = 20;
-        private int attackFrames = 3;
-        private int totalFrames = 16;
-        private int multiplier = 20;
+        private int attackActualFrames = 20; // the total number of frames
+        private int attackFrames = 3; // the number of frames that will be moving the spear forward
+        private int totalFrames = 16; // to total amount of frames the spear will be moving (having a little pause is a good thing, i feel...)
+        private int multiplier = 20; // how much to add each attack frame
 
         private int ThisChargeTimerAI1
         {
-            get => (int)Projectile.ai[1] % attackActualFrames; // here is the attack frames
+            get => (int)Projectile.ai[1] % attackActualFrames;
         }
 
         private int TotalChargesMade
@@ -163,9 +163,11 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             }
             */
 
+            // these 2 lines manage max charge
             if (Main.mouseLeftRelease && Charges != 4 && Timer >= 10)
                 Timer *= -1;
 
+            // the 30 represents the amount of frames of delay untill 4'th charged attack activates
             if (Charges == 4 && ThisChargeTimer == 30 && Timer >= 0)
                 Timer *= -1;
 
