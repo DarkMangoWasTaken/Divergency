@@ -12,6 +12,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 using DivergencyMod.Base;
+using IL.Terraria.GameContent.RGB;
+using Terraria.ModLoader.Config;
+using SlackAPI;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
@@ -23,7 +26,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Living Core Spear");
-            Main.projFrames[Projectile.type] = 1; 
+            Main.projFrames[Projectile.type] = 1;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
@@ -75,14 +78,36 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
         private int totalFrames = 16; // to total amount of frames the spear will be moving (having a little pause is a good thing, i feel...)
         private int multiplier = 20; // how much to add each attack frame
 
+        private int delay = 90; // 90 frames, 1.5 sec
+
         private int ThisChargeTimerAI1
         {
-            get => (int)Projectile.ai[1] % attackActualFrames;
+            get
+            {
+                return ThisChargeTimerAI1PreMod % attackActualFrames;
+            }
+        }
+
+        private int ThisChargeTimerAI1PreMod
+        {
+            get
+            {
+                int curFrame = (int)Projectile.ai[1];
+
+                if (curFrame > 4 * attackActualFrames)
+                {
+                    if (curFrame > 4 * attackActualFrames + delay)
+                        curFrame -= delay;
+                    else
+                        curFrame = 4 * attackActualFrames;
+                }
+                return curFrame;
+            }
         }
 
         private int TotalChargesMade
         {
-            get => ((int)Projectile.ai[1] - ((int)Projectile.ai[1] % attackActualFrames)) / attackActualFrames;
+            get => ((int)ThisChargeTimerAI1PreMod - ((int)ThisChargeTimerAI1PreMod % attackActualFrames)) / attackActualFrames;
         }
 
         private float Offset
@@ -107,6 +132,21 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             }
         }
 
+        private float ExtraRotationOffset
+        {
+            get
+            {
+                float rot = 0;
+
+                if (TotalChargesMade == 1)
+                    rot += MathF.PI / 16;
+                else if (TotalChargesMade == 2)
+                    rot -= MathF.PI / 16;
+
+                return rot;
+            }
+        }
+
         private Vector2 getOffset()
         {
             Player player = Main.player[Projectile.owner];
@@ -120,7 +160,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             }
             else
             {
-                retVec = new Vector2(Offset*Projectile.direction, 0);
+                retVec = new Vector2(Offset*Projectile.direction, MathF.Sin(ExtraRotationOffset)*Offset * Projectile.direction);
             }
 
             return position + retVec;
@@ -128,6 +168,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
         public override void ModifyDamageHitbox(ref Rectangle hitbox)
         {
+            hitbox.Y += (int)(MathF.Sin(ExtraRotationOffset) * Offset * Projectile.direction);
             hitbox.X += 33 * Projectile.direction;
             // base.ModifyDamageHitbox(ref hitbox);
         }
@@ -142,10 +183,13 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
         public override void AI()
         {
-            Projectile.rotation = (MathF.PI / 4 * 3) * Projectile.direction;
+            Projectile.rotation = (MathF.PI / 4 * 3) * Projectile.direction + ExtraRotationOffset;
 
             if (Timer >= 0)
-                Timer++;
+            {
+                if (Charges != 4) // max 4
+                    Timer++;
+            }
             else
                 AttackTimer++;
 
@@ -164,11 +208,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             */
 
             // these 2 lines manage max charge
-            if (Main.mouseLeftRelease && Charges != 4 && Timer >= 10)
-                Timer *= -1;
-
-            // the 30 represents the amount of frames of delay untill 4'th charged attack activates
-            if (Charges == 4 && ThisChargeTimer == 30 && Timer >= 0)
+            if (Main.mouseLeftRelease && Timer >= 10) // 10 frame delay on click attack
                 Timer *= -1;
 
             if (TotalChargesMade == Charges + 1)
