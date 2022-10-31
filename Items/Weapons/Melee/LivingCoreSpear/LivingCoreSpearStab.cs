@@ -74,20 +74,19 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Player player = Main.player[Projectile.owner];
             if (initialize)
             {
-               Main.NewText(DoingAttack);
+               //Main.NewText(DoingAttack);
 
-                {
-                    if (Main.mouseLeft && !DoingAttack && Overcharge < 3)
-                    {
-                        charge++;
-
-                    }
-                }
+       
                 Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
 
                 if (Main.mouseLeft && !DoingAttack && Overcharge < 3)
                 {
                     charge++;
+
+                }
+                if (!DoingAttack)
+                {
+                    Projectile.Center = position + Projectile.velocity * MovementFactor;
 
                 }
                 //handles the attack switching
@@ -107,7 +106,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
                     Timer++;
 
 
-                    if (Timer == 30)
+                    if (Timer == 20)
                     {
                         Overcharge--;
                         Timer = 0;
@@ -158,7 +157,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
                 Projectile.spriteDirection = player.direction;
 
-               // Projectile.Center = position + Projectile.velocity * MovementFactor;
+                
 
                 position += new Vector2(holdOffset,0);
 
@@ -272,14 +271,14 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             if (charge == 55 || charge == 56 || charge == 57 || charge == 58 || charge == 59 || charge == 60)
             {
                 Main.EntitySpriteDraw(ChargeTexture,
-           player.Center - Main.screenPosition + new Vector2(MovementFactor - 20 , Projectile.gfxOffY),
+           Projectile.Center - Main.screenPosition + new Vector2(MovementFactor - 80 , Projectile.gfxOffY),
            sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0); // drawing the sword itself
                 Main.instance.LoadProjectile(Projectile.type);
             }
             else
             {
                 Main.EntitySpriteDraw(texture,
-             player.Center - Main.screenPosition + new Vector2(MovementFactor - 20, Projectile.gfxOffY),
+             Projectile.Center - Main.screenPosition + new Vector2(MovementFactor - 80, Projectile.gfxOffY),
              sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0); // drawing the sword itself
                 Main.instance.LoadProjectile(Projectile.type);
             }

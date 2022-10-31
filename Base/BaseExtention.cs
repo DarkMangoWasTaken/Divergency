@@ -140,7 +140,7 @@ namespace DivergencyMod.Base
         public static void GetSpearAttack(this Projectile projectile, float Startup, float StabStart, float Stabpause, float StabBack, float CurrentAttackDeterminer)
         {
 
-          //Main.NewText(CurrentAttack);
+          Main.NewText(mouseleftwasreleased);
 
             //the attacks themselves
             Player player = Main.player[projectile.owner];
@@ -149,25 +149,20 @@ namespace DivergencyMod.Base
 
             projectile.Center = position + projectile.velocity * pos * 5;
 
-            if (Main.mouseLeftRelease && !Main.mouseLeft)
-            {
-                mouseleftwasreleased = true;
-            }
-            if (mouseleftwasreleased)
-            {
+           
                 if (CurrentAttack == 1 || CurrentAttackDeterminer == 1 && CurrentAttackDeterminer != -1) //attack without charging
                 {
                     AttackTimer++;
                     if (AttackTimer < 5 && AttackTimer < 15)
                     {
-                        pos += 8;
+                        pos += 5;
 
                     }
                     if (AttackTimer > 15f)
                     {
                         pos -= 5f;
                     }
-                    if (AttackTimer == 30)
+                    if (AttackTimer == 20)
                     {
 
                         projectile.Kill();
@@ -191,20 +186,19 @@ namespace DivergencyMod.Base
                     }
                     if (AttackTimer < 5 && AttackTimer < 15)
                     {
-                        pos += 8;
+                        pos += 5;
                       
                     }
                     if (AttackTimer > 15f)
                     {
                         pos -= 5f;
                     }
-                    if (AttackTimer == 30)
+                    if (AttackTimer == 20)
                     {
                         CurrentAttack--;
                         AttackTimer = 0;
                         CurrentAttackDeterminer = -2;
                         pos = 0;
-                        Main.NewText("monghsfosdhgaoijfiojgpijfspdoi");
 
 
                     }
@@ -219,15 +213,14 @@ namespace DivergencyMod.Base
                     }
                     if (AttackTimer < 5 && AttackTimer < 15)
                 {
-                    pos += 8;
+                    pos += 5;
 
                     }
-                    if (AttackTimer > 30f)
+                    if (AttackTimer > 15f)
                 {
                     pos -= 5f;
-                        pos = 0;
                 }
-                if (AttackTimer == 30)
+                if (AttackTimer == 20)
                 {
                     CurrentAttack = 2;
                     AttackTimer = 0; 
@@ -247,14 +240,14 @@ namespace DivergencyMod.Base
                     }
                     if (AttackTimer < 5 && AttackTimer < 15)
                     {
-                        pos += 8;
+                        pos += 5;
 
                     }
-                    if (AttackTimer > 30f)
+                    if (AttackTimer > 15f)
                     {
                         pos -= 5f;      
                     }
-                    if (AttackTimer == 30)
+                    if (AttackTimer == 20)
                     {
                         CurrentAttack--;
                         AttackTimer = 0;
@@ -270,6 +263,6 @@ namespace DivergencyMod.Base
 
         }
 
-    }
+    
 	
 }
