@@ -3,7 +3,6 @@ using DivergencyMod.Helpers;
 using DivergencyMod.Items.Weapons.Magic.Invoker;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoMod.Core.Utils;
 using ParticleLibrary;
 using System;
 using Terraria;
@@ -13,6 +12,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 using DivergencyMod.Base;
+using IL.Terraria.GameContent.RGB;
+using Terraria.ModLoader.Config;
+using SlackAPI;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
@@ -20,228 +22,233 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
     {
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/LivingCoreSpear";
 
-      
-        
-            public override void SetStaticDefaults()
-            {
-                DisplayName.SetDefault("Living Core Spear");
-                Main.projFrames[Projectile.type] = 1; 
-               ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
-               ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            }
 
-            private float MovementFactor = 40;
-            private float ParticleTimer;
-            private bool ProjSpawned = false;
-            public int charge;
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Living Core Spear");
+            Main.projFrames[Projectile.type] = 1;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
 
-        public float AttackTimer = 0;
-        public int CurrentAttack;
-        public bool ProjectileGetBack;
-        private bool initializeMouse;
-        private Vector2 CurrentMouseWorld;
-        private bool initialize = false;
-        private bool chargereleaseIncrease;
-        public float holdOffset = 1;
-
-        public int Overcharge;
         public override void SetDefaults()
+        {
+            Projectile.damage = 18;
+            Projectile.width = 36;
+            Projectile.height = 20;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = true;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.ignoreWater = true;
+            Projectile.tileCollide = false;
+            Projectile.scale = 1f;
+            Projectile.penetrate = -1;
+            Projectile.ownerHitCheck = true;
+
+            Projectile.rotation = (MathF.PI / 4 * 3);
+            Projectile.velocity = new Vector2(0, 0);
+        }
+
+        private int projectileChargeLoopTime = 60; // the amount of frames between each charge step
+
+        private float Timer
+        {
+            get => Projectile.ai[0];
+            set => Projectile.ai[0] = value;
+        }
+
+        private int Charges
+        {
+            get => Math.Abs(((int)Projectile.ai[0] - ((int)Projectile.ai[0] % projectileChargeLoopTime)) / projectileChargeLoopTime);
+        }
+
+        private int ThisChargeTimer
+        {
+            get => Math.Abs((int)Projectile.ai[0] % projectileChargeLoopTime);
+        }
+
+        private float AttackTimer
+        {
+            get => Projectile.ai[1];
+            set => Projectile.ai[1] = value;
+        }
+
+        private int attackActualFrames = 20; // the total number of frames
+        private int attackFrames = 3; // the number of frames that will be moving the spear forward
+        private int totalFrames = 16; // to total amount of frames the spear will be moving (having a little pause is a good thing, i feel...)
+        private int multiplier = 20; // how much to add each attack frame
+
+        private int delay = 90; // 90 frames, 1.5 sec
+
+        private int ThisChargeTimerAI1
+        {
+            get
             {
-                Projectile.damage = 18;
-                Projectile.width = 40;
-                Projectile.height = 40;
-                Projectile.aiStyle = -1;
-                Projectile.friendly = true;
-                Projectile.DamageType = DamageClass.Melee;
-                Projectile.ignoreWater = true;
-                Projectile.tileCollide = false;
-                Projectile.scale = 1f;
-                Projectile.penetrate = -1;
-                Projectile.ownerHitCheck = true;
-            
+                return ThisChargeTimerAI1PreMod % attackActualFrames;
             }
+        }
 
-            public float Timer
+        private int ThisChargeTimerAI1PreMod
+        {
+            get
             {
-                get => Projectile.ai[0];
-                set => Projectile.ai[0] = value;
+                int curFrame = (int)Projectile.ai[1];
+
+                if (curFrame > 4 * attackActualFrames)
+                {
+                    if (curFrame > 4 * attackActualFrames + delay)
+                        curFrame -= delay;
+                    else
+                        curFrame = 4 * attackActualFrames;
+                }
+                return curFrame;
             }
+        }
 
-        public float swordRotation;
+        private int TotalChargesMade
+        {
+            get => ((int)ThisChargeTimerAI1PreMod - ((int)ThisChargeTimerAI1PreMod % attackActualFrames)) / attackActualFrames;
+        }
 
-        public override void AI()
+        private float Offset
+        {
+            get
+            {
+                if (ThisChargeTimerAI1 <= attackFrames)
+                    return ThisChargeTimerAI1 * multiplier;
+                else
+                {
+                    int maxOffset = attackFrames * multiplier;
+                    int backFrames = totalFrames - attackFrames;
+
+                    int curBackFrame = ThisChargeTimerAI1 - attackFrames;
+
+                    float offset = (float)maxOffset - ((float)maxOffset / (float)backFrames * (float)curBackFrame);
+
+                    offset = MathF.Max(offset, 0);
+
+                    return offset;
+                }
+            }
+        }
+
+        private float ExtraRotationOffset
+        {
+            get
+            {
+                float rot = 0;
+
+                if (TotalChargesMade == 1)
+                    rot += MathF.PI / 16;
+                else if (TotalChargesMade == 2)
+                    rot -= MathF.PI / 16;
+
+                return rot;
+            }
+        }
+
+        private Vector2 getOffset()
         {
             Player player = Main.player[Projectile.owner];
-            if (initialize)
+            Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
+
+            Vector2 retVec = new Vector2(0, 0);
+
+            if (Timer >= 0)
             {
-               //Main.NewText(DoingAttack);
-
-       
-                Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
-
-                if (Main.mouseLeft && !DoingAttack && Overcharge < 3)
-                {
-                    charge++;
-
-                }
-                if (!DoingAttack)
-                {
-                    Projectile.Center = position + Projectile.velocity * MovementFactor;
-
-                }
-                //handles the attack switching
-                if (charge == 60 && !DoingAttack && Overcharge < 3)
-                {
-                    Overcharge++;
-                    charge = 0;
-
-                }
-
-                if (Main.mouseLeftRelease && !Main.mouseLeft)
-                {
-                    DoingAttack = true;
-                }
-                if (DoingAttack)
-                {
-                    Timer++;
-
-
-                    if (Timer == 20)
-                    {
-                        //Overcharge--;
-                        Timer = 0;
-                    }
-                    if (Overcharge == -1)
-                    {
-                        Projectile.Kill();
-                    }
-                    if (Overcharge == 0)
-                    {
-                        Projectile.GetSpearAttack(0,0,0,0,1);
-                    }
-                    if (Overcharge == 1)
-                    {
-                  
-                        Projectile.GetSpearAttack(0, 0, 0, 0,2);
-
-                    }
-                    if (Overcharge == 2 )
-                    {
-                        Projectile.GetSpearAttack(0, 0, 0, 0,3);
-
-                    }
-                    if (Overcharge == 3)
-                    {
-                        Projectile.GetSpearAttack(0, 0, 0, 0,4);
-
-
-                    }
-                }
-             
-
-               
-                if (player.noItems || player.CCed || player.dead || !player.active)
-                    Projectile.Kill();
-                //if (!player.channel)
-                //{
-                //    Projectile.Kill();
-                //}
-
-                Vector2 playerCenter = player.RotatedRelativePoint(player.MountedCenter, true);
-
-                if (Main.myPlayer == Projectile.owner)
-                {
-                    player.ChangeDir(Projectile.direction);
-                }
-                Projectile.velocity = swordRotation.ToRotationVector2();
-
-                Projectile.spriteDirection = player.direction;
-
-                
-
-                position += new Vector2(holdOffset,0);
-
-                player.heldProj = Projectile.whoAmI;
-                player.itemTime = 2;
-                player.itemAnimation = 2;
-                player.itemRotation = (float)Math.Atan2(Projectile.velocity.Y * Projectile.direction, Projectile.velocity.X * Projectile.direction);
-
-                if (player.direction == 1)
-                {
-                    Projectile.rotation = (position - player.Center).ToRotation() + (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + (float)Math.PI * 3 / 4f;
-
-                }
-                else 
-                {
-
-                    Projectile.rotation = (position - player.Center).ToRotation() + (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + (float)MathHelper.PiOver4;
-
-                }
-
+                retVec = new Vector2(0, 0); // holding offset
             }
             else
             {
-                if (player.direction == 1)
-                {
-                    swordRotation = 0;
-                    initialize = true;
-                }
-                else
-                {
-                    swordRotation = (float)Math.PI;
-                    initialize = true;
-                }
+                retVec = new Vector2(Offset*Projectile.direction, MathF.Sin(ExtraRotationOffset)*Offset * Projectile.direction);
             }
-            
+
+            return position + retVec;
         }
 
-            public int drawposition = 13;
-        public TrailRenderer SwordSlash;
-        public TrailRenderer SwordSlash2;
-        public TrailRenderer SwordSlash3;
-        private int backtimer;
-        private byte chargeReleaseMax;
-        private bool DoingAttack;
+        public override void ModifyDamageHitbox(ref Rectangle hitbox)
+        {
+            hitbox.Y += (int)(MathF.Sin(ExtraRotationOffset) * Offset * Projectile.direction);
+            hitbox.X += 33 * Projectile.direction;
+            // base.ModifyDamageHitbox(ref hitbox);
+        }
+
+        public override bool? CanDamage()
+        {
+            if (ThisChargeTimerAI1 <= attackFrames && Timer < 0)
+                return true;
+
+            return false;
+        }
+
+        public override void AI()
+        {
+            Projectile.rotation = (MathF.PI / 4 * 3) * Projectile.direction + ExtraRotationOffset;
+
+            if (Timer >= 0)
+            {
+                if (Charges != 4) // max 4
+                    Timer++;
+            }
+            else
+                AttackTimer++;
+
+            //Projectile.Kill();
+
+            Player player = Main.player[Projectile.owner];
+   
+            if (player.noItems || player.CCed || player.dead || !player.active)
+                Projectile.Kill();
+
+            /*
+            if (Main.myPlayer == Projectile.owner)
+            {
+                player.ChangeDir(Projectile.direction);
+            }
+            */
+
+            // these 2 lines manage max charge
+            if (Main.mouseLeftRelease && Timer >= 10) // 10 frame delay on click attack
+                Timer *= -1;
+
+            if (TotalChargesMade == Charges + 1)
+                Projectile.Kill();
+
+            Projectile.Center = getOffset();
+
+            player.heldProj = Projectile.whoAmI;
+            player.itemTime = 2;
+            player.itemAnimation = 2;
+            player.itemRotation = 0;
+
+            /*
+            if (player.direction == 1)
+            {
+                Projectile.rotation = (position - player.Center).ToRotation() + (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + (float)Math.PI * 3 / 4f;
+            }
+            else 
+            {
+                Projectile.rotation = (position - player.Center).ToRotation() + (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + (float)MathHelper.PiOver4;
+            }
+            */
+        }
 
         public override bool PreDraw(ref Color lightColor)
         {
-
             Player player = Main.player[Projectile.owner];
 
-            Main.spriteBatch.End();
+            //Main.spriteBatch.End();
 
-
-
-
-            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
-            var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
+            //var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
+            //var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
 
             Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
-
-
-            if (SwordSlash == null)
-            {
-                SwordSlash = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(4f), (p) => new Color(100, 255, 100, 10) * (1f - p));
-                SwordSlash.drawOffset = Projectile.Size / 1.1f;
-            }
-            if (SwordSlash2 == null)
-            {
-                SwordSlash2 = new TrailRenderer(TrailTex2, TrailRenderer.DefaultPass, (p) => new Vector2(2f), (p) => new Color(10, 150, 50, 50) * (1f - p));
-                SwordSlash2.drawOffset = Projectile.Size / 1.1f;
-
-            }
           
             
 
-            Main.spriteBatch.Begin(SpriteSortMode.Texture, null, null, null, null, null, Main.GameViewMatrix.ZoomMatrix);
+            //Main.spriteBatch.Begin(SpriteSortMode.Texture, null, null, null, null, null, Main.GameViewMatrix.ZoomMatrix);
 
-          
-                //SwordSlash.Draw(Projectile.oldPos);
-                //SwordSlash2.Draw(Projectile.oldPos);
-
-                //SwordSlash3.Draw(Projectile.oldPos);
-
-
+            /*
             
             if (chargereleaseIncrease)
             {
@@ -254,9 +261,10 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
             }
 
-            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+            */
 
-            var ChargeTexture = ModContent.Request<Texture2D>("DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/LivingCoreSpearCharged").Value;
+            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+            Texture2D ChargeTexture = ModContent.Request<Texture2D>("DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/LivingCoreSpearCharged").Value;
 
             int frameHeight = texture.Height / Main.projFrames[Projectile.type];
             int startY = frameHeight * Projectile.frame;
@@ -265,31 +273,23 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Vector2 origin = sourceRectangle.Size() / 2f;
             Color drawColor = Projectile.GetAlpha(lightColor);
 
+            Texture2D usedTexture = ThisChargeTimer < 55 ? texture : ChargeTexture;
+            SpriteEffects flipped = Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-          
-            //chargetex
-            if (charge == 55 || charge == 56 || charge == 57 || charge == 58 || charge == 59 || charge == 60)
-            {
-                Main.EntitySpriteDraw(ChargeTexture,
-           Projectile.Center - Main.screenPosition + new Vector2(MovementFactor - 80 , Projectile.gfxOffY),
-           sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0); // drawing the sword itself
-                Main.instance.LoadProjectile(Projectile.type);
-            }
-            else
-            {
-                Main.EntitySpriteDraw(texture,
-             Projectile.Center - Main.screenPosition + new Vector2(MovementFactor - 80, Projectile.gfxOffY),
-             sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0); // drawing the sword itself
-                Main.instance.LoadProjectile(Projectile.type);
-            }
-        
+
+            Main.EntitySpriteDraw(usedTexture, Projectile.Center - Main.screenPosition,
+            sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, flipped, 0); // drawing the sword itself
+            
+            
+            // Main.instance.LoadProjectile(Projectile.type);
+
 
             // Redraw the projectile with the color not influenced by light
             Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, Projectile.height * 0.5f);
 
-            Main.spriteBatch.End();
+            //Main.spriteBatch.End();
 
-            Main.spriteBatch.Begin();
+            //Main.spriteBatch.Begin();
 
             return false;
 
