@@ -46,7 +46,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             Item.noMelee = true;
 
             Item.UseSound = SoundID.Item1;
-            Item.autoReuse = true;
+            Item.autoReuse = false;
             Item.shoot = ModContent.ProjectileType<LivingCoreSwordProj>();
             Item.shootSpeed = 20f;
             Item.noUseGraphic = true;

@@ -18,7 +18,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
     public class LivingCoreSwordProj : ModProjectile
     {
         public static bool swung = false;
-        public int SwingTime = 30;
+        public int SwingTime = 80;
         public float holdOffset = 60f;
         public bool _initialized;
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSword/LivingCoreSword";
@@ -26,7 +26,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Living Core Sword");
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
         public override void SetDefaults()
@@ -65,7 +65,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             if (!_initialized && Main.myPlayer == Projectile.owner)
             {
                 SwingTime = (int)(30 / player.GetAttackSpeed(DamageClass.Melee));
-                Projectile.alpha = 254;
+                Projectile.alpha = 255;
                 Projectile.timeLeft = SwingTime;
                 _initialized = true;
                 Projectile.netUpdate = true;
@@ -89,17 +89,17 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
                     ParticleManager.NewParticle(Projectile.Center + new Vector2(Main.rand.NextFloat(10,-10)), speed * 10, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 1f, Projectile.whoAmI, Layer: Layer.BeforeProjectiles);
                 }
                 int dir = (int)Projectile.ai[1];
-                float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
+                float swingProgress = Lerp(Utils.GetLerpValue(SwingTime, 0f, Projectile.timeLeft));
                 // the actual rotation it should have
                 float defRot = Projectile.velocity.ToRotation();
                 // starting rotation
                 float endSet = ((MathHelper.PiOver2) / 0.2f);
-                float start = defRot - endSet;
+                float start = defRot + endSet;
 
                 // ending rotation
-                float end = defRot + endSet;
+                float end = defRot - endSet;
                 // current rotation obv
-                float rotation = dir == 1 ? start.AngleLerp(end, swingProgress) : start.AngleLerp(end, 1f - swingProgress);
+                float rotation = dir == 1 ? end.AngleLerp(start, swingProgress) : end.AngleLerp(start, 1f - swingProgress);
                 // offsetted cuz sword sprite
                 Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
                 position += rotation.ToRotationVector2() * holdOffset;
@@ -131,8 +131,8 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
 
 
           
-            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
-            var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
+            var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/MotionTrail").Value;
+            var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail").Value;
             var TrailTex3 = ModContent.Request<Texture2D>("DivergencyMod/Trails/gravytrail").Value;
             Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
            
@@ -157,7 +157,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
 
             Main.spriteBatch.Begin(SpriteSortMode.Texture, null, null, null, null, null, Main.GameViewMatrix.ZoomMatrix);
           
-            if (_initialized && Projectile.timeLeft >= 18)
+            if (_initialized && Projectile.timeLeft <= 58)
             {
                 SwordSlash.Draw(Projectile.oldPos);
                 SwordSlash2.Draw(Projectile.oldPos);
