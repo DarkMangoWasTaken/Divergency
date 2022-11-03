@@ -64,10 +64,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
            {
                 type = ModContent.ProjectileType<LivingCoreSpearStab>();
            }
-            if (player.GetModPlayer<ComboSpearPlayer>().AttackType == 2)
-            {
-                type = ModContent.ProjectileType<LivingCoreSpearDash>();
-            }
+          
       
         }
 
