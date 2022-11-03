@@ -79,13 +79,14 @@ namespace DivergencyMod.Players.ComboSystem
 
         private bool didCountMouseDown = false;
 
+
         public override void PostUpdate()
         {
-            Mod.Logger.Info(CurrentStyle);
+            if (currentProjectile != -1)
+                Mod.Logger.Info(Main.projectile[currentProjectile].direction);
 
             if (currentProjectile != -1)
                 Main.projectile[currentProjectile].direction = Player.direction;
-
 
             StyleResetTimer--;
             if (StyleResetTimer <= 0)

@@ -83,13 +83,14 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             if (Timer > 0)
                 retVec = new Vector2(0, 0); // holding offset
             else
-                retVec = new Vector2(30*player.direction, 0); // holding offset
+                retVec = new Vector2(30, 0); // holding offset
 
             return position + retVec;
         }
 
         public override void ModifyDamageHitbox(ref Rectangle hitbox)
         {
+            Mod.Logger.Info(Projectile.direction + "k");
             hitbox.X += 33 * Projectile.direction;
         }
 

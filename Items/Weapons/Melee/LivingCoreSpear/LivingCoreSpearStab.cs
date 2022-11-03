@@ -156,6 +156,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             }
             else
             {
+                Mod.Logger.Info(Projectile.direction + " | asdd");
                 retVec = new Vector2(Offset * Projectile.direction, MathF.Sin(ExtraRotationOffset) * Offset * Projectile.direction);
             }
 
@@ -164,6 +165,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
         public override void ModifyDamageHitbox(ref Rectangle hitbox)
         {
+            Mod.Logger.Info(Projectile.direction + " | asd");
             hitbox.Y += (int)(MathF.Sin(ExtraRotationOffset) * Offset * Projectile.direction);
             hitbox.X += 33 * Projectile.direction;
             // base.ModifyDamageHitbox(ref hitbox);
@@ -179,7 +181,6 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
         public override void AI()
         {
-            Mod.Logger.Info(Projectile.direction + " b");
             Projectile.rotation = (MathF.PI / 4) + (MathF.PI / 2) * Projectile.direction + ExtraRotationOffset;
 
             if (Timer >= 0)
@@ -193,6 +194,8 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             //Projectile.Kill();
 
             Player player = Main.player[Projectile.owner];
+
+            Mod.Logger.Info(Projectile.direction + " | " + player.direction);
 
             if (player.noItems || player.CCed || player.dead || !player.active)
                 Projectile.Kill();
