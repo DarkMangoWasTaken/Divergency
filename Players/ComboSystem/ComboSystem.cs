@@ -3,13 +3,7 @@ using Terraria.ID;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System;
-using SteelSeries.GameSense;
-using Mono.Cecil;
-using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace DivergencyMod.Players.ComboSystem
 {
