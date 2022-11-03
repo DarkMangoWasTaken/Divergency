@@ -1,20 +1,12 @@
 ﻿using DivergencyMod.Dusts.Particles;
-using DivergencyMod.Helpers;
-using DivergencyMod.Items.Weapons.Magic.Invoker;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ParticleLibrary;
 using System;
 using Terraria;
-using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Utilities;
-using DivergencyMod.Base;
-using IL.Terraria.GameContent.RGB;
-using Terraria.ModLoader.Config;
-using SlackAPI;
+using static ParticleLibrary.Particle;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
@@ -49,7 +41,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Projectile.velocity = new Vector2(0, 0);
         }
 
-        private int projectileChargeLoopTime = 60; // the amount of frames between each charge step
+        private int projectileChargeLoopTime = 40; // the amount of frames between each charge step
 
         private float Timer
         {
@@ -78,7 +70,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
         private int totalFrames = 16; // to total amount of frames the spear will be moving (having a little pause is a good thing, i feel...)
         private int multiplier = 20; // how much to add each attack frame
 
-        private int delay = 90; // 90 frames, 1.5 sec
+        private int delay = 75; // 90 frames, 1.5 sec
 
         private int ThisChargeTimerAI1
         {
@@ -96,8 +88,12 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
                 if (curFrame > 4 * attackActualFrames)
                 {
-                    if (curFrame > 4 * attackActualFrames + delay)
+                    if  (curFrame > 4 * attackActualFrames + delay)
+                    { 
                         curFrame -= delay;
+                        ParticleManager.NewParticle(Projectile.Center + new Vector2(Main.rand.NextFloat(10, -10)), Projectile.velocity * 10, ParticleManager.NewInstance<FancyParticle>(), Color.Purple, 1f, Projectile.whoAmI, Layer: Layer.BeforeProjectiles);
+
+                    }
                     else
                         curFrame = 4 * attackActualFrames;
                 }
