@@ -4,12 +4,23 @@ using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.ModLoader;
 using DivergencyMod.Items.Weapons.Melee.LivingCoreSpear;
+using DivergencyMod.Players.ComboSystem;
 using Microsoft.Xna.Framework;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
-    public class LivingCoreSpear : ModItem
+    public class LivingCoreSpear : ModItem, IComboSystem
     {
+        public int[] ComboProjectiles => new int[] {
+            ModContent.ProjectileType<LivingCoreSpearStab>(),
+            ModContent.ProjectileType<LivingCoreSpearStab>(),
+            ModContent.ProjectileType<LivingCoreSpearStab>(),
+            ModContent.ProjectileType<LivingCoreSpearStab>(),
+            ModContent.ProjectileType<LivingCoreSpearStab>(),
+            ModContent.ProjectileType<LivingCoreSpearStab>(),
+            ModContent.ProjectileType<LivingCoreSpearStab>(),
+        };
+
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/LivingCoreSpear";
 
         public override void SetStaticDefaults()
