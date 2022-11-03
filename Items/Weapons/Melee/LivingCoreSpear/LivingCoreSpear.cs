@@ -58,15 +58,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Item.DefaultToSpear(ModContent.ProjectileType<LivingCoreSpearStab>(), 1f, 24);
 
         }
-        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
-        {
-           if (player.GetModPlayer<ComboSpearPlayer>().AttackType == 1)
-           {
-                type = ModContent.ProjectileType<LivingCoreSpearStab>();
-           }
-          
-      
-        }
+     
 
        // public override bool CanUseItem(Player player)
         //{
@@ -88,28 +80,5 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
        
     }
 
-    public class ComboSpearPlayer : ModPlayer
-    {
-        public int StyleResetTimer; //reset timer for the Style level
-        public float Style = 1; //Style level, decreases when hitting enemies with the same attackType but increases 
-        public byte AttackType = 2; //1 = Stab, 2 = Swing, 3 = Spin, 4 = Dash, 5 = Jump
-        public bool Charged = false; //determines if the player is currently charged or not, to decrease his movement speed while charging 
-        public override void PreUpdate()
-        {
-            //resetting the style level
 
-            //ability to switch between attacks
-        }
-        public override void PreUpdateMovement()
-        {
-            if (Charged)
-            {
-                Player.moveSpeed /= 3;
-            }
-        }
-        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
-        {
-            //dynamic style system
-        }
-    }
 }   
