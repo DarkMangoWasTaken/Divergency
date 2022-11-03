@@ -38,8 +38,19 @@ namespace DivergencyMod.Players.ComboSystem
 
             if (comboItem != null)
             {
-                // draw the items set of styles, in some way...
-                // should be a thing in IComboSystem
+                int curStyle = modPlr.CurrentStyle;
+                int nextStyle = curStyle + 1;
+                if (nextStyle >= comboItem.ComboProjectilesIcons.Length)
+                    nextStyle = 0;
+
+                Texture2D cStyleIcon = (Texture2D)ModContent.Request<Texture2D>(comboItem.ComboProjectilesIcons[curStyle]);
+                Texture2D nStyleIcon = (Texture2D)ModContent.Request<Texture2D>(comboItem.ComboProjectilesIcons[nextStyle]);
+
+                Rectangle rect = new Rectangle(0, 0, 32, 32);
+
+                drawInfo.DrawDataCache.Add(new DrawData(cStyleIcon, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 50f), rect, Color.White, 0f, new Vector2(16, 16), 1f, SpriteEffects.None, 0));
+                drawInfo.DrawDataCache.Add(new DrawData(nStyleIcon, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 85f), rect, Color.White, 0f, new Vector2(16f, 16f), 0.7f, SpriteEffects.None, 0));
+
             }
 		}
 	}

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace DivergencyMod.Players.ComboSystem
 {
     internal interface IComboSystem
-    { 
+    {
         int[] ComboProjectiles { get; }
+        string[] ComboProjectilesIcons { get; }
     }
 }

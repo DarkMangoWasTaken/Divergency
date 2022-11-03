@@ -12,12 +12,19 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
     {
         public int[] ComboProjectiles => new int[] {
             ModContent.ProjectileType<LivingCoreSpearStab>(),
-            ModContent.ProjectileType<LivingCoreSpearStab>(),
-            ModContent.ProjectileType<LivingCoreSpearStab>(),
-            ModContent.ProjectileType<LivingCoreSpearStab>(),
-            ModContent.ProjectileType<LivingCoreSpearStab>(),
-            ModContent.ProjectileType<LivingCoreSpearStab>(),
-            ModContent.ProjectileType<LivingCoreSpearStab>(),
+            ModContent.ProjectileType<LivingCoreSpearDash>(),
+            ModContent.ProjectileType<LivingCoreSpearDash>(),
+            ModContent.ProjectileType<LivingCoreSpearDash>(),
+            ModContent.ProjectileType<LivingCoreSpearDash>(),
+            ModContent.ProjectileType<LivingCoreSpearDash>(),
+        };
+        public string[] ComboProjectilesIcons => new string[] {
+            "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Stab",
+            "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Shoot",
+            "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Spin",
+            "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Jump",
+            "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Shoot",
+            "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Shoot",
         };
 
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/LivingCoreSpear";

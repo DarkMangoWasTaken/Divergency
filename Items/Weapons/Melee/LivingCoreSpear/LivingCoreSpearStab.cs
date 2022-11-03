@@ -160,7 +160,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             }
             else
             {
-                retVec = new Vector2(Offset*Projectile.direction, MathF.Sin(ExtraRotationOffset)*Offset * Projectile.direction);
+                retVec = new Vector2(Offset * Projectile.direction, MathF.Sin(ExtraRotationOffset) * Offset * Projectile.direction);
             }
 
             return position + retVec;
@@ -197,7 +197,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             //Projectile.Kill();
 
             Player player = Main.player[Projectile.owner];
-   
+
             if (player.noItems || player.CCed || player.dead || !player.active)
                 Projectile.Kill();
 
@@ -244,8 +244,8 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             //var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
 
             Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
-          
-            
+
+
 
             //Main.spriteBatch.Begin(SpriteSortMode.Texture, null, null, null, null, null, Main.GameViewMatrix.ZoomMatrix);
 
@@ -274,14 +274,14 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Vector2 origin = sourceRectangle.Size() / 2f;
             Color drawColor = Projectile.GetAlpha(lightColor);
 
-            Texture2D usedTexture = ThisChargeTimer < 55 ? texture : ChargeTexture;
+            Texture2D usedTexture = ThisChargeTimer < (projectileChargeLoopTime-5) ? texture : ChargeTexture;
             SpriteEffects flipped = Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 
             Main.EntitySpriteDraw(usedTexture, Projectile.Center - Main.screenPosition,
             sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, flipped, 0); // drawing the sword itself
-            
-            
+
+
             // Main.instance.LoadProjectile(Projectile.type);
 
 
@@ -296,9 +296,9 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
         }
 
-       
+
     }
 
 
-    
+
 }
