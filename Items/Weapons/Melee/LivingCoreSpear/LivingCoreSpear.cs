@@ -4,6 +4,7 @@ using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.ModLoader;
 using DivergencyMod.Items.Weapons.Melee.LivingCoreSpear;
+using Microsoft.Xna.Framework;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
@@ -46,12 +47,24 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Item.DefaultToSpear(ModContent.ProjectileType<LivingCoreSpearStab>(), 1f, 24);
 
         }
-
-        public override bool CanUseItem(Player player)
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
-            // Ensures no more than one spear can be thrown out, use this when using autoReuse
-            return player.ownedProjectileCounts[Item.shoot] < 1;
+           if (player.GetModPlayer<ComboSpearPlayer>().AttackType == 1)
+           {
+                type = ModContent.ProjectileType<LivingCoreSpearStab>();
+           }
+            if (player.GetModPlayer<ComboSpearPlayer>().AttackType == 2)
+            {
+                type = ModContent.ProjectileType<LivingCoreSpearDash>();
+            }
+      
         }
+
+       // public override bool CanUseItem(Player player)
+        //{
+          //  // Ensures no more than one spear can be thrown out, use this when using autoReuse
+           // return player.ownedProjectileCounts[Item.shoot] < 1;
+        //}
 
         public override bool? UseItem(Player player)
         {
@@ -71,7 +84,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
     {
         public int StyleResetTimer; //reset timer for the Style level
         public float Style = 1; //Style level, decreases when hitting enemies with the same attackType but increases 
-        public byte AttackType; //1 = Stab, 2 = Swing, 3 = Spin, 4 = Dash, 5 = Jump
+        public byte AttackType = 2; //1 = Stab, 2 = Swing, 3 = Spin, 4 = Dash, 5 = Jump
         public bool Charged = false; //determines if the player is currently charged or not, to decrease his movement speed while charging 
         public override void PreUpdate()
         {
