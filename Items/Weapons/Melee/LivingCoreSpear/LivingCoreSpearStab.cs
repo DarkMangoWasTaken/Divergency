@@ -183,7 +183,8 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 
         public override void AI()
         {
-            Projectile.rotation = (MathF.PI / 4 * 3) * Projectile.direction + ExtraRotationOffset;
+            Mod.Logger.Info(Projectile.direction + " b");
+            Projectile.rotation = (MathF.PI / 4) + (MathF.PI / 2) * Projectile.direction + ExtraRotationOffset;
 
             if (Timer >= 0)
             {
