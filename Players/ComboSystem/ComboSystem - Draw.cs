@@ -40,18 +40,23 @@ namespace DivergencyMod.Players.ComboSystem
             {
                 int curStyle = modPlr.CurrentStyle;
                 int nextStyle = curStyle + 1;
+                int prevStyle = curStyle - 1;
                 if (nextStyle >= comboItem.ComboProjectilesIcons.Length)
                     nextStyle = 0;
+                if (prevStyle < 0)
+                    prevStyle = comboItem.ComboProjectilesIcons.Length-1;
 
                 Texture2D cStyleIcon = (Texture2D)ModContent.Request<Texture2D>(comboItem.ComboProjectilesIcons[curStyle]);
                 Texture2D nStyleIcon = (Texture2D)ModContent.Request<Texture2D>(comboItem.ComboProjectilesIcons[nextStyle]);
+                Texture2D pStyleIcon = (Texture2D)ModContent.Request<Texture2D>(comboItem.ComboProjectilesIcons[prevStyle]);
 
                 Rectangle rect = new Rectangle(0, 0, 32, 32);
 
-                drawInfo.DrawDataCache.Add(new DrawData(cStyleIcon, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 50f), rect, Color.White, 0f, new Vector2(16, 16), 1f, SpriteEffects.None, 0));
-                drawInfo.DrawDataCache.Add(new DrawData(nStyleIcon, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 85f), rect, Color.White, 0f, new Vector2(16f, 16f), 0.7f, SpriteEffects.None, 0));
+                drawInfo.DrawDataCache.Add(new DrawData(cStyleIcon, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 + 50f), rect, Color.White, 0f, new Vector2(16, 16), 1f, SpriteEffects.None, 0));
+                drawInfo.DrawDataCache.Add(new DrawData(nStyleIcon, new Vector2(Main.screenWidth / 2+30f, Main.screenHeight / 2 + 50f), rect, Color.White, 0f, new Vector2(16f, 16f), 0.7f, SpriteEffects.None, 0));
+                drawInfo.DrawDataCache.Add(new DrawData(pStyleIcon, new Vector2(Main.screenWidth / 2-30f, Main.screenHeight / 2 + 50f), rect, Color.White, 0f, new Vector2(16f, 16f), 0.7f, SpriteEffects.None, 0));
 
             }
-		}
+        }
 	}
 }

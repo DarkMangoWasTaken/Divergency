@@ -57,6 +57,8 @@ namespace DivergencyMod.Players.ComboSystem
             NewAttack();
             Style = 1;
 
+            Mod.Logger.Info(item.damage + " | " + Style);
+
             currentProjectile = Projectile.NewProjectile(source, Player.Center, new Vector2(0, 0), type, (int)(Style * item.damage), item.knockBack, Player.whoAmI);
             Player.heldProj = currentProjectile;
             Player.channel = true;
@@ -79,11 +81,12 @@ namespace DivergencyMod.Players.ComboSystem
 
         private bool didCountMouseDown = false;
 
-
         public override void PostUpdate()
-        {
+        {   
+            /*
             if (currentProjectile != -1)
                 Mod.Logger.Info(Main.projectile[currentProjectile].direction);
+            */
 
             if (currentProjectile != -1)
                 Main.projectile[currentProjectile].direction = Player.direction;
