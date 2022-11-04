@@ -11,6 +11,8 @@ using Terraria.Enums;
 using ParticleLibrary;
 using DivergencyMod.Dusts.Particles;
 using DivergencyMod.NPCs.Forest;
+using DivergencyMod.Helpers;
+using Terraria.GameContent;
 
 namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 
@@ -19,8 +21,6 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
     {
         #region stabby
         public static bool swung = false;
-        public int SwingTime = 15;
-        public float holdOffset = 50f;
 
 
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/Sacrony/SacronyProj";
@@ -28,7 +28,7 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 		public const int FadeInDuration = 7;
 		public const int FadeOutDuration = 4;
 
-		public const int TotalDuration = 16;
+		public const int TotalDuration = 25;
 
 		// The "width" of the blade
 		public float CollisionWidth => 10f * Projectile.scale;
@@ -48,12 +48,12 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 
 		public override void SetDefaults()
 		{
-			Projectile.Size = new Vector2(18); // This sets width and height to the same value (important when projectiles can rotate)
+			Projectile.Size = new Vector2(25); // This sets width and height to the same value (important when projectiles can rotate)
 			Projectile.aiStyle = -1; // Use our own AI to customize how it behaves, if you don't want that, keep this at ProjAIStyleID.ShortSword. You would still need to use the code in SetVisualOffsets() though
 			Projectile.friendly = true;
 			Projectile.penetrate = -1;
 			Projectile.tileCollide = false;
-			Projectile.scale = 1f;
+			Projectile.scale = 0.85f;
 			Projectile.DamageType = DamageClass.Melee;
 			Projectile.ownerHitCheck = true; // Prevents hits through tiles. Most melee weapons that use projectiles have this
 			Projectile.timeLeft = 360; // This value does not matter since we manually kill it earlier, it just has to be higher than the duration we use in AI
@@ -89,9 +89,11 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 				for (int j = 0; j < 3; j++)
 				{
 					Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
-					Dust.NewDustPerfect(Projectile.Center, DustID.GemTopaz, Projectile.velocity.RotatedByRandom(3), 0, default, 0.5f);
-				}
-			}
+					Dust.NewDustPerfect(Projectile.Center, DustID.GemTopaz, Projectile.velocity.RotatedByRandom(3), 0, Color.Purple, 0.5f);
+                    Dust.NewDustPerfect(Projectile.Center, DustID.GemAmethyst, Projectile.velocity.RotatedByRandom(3), 0, Color.Purple, 0.5f);
+
+                }
+            }
 
 			if (player.GetModPlayer<FrameSwitchPlayer>().frame0)
 			{
@@ -99,11 +101,11 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 				Projectile.frame = 0;
 
 			}
-			else
-			{
-				Projectile.frame = 1;
-			}
-			Timer += 1;
+            if (player.statLife < player.statLifeMax / 3 || (player.GetModPlayer<FrameSwitchPlayer>().frame1))
+            {
+                Projectile.frame = 1;
+            }
+            Timer += 1;
 			if (Timer >= TotalDuration)
 			{
 				// Kill the projectile if it reaches it's intented lifetime
@@ -138,7 +140,7 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 
 
 
-			// Set spriteDirection based on moving left or right. Left -1, right 1
+			// Set spriteDirection fd on moving left or right. Left -1, right 1
 			Projectile.spriteDirection = player.direction;
 
 			// Point towards where it is moving, applied offset for top right of the sprite respecting spriteDirection
@@ -152,8 +154,8 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 		private void SetVisualOffsets()
 		{
 			// 32 is the sprite size (here both width and height equal)
-			const int HalfSpriteWidth = 62 / 2;
-			const int HalfSpriteHeight = 90 / 2;
+			const int HalfSpriteWidth = 64 / 2;
+			const int HalfSpriteHeight = 177 / 2;
 
 			int HalfProjWidth = Projectile.width / 2;
 			int HalfProjHeight = Projectile.height / 2;
@@ -248,18 +250,18 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 		public override void SetDefaults()
 		{
 			Projectile.damage = 3;
-			Projectile.width = 64;
-			Projectile.height = 64;
+			Projectile.width = 100;
+			Projectile.height = 100;
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Magic;
 			Projectile.ignoreWater = true;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
-			Projectile.scale = 1f;
+			Projectile.scale = 0.85f;
 		}
 		public override void OnSpawn(IEntitySource source)
 		{
-			ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<Spin>(), Color.Purple, 0.4f, Projectile.whoAmI, Projectile.whoAmI);
+			ParticleManager.NewParticle(Projectile.Center, Projectile.velocity * 0, ParticleManager.NewInstance<Spin>(), Color.Purple, 0.75f, Projectile.whoAmI, Projectile.whoAmI);
 			
 
 		}
@@ -296,15 +298,17 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 				for (int j = 0; j < 3; j++)
 				{
 					Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
-					Dust.NewDustPerfect(Projectile.Center, DustID.GemTopaz, speed * 10, 0, default, 0.7f);
-				}
-				//Projectile.NewProjectile(null, Projectile.Center, Projectile.velocity.RotatedBy(-0.2f), ModContent.ProjectileType<RandomBullshit>(), damage, knockback, player.whoAmI);
-			}
+					Dust.NewDustPerfect(Projectile.Center, DustID.GemTopaz, speed * 10, 0, Color.Purple, 0.7f);
+                    Dust.NewDustPerfect(Projectile.Center, DustID.GemAmethyst, Projectile.velocity.RotatedByRandom(3), 0, Color.Purple, 0.5f);
 
-			Projectile.rotation += (Projectile.velocity.Length() * 0.04f) * Projectile.direction;
+                }
+                //Projectile.NewProjectile(null, Projectile.Center, Projectile.velocity.RotatedBy(-0.2f), ModContent.ProjectileType<RandomBullshit>(), damage, knockback, player.whoAmI);
+            }
+
+			Projectile.rotation += (Projectile.velocity.Length() * 0.03f) * Projectile.direction;
 			if (timer >= 15)
             {	
-				Projectile.velocity = Projectile.DirectionTo(player.Center) * 20;
+				Projectile.velocity = Projectile.DirectionTo(player.Center) * 33;
 				
 			}
 			
@@ -329,7 +333,7 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 				Projectile.frame = 0;
 
 			}
-			else
+			if (player.statLife < player.statLifeMax / 3 || (player.GetModPlayer<FrameSwitchPlayer>().frame1))
 			{
 				Projectile.frame = 1;
 			}
@@ -342,46 +346,52 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 
 			if (player.GetModPlayer<FrameSwitchPlayer>().frame1)
 			{
-				target.AddBuff(BuffID.OnFire, 120);
+				target.AddBuff(BuffID.OnFire, 60);
+				target.AddBuff(BuffID.ShadowFlame, 60);
 			}
 		}
 		#endregion}
 	}
 	public class SacronyFlameProj : ModProjectile
-    {
+	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Invoked Projectile");
-		}
+			DisplayName.SetDefault("Unholy Fire");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
 
 		public override void SetDefaults()
 		{
 			Projectile.damage = 3;
-			Projectile.width = 18;
-			Projectile.height = 18;
+			Projectile.width = 50;
+			Projectile.height = 50;
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Melee;
 			Projectile.ignoreWater = true;
-			Projectile.tileCollide = false;
+			Projectile.tileCollide = true;
 			Projectile.penetrate = 1;
-			Projectile.timeLeft = 30;
-			Projectile.scale = 0.5f;
-			Projectile.alpha = 90;
+			Projectile.timeLeft = 60;
+			Projectile.scale = 0.85f;
 		}
-  
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
-			return false;
 
-        }
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			return true;
 
-        public float Timer
+		}
+
+		public float Timer
 		{
 			get => Projectile.ai[0];
 			set => Projectile.ai[0] = value;
 		}
 		public override void AI()
 		{
+			if (Projectile.timeLeft <= 10)
+			{
+				Projectile.alpha += 25;
+			}
 			Vector3 RGB = new Vector3(2.51f, 1.83f, 0.65f);
 			float multiplier = 1;
 			float max = 2.25f;
@@ -400,25 +410,47 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 			{
 				Player player = Main.player[Projectile.owner];
 				Projectile.damage /= 2;
-				ParticleManager.NewParticle(Projectile.Center, Projectile.velocity, ParticleManager.NewInstance<SacronyFlameParticle>(), Color.Purple, 1f);
-	
-			}
 
-			Projectile.rotation = Projectile.velocity.ToRotation()+ MathHelper.ToRadians(90);
+			}
+			Projectile.velocity *= 0.985f;
+			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(90);
 			Projectile.spriteDirection = Projectile.direction;
 			Projectile.ai[0]++;
 			Vector2 speed = Main.rand.NextVector2Circular(1f, 1f);
-			Dust.NewDustPerfect(Projectile.Center, DustID.GemTopaz, speed * 2, 0, default, 0.5f);
+			Dust.NewDustPerfect(Projectile.Center, DustID.GemTopaz, speed * 2, 0, Color.MediumOrchid, 0.5f);
 
 		}
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			Player player = Main.player[Projectile.owner];
 
 			if (player.GetModPlayer<FrameSwitchPlayer>().frame1)
 			{
-				target.AddBuff(BuffID.OnFire, 120);
+				target.AddBuff(BuffID.OnFire, 60);
+				target.AddBuff(BuffID.ShadowFlame, 60);
+
 			}
 		}
-    }
+		
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+
+
+            Main.instance.LoadProjectile(Projectile.type);
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+
+            // Redraw the projectile with the color not influenced by light
+            Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, Projectile.height * 0.5f);
+            for (int k = 0; k < Projectile.oldPos.Length; k++)
+            {
+
+                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
+                Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
+            }
+            return true;
+
+        }
+	}
 }

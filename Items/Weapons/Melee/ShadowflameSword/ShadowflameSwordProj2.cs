@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoMod.Core.Utils;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -13,6 +14,8 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
         public int SwingTime = 40;
         public float holdOffset = 70f;
         public int combowombo;
+        private int timer;
+        private bool _initialized;
 
         public override void SetDefaults()
         {
@@ -41,6 +44,89 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
 
         public override void AI()
         {
+
+
+            Player player = Main.player[Projectile.owner];
+            if (!_initialized && Main.myPlayer == Projectile.owner)
+            {
+                timer++;
+
+                SwingTime = (int)(50 / player.GetAttackSpeed(DamageClass.Melee));
+                Projectile.alpha = 255;
+                Projectile.timeLeft = SwingTime;
+                _initialized = true;
+                Projectile.damage -= 9999;
+                Projectile.netUpdate = true;
+
+            }
+            else if (_initialized)
+            {
+                Projectile.alpha = 0;
+
+                if (!player.active || player.dead || player.CCed || player.noItems)
+                {
+                    return;
+                }
+                if (timer == 1)
+                {
+                    Projectile.damage += 9999;
+                    Projectile.damage *= 2;
+
+                    timer++;
+                }
+                Vector3 RGB = new Vector3(1.28f, 0f, 1.28f);
+                float multiplier = 0.1f;
+                float max = 2.25f;
+                float min = 1.0f;
+                RGB *= multiplier;
+                if (RGB.X > max)
+                {
+                    multiplier = 0.5f;
+                }
+                if (RGB.X < min)
+                {
+                    multiplier = 1.5f;
+                }
+                Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
+                Projectile.usesLocalNPCImmunity = true;
+                Projectile.localNPCHitCooldown = 10000;
+                int dir = (int)Projectile.ai[1];
+                float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
+                // the actual rotation it should have
+                float defRot = Projectile.velocity.ToRotation();
+                // starting rotation
+                float endSet = ((MathHelper.PiOver2) / 0.2f);
+                float start = defRot - endSet;
+
+                // ending rotation
+                float end = defRot + endSet;
+                // current rotation obv
+                float rotation = dir == 1 ? start.AngleLerp(end, swingProgress) : start.AngleLerp(end, 1f - swingProgress);
+                // offsetted cuz sword sprite
+                Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
+                position += rotation.ToRotationVector2() * holdOffset;
+                Projectile.Center = position;
+                Projectile.rotation = (position - player.Center).ToRotation() + MathHelper.PiOver4;
+
+                player.heldProj = Projectile.whoAmI;
+                player.ChangeDir(Projectile.velocity.X < 0 ? -1 : 1);
+                player.itemRotation = rotation * player.direction;
+                player.itemTime = 2;
+                player.itemAnimation = 2;
+                Projectile.netUpdate = true;
+            }
+        }
+        
+
+        public override bool ShouldUpdatePosition() => false;
+
+        public void AttachToPlayer()
+        {
+            Player player = Main.player[Projectile.owner];
+            if (!player.active || player.dead || player.CCed || player.noItems)
+            {
+                return;
+            }
             Vector3 RGB = new Vector3(1.28f, 0f, 1.28f);
             float multiplier = 0.1f;
             float max = 2.25f;
@@ -57,20 +143,6 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
             Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10000;
-
-            AttachToPlayer();
-        }
-
-        public override bool ShouldUpdatePosition() => false;
-
-        public void AttachToPlayer()
-        {
-            Player player = Main.player[Projectile.owner];
-            if (!player.active || player.dead || player.CCed || player.noItems)
-            {
-                return;
-            }
-
             int dir = (int)Projectile.ai[1];
             float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
             // the actual rotation it should have

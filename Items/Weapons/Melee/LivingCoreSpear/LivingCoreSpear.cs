@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
-    public class LivingCoreSpear : ModItem, IComboSystem
+    public class LivingCoreSpearItem : ModItem, IComboSystem
     {
         public int[] ComboProjectiles => new int[] {
             ModContent.ProjectileType<LivingCoreSpearStab>(),
@@ -33,7 +33,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
         public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("The ultimate clusterfuck");
-
+            DisplayName.SetDefault("Corembo Spear");
             ItemID.Sets.Spears[Item.type] = true; // This allows the game to recognize our new item as a spear.
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
         }

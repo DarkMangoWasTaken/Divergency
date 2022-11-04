@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoMod.Core.Utils;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -11,8 +12,11 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
     {
         public int combowombo;
         public static bool swung = false;
-        public int SwingTime = 50;
+        public int SwingTime;
         public float holdOffset = 70f;
+        private bool _initialized;
+        private int timer;
+
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/ShadowflameSword/ShadowflameSword";
 
         public override void SetDefaults()
@@ -42,47 +46,64 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
 
         public override void AI()
         {
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10000;
-            AttachToPlayer();
+            Player player = Main.player[Projectile.owner];
+            if (!_initialized && Main.myPlayer == Projectile.owner)
+            {
+                timer++;
+
+                SwingTime = (int)(50 / player.GetAttackSpeed(DamageClass.Melee));
+                Projectile.alpha = 255;
+                Projectile.timeLeft = SwingTime;
+                _initialized = true;
+                Projectile.damage -= 9999;
+                Projectile.netUpdate = true;
+
+            }
+            else if (_initialized)
+            {
+                Projectile.alpha = 0;
+
+                if (!player.active || player.dead || player.CCed || player.noItems)
+                {
+                    return;
+                }
+                if (timer == 1)
+                {
+                    Projectile.damage += 9999;
+
+                    timer++;
+                }
+                int dir = (int)Projectile.ai[1];
+                float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
+                // the actual rotation it should have
+                float defRot = Projectile.velocity.ToRotation();
+                // starting rotation
+                float endSet = ((MathHelper.PiOver2) / 0.2f);
+                float start = defRot - endSet;
+
+                // ending rotation
+                float end = defRot + endSet;
+                // current rotation obv
+                float rotation = dir == 1 ? start.AngleLerp(end, swingProgress) : start.AngleLerp(end, 1f - swingProgress);
+                // offsetted cuz sword sprite
+                Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
+                position += rotation.ToRotationVector2() * holdOffset;
+                Projectile.Center = position;
+                Projectile.rotation = (position - player.Center).ToRotation() + MathHelper.PiOver4;
+
+                player.heldProj = Projectile.whoAmI;
+                player.ChangeDir(Projectile.velocity.X < 0 ? -1 : 1);
+                player.itemRotation = rotation * player.direction;
+                player.itemTime = 2;
+                player.itemAnimation = 2;
+                Projectile.netUpdate = true;
+            }
+
         }
 
         public override bool ShouldUpdatePosition() => false;
 
-        public void AttachToPlayer()
-        {
-            Player player = Main.player[Projectile.owner];
-            if (!player.active || player.dead || player.CCed || player.noItems)
-            {
-                return;
-            }
-
-            int dir = (int)Projectile.ai[1];
-            float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
-            // the actual rotation it should have
-            float defRot = Projectile.velocity.ToRotation();
-            // starting rotation
-            float endSet = ((MathHelper.PiOver2) / 0.2f);
-            float start = defRot - endSet;
-
-            // ending rotation
-            float end = defRot + endSet;
-            // current rotation obv
-            float rotation = dir == 1 ? start.AngleLerp(end, swingProgress) : start.AngleLerp(end, 1f - swingProgress);
-            // offsetted cuz sword sprite
-            Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
-            position += rotation.ToRotationVector2() * holdOffset;
-            Projectile.Center = position;
-            Projectile.rotation = (position - player.Center).ToRotation() + MathHelper.PiOver4;
-
-            player.heldProj = Projectile.whoAmI;
-            player.ChangeDir(Projectile.velocity.X < 0 ? -1 : 1);
-            player.itemRotation = rotation * player.direction;
-            player.itemTime = 2;
-            player.itemAnimation = 2;
-            Projectile.netUpdate = true;
-        }
-
+      
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             Player player = Main.player[Projectile.owner];

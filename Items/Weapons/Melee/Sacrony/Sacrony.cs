@@ -10,6 +10,7 @@ using Terraria.DataStructures;
 using DivergencyMod.NPCs.Forest;
 using ParticleLibrary;
 using DivergencyMod.Dusts.Particles;
+using MonoMod.Core.Utils;
 
 namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 
@@ -18,10 +19,12 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
     {
         #region First two swings
         public static bool swung = false;
-        public int SwingTime = 15;
-        public float holdOffset = 50f;
+        public int SwingTime;
+        public float holdOffset = 75f;
         public bool frame1 = true;
         public bool frame2 = false;
+        private bool _initialized;
+        private int timer;
 
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/Sacrony/SacronyProj";
 
@@ -37,10 +40,10 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.height = 50;
-            Projectile.width = 50;
+            Projectile.height = 70;
+            Projectile.width = 70;
             Projectile.friendly = true;
-            Projectile.scale = 1f;
+            Projectile.scale = 0.85f;
         }
 
         public float Timer
@@ -57,84 +60,95 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
         public override void AI()
         {
             Player player = Main.player[Projectile.owner];
+            if (!_initialized && Main.myPlayer == Projectile.owner)
+            {
+                timer++;
 
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
-      
+                SwingTime = (int)(16 / player.GetAttackSpeed(DamageClass.Melee));
+                Projectile.alpha = 255;
+                Projectile.timeLeft = SwingTime;
+                _initialized = true;
+                Projectile.damage -= 9999;
+                Projectile.netUpdate = true;
 
-            SwingAttack();
+            }
+            else if (_initialized)
+            {
+                Projectile.alpha = 0;
+                if (timer == 1)
+                {
+                    Projectile.damage += 9999;
+                    timer++;
+                }
+                if (!player.active || player.dead || player.CCed || player.noItems)
+                {
+                    return;
+                }
+
+                if (player.GetModPlayer<FrameSwitchPlayer>().frame0)
+                {
+
+                    Projectile.frame = 0;
+
+                }
+                if (player.statLife < player.statLifeMax / 3 || (player.GetModPlayer<FrameSwitchPlayer>().frame1))
+                {
+                    Projectile.frame = 1;
+                }
+                if (Projectile.frame == 1)
+                {
+                    if (Projectile.frame == 1)
+                    {
+
+
+                        Vector3 RGB = new Vector3(2.51f, 1.83f, 0.65f);
+                        float multiplier = 1;
+                        float max = 2.25f;
+                        float min = 1.0f;
+                        RGB *= multiplier;
+                        if (RGB.X > max)
+                        {
+                            multiplier = 0.5f;
+                        }
+                        if (RGB.X < min)
+                        {
+                            multiplier = 1.5f;
+                        }
+                        Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
+                    }
+                }
+                int dir = (int)Projectile.ai[1];
+                float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
+                // the actual rotation it should have
+                float defRot = Projectile.velocity.ToRotation();
+                // starting rotation
+                float endSet = ((MathHelper.PiOver2) / 0.2f);
+                float start = defRot - endSet;
+
+                // ending rotation
+                float end = defRot + endSet;
+                // current rotation obv
+                float rotation = dir == 1 ? start.AngleLerp(end, swingProgress) : start.AngleLerp(end, 1f - swingProgress);
+                // offsetted cuz sword sprite
+                Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
+                position += rotation.ToRotationVector2() * holdOffset;
+                Projectile.Center = position;
+                Projectile.rotation = (position - player.Center).ToRotation() + MathHelper.PiOver2;
+
+                player.heldProj = Projectile.whoAmI;
+                player.ChangeDir(Projectile.velocity.X < 0 ? -1 : 1);
+                player.itemRotation = rotation * player.direction;
+                player.itemTime = 2;
+                player.itemAnimation = 2;
+                Projectile.netUpdate = true;
+            
+            }
+
 
 
         }
 
         public override bool ShouldUpdatePosition() => false;
-
-        public void SwingAttack()
-        {
-            Player player = Main.player[Projectile.owner];
-            if (!player.active || player.dead || player.CCed || player.noItems)
-            {
-                return;
-            }
-
-            if (player.GetModPlayer<FrameSwitchPlayer>().frame0)
-            {
-
-                Projectile.frame = 0;
-
-            }
-            else
-            {
-                Projectile.frame = 1;
-            }
-            if (Projectile.frame == 1)
-            {
-                if (Projectile.frame == 1)
-                {
-
-
-                    Vector3 RGB = new Vector3(2.51f, 1.83f, 0.65f);
-                    float multiplier = 1;
-                    float max = 2.25f;
-                    float min = 1.0f;
-                    RGB *= multiplier;
-                    if (RGB.X > max)
-                    {
-                        multiplier = 0.5f;
-                    }
-                    if (RGB.X < min)
-                    {
-                        multiplier = 1.5f;
-                    }
-                    Lighting.AddLight(Projectile.position, RGB.X, RGB.Y, RGB.Z);
-                }
-            }
-            int dir = (int)Projectile.ai[1];
-            float swingProgress = Lerp(Utils.GetLerpValue(0f, SwingTime, Projectile.timeLeft));
-            // the actual rotation it should have
-            float defRot = Projectile.velocity.ToRotation();
-            // starting rotation
-            float endSet = ((MathHelper.PiOver2) / 0.2f);
-            float start = defRot - endSet;
-
-            // ending rotation
-            float end = defRot + endSet;
-            // current rotation obv
-            float rotation = dir == 1 ? start.AngleLerp(end, swingProgress) : start.AngleLerp(end, 1f - swingProgress);
-            // offsetted cuz sword sprite
-            Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
-            position += rotation.ToRotationVector2() * holdOffset;
-            Projectile.Center = position;
-            Projectile.rotation = (position - player.Center).ToRotation() + MathHelper.PiOver2;
-
-            player.heldProj = Projectile.whoAmI;
-            player.ChangeDir(Projectile.velocity.X < 0 ? -1 : 1);
-            player.itemRotation = rotation * player.direction;
-            player.itemTime = 2;
-            player.itemAnimation = 2;
-            Projectile.netUpdate = true;
-        }
-
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -173,8 +187,10 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
             }
             if (player.GetModPlayer<FrameSwitchPlayer>().frame1)
             {
-                target.AddBuff(BuffID.OnFire, 120);
-            } 
+                target.AddBuff(BuffID.OnFire, 60);
+                target.AddBuff(BuffID.ShadowFlame, 60);
+
+            }
 
 
         }
@@ -191,8 +207,8 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
             Item.DamageType = DamageClass.Melee;
             Item.width = 0;
             Item.height = 0;
-            Item.useAnimation = 7;
-            Item.useTime = 7;
+            Item.useAnimation = 10;
+            Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Rapier;
             Item.knockBack = 4;
             Item.value = 10000;
@@ -218,11 +234,11 @@ namespace DivergencyMod.Items.Weapons.Melee.Sacrony
                 Item.UseSound = SoundID.Item1;
                 Projectile.NewProjectile(null, position, velocity * 10, ModContent.ProjectileType<SacronyProjSwing>(), damage, knockback, player.whoAmI, 1, dir);
                 ParticleManager.NewParticle(position, velocity * 2f, ParticleManager.NewInstance<SlashParticle>(), Color.Purple, 1.5f);
-                if (player.GetModPlayer<FrameSwitchPlayer>().frame1)
+                if (player.GetModPlayer<FrameSwitchPlayer>().frame1 || player.statLife < player.statLifeMax / 3)
                 {
-                    Projectile.NewProjectile(null, position, velocity.RotatedBy(-0.2f) * 10, ModContent.ProjectileType<SacronyFlameProj>(), damage, knockback, player.whoAmI);
-                    Projectile.NewProjectile(null, position, velocity.RotatedBy(0.2f) * 10, ModContent.ProjectileType<SacronyFlameProj>(), damage, knockback, player.whoAmI);
-                    Projectile.NewProjectile(null, position, velocity * 10, ModContent.ProjectileType<SacronyFlameProj>(), damage, knockback, player.whoAmI);
+                    Projectile.NewProjectile(null, position, velocity.RotatedBy(-0.4f) * 8, ModContent.ProjectileType<SacronyFlameProj>(), damage, knockback, player.whoAmI);
+                    Projectile.NewProjectile(null, position, velocity.RotatedBy(0.4f) * 8, ModContent.ProjectileType<SacronyFlameProj>(), damage, knockback, player.whoAmI);
+                    Projectile.NewProjectile(null, position, velocity * 8, ModContent.ProjectileType<SacronyFlameProj>(), damage, knockback, player.whoAmI);
 
                 }
 

@@ -18,9 +18,10 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
     public class LivingCoreSwordProj : ModProjectile
     {
         public static bool swung = false;
-        public int SwingTime = 80;
+        public int SwingTime;
         public float holdOffset = 60f;
         public bool _initialized;
+        public int timer;
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSword/LivingCoreSword";
 
         public override void SetStaticDefaults()
@@ -64,25 +65,34 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSword
             Player player = Main.player[Projectile.owner];
             if (!_initialized && Main.myPlayer == Projectile.owner)
             {
-                SwingTime = (int)(30 / player.GetAttackSpeed(DamageClass.Melee));
+                timer++;
+
+                SwingTime = (int)(60 / player.GetAttackSpeed(DamageClass.Melee));
                 Projectile.alpha = 255;
                 Projectile.timeLeft = SwingTime;
                 _initialized = true;
+                Projectile.damage -= 9999;
                 Projectile.netUpdate = true;
 
             }
             else if (_initialized)
             {
+                if (timer == 1)
+                {
+                    Projectile.damage += 9999;
+                    timer++;
+                }
+
                 Projectile.alpha = 0;
                 Projectile.usesLocalNPCImmunity = true;
-                Projectile.localNPCHitCooldown = 10000;
+                Projectile.localNPCHitCooldown = -1 ;
                 Timer++;
                 if (!player.active || player.dead || player.CCed || player.noItems)
                 {
                     return;
                 }
 
-                if (Projectile.timeLeft >= 15 && Projectile.timeLeft <= 27)
+               
                 for (int i = 0; i < 3; i++)
                 {
                     Vector2 speed = Main.rand.NextVector2Unit() * 0.1f;
