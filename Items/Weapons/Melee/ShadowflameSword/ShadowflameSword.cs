@@ -16,7 +16,7 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shadow Brand"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
-            Tooltip.SetDefault("'Hitting enemies heats the weapon up, increasing its appeareance, damage and attack speed'");
+            Tooltip.SetDefault("'Hitting enemies heats the weapon up, changing its appeareance and increasing damage and attack speed'");
         }
 
         public override void SetDefaults()
@@ -46,23 +46,23 @@ namespace DivergencyMod.Items.Weapons.Melee.ShadowflameSword
             if (player.GetModPlayer<DivergencyPlayer>().itemCombo >= 0)
             {
                 type = ModContent.ProjectileType<ShadowflameSwordProj>();
-                damage = 15;
+                
             }
             if (player.GetModPlayer<DivergencyPlayer>().itemCombo >= 4)
             {
                 type = ModContent.ProjectileType<ShadowflameSwordProj2>();
-                damage = 20;
+                
             }
             if (player.GetModPlayer<DivergencyPlayer>().itemCombo >= 10)
             {
                 type = ModContent.ProjectileType<ShadowflameSwordProj3>();
-                damage = 25;
+               
             }
 
             if (player.GetModPlayer<DivergencyPlayer>().itemCombo >= 16)
             {
                 type = ModContent.ProjectileType<ShadowflameSwordProj4>();
-                damage = 50;
+                
                 SoundEngine.PlaySound(SoundID.Item34, player.position);
             }
         }
