@@ -100,7 +100,7 @@ namespace DivergencyMod.Players.ComboSystem
             if (currentProjectile != -1)
                 Main.projectile[currentProjectile].direction = Player.direction;
 
-            StyleResetTimer += Math.Min(Math.Max((int)Math.Ceiling(Style), 1), MaxStyle); // make it drop x stlye
+            StyleResetTimer -= Math.Min(Math.Max((int)Math.Ceiling(Style), 1), MaxStyle); // make it drop x stlye
             if (StyleResetTimer <= 0)
             {
                 StyleResetTimer = 0;
