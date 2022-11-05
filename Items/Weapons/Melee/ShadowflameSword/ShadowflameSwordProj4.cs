@@ -1,7 +1,6 @@
 using DivergencyMod.Dusts.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoMod.Core.Utils;
 using ParticleLibrary;
 using System;
 using System.Collections.Generic;

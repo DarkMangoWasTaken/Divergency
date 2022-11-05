@@ -1,4 +1,5 @@
 ﻿using DivergencyMod.Dusts.Particles;
+using DivergencyMod.Players.ComboSystem;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ParticleLibrary;
@@ -10,10 +11,22 @@ using static ParticleLibrary.Particle;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
-    public class LivingCoreSpearStab : ModProjectile
+    public class LivingCoreSpearStab : ModProjectile, IComboProjectile
     {
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/LivingCoreSpear";
 
+        public int MaxCharges => 4;
+        public int CurCharges
+        {
+            get
+            {
+                if (Timer < 0)
+                    return -1;
+                return Charges;
+            }
+        }
+
+        public int projectileChargeLoopTime => 40;
 
         public override void SetStaticDefaults()
         {
@@ -40,8 +53,6 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Projectile.rotation = (MathF.PI / 4 * 3);
             Projectile.velocity = new Vector2(0, 0);
         }
-
-        private int projectileChargeLoopTime = 40; // the amount of frames between each charge step
 
         private float Timer
         {
