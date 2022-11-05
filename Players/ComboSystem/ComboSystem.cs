@@ -4,6 +4,7 @@ using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace DivergencyMod.Players.ComboSystem
 {
@@ -11,6 +12,8 @@ namespace DivergencyMod.Players.ComboSystem
 	public class ComboSystem : ModPlayer
     {
         public static int StyleResetTimerMax = 200;
+        public static int MaxStyle = 6;
+
         public int StyleResetTimer = StyleResetTimerMax;
         public float Style = 1; // the style score
         public int CurrentStyle = 0; // ranges from 0 to inf
@@ -28,7 +31,6 @@ namespace DivergencyMod.Players.ComboSystem
             lastProjStyle = thisProjStyle;
             thisProjStyle = CurrentStyle;
 
-            StyleResetTimer = StyleResetTimerMax;
             didHitThisProj = false;
         }
 
@@ -37,10 +39,16 @@ namespace DivergencyMod.Players.ComboSystem
             if (Player.HeldItem.ModItem as IComboSystem == null)
                 return;
 
-            if (lastProjStyle == thisProjStyle && didHitThisProj == false)
-                Style *= 0.9f;
-            else
-                Style *= (1f/0.9f);
+            if (didHitThisProj == false)
+            {
+                if (lastProjStyle == thisProjStyle)
+                    Style *= 0.9f;
+                else
+                    Style *= (1f / 0.9f);
+            }
+
+            StyleResetTimer = StyleResetTimerMax;
+            //Style = Math.Min(Style, MaxStyle);
 
             didHitThisProj = true;
         }
@@ -55,11 +63,12 @@ namespace DivergencyMod.Players.ComboSystem
             type = comboItem.ComboProjectiles[CurrentStyle];
             
             NewAttack();
-            Style = 1;
 
             Mod.Logger.Info(item.damage + " | " + Style);
 
-            currentProjectile = Projectile.NewProjectile(source, Player.Center, new Vector2(0, 0), type, (int)(Style * item.damage), item.knockBack, Player.whoAmI);
+            float Damage = item.damage * comboItem.ComboProjectilesDamageMultiplers[CurrentStyle];
+
+            currentProjectile = Projectile.NewProjectile(source, Player.Center, new Vector2(0, 0), type, (int)(Style * Damage), item.knockBack, Player.whoAmI);
             Player.heldProj = currentProjectile;
             Player.channel = true;
 
@@ -91,10 +100,13 @@ namespace DivergencyMod.Players.ComboSystem
             if (currentProjectile != -1)
                 Main.projectile[currentProjectile].direction = Player.direction;
 
-            StyleResetTimer--;
+            StyleResetTimer -= Math.Min(Math.Max((int)Math.Ceiling(Style), 1), MaxStyle); // make it drop x stlye
             if (StyleResetTimer <= 0)
+            {
+                StyleResetTimer = 0;
+                lastProjStyle = -1;
                 Style = 1;
-
+            }
 
             Item item = Player.HeldItem;
             if (item.ModItem as IComboSystem == null)
@@ -128,7 +140,9 @@ namespace DivergencyMod.Players.ComboSystem
 
                         int type = comboItem.ComboProjectiles[CurrentStyle];
 
-                        currentProjectile = Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, new Vector2(0, 0), type, (int)(Style * item.damage), item.knockBack, Player.whoAmI);
+                        float Damage = item.damage * comboItem.ComboProjectilesDamageMultiplers[CurrentStyle];
+
+                        currentProjectile = Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, new Vector2(0, 0), type, (int)(Style * Damage), item.knockBack, Player.whoAmI);
                         Player.direction = (Main.mouseX > Main.screenWidth / 2) ? 1 : -1;
                         Main.projectile[currentProjectile].direction = Player.direction;
                         Player.heldProj = currentProjectile;

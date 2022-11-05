@@ -14,13 +14,25 @@ using Terraria.Utilities;
 using DivergencyMod.Base;
 using IL.Terraria.GameContent.RGB;
 using Terraria.ModLoader.Config;
+using DivergencyMod.Players.ComboSystem;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
-    public class LivingCoreSpearDash : ModProjectile
+    public class LivingCoreSpearDash : ModProjectile, IComboProjectile
     {
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/LivingCoreSpear";
 
+        public int MaxCharges => 4;
+        public int CurCharges
+        {
+            get
+            {
+                if (Timer < 0)
+                    return -1;
+                return Charges;
+            }
+        }
+        public int projectileChargeLoopTime => 40;
 
         public override void SetStaticDefaults()
         {
@@ -48,8 +60,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Projectile.velocity = new Vector2(0, 0);
         }
 
-        private int projectileChargeLoopTime = 40; // the amount of frames between each charge step
-
+        
         private float Timer
         {
             get => Projectile.ai[0];

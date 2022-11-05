@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using DivergencyMod.Items.Weapons.Melee.LivingCoreSpear;
 using DivergencyMod.Players.ComboSystem;
 using Microsoft.Xna.Framework;
+using Steamworks;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {
@@ -16,9 +17,10 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             ModContent.ProjectileType<LivingCoreSpearDash>(),
             ModContent.ProjectileType<LivingCoreSpearJump>(),
             ModContent.ProjectileType<LivingCoreSpearSwing>(),
-            ModContent.ProjectileType<LivingCoreSpearSwing>(),
-            ModContent.ProjectileType<LivingCoreSpearSwing>(),
+            ModContent.ProjectileType<LivingCoreSpearSpin>(),
+            ModContent.ProjectileType<LivingCoreSpearSpin>(),
         };
+
         public string[] ComboProjectilesIcons => new string[] {
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Stab",
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Stab",
@@ -27,6 +29,14 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Slash",
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Slash",
         };
+
+        public float[] ComboProjectilesDamageMultiplers => new float[]
+        {
+            1, 1, 1, 1, 1, 1
+        };
+
+        public string FullCharge => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/ChargeFull";
+        public string EmptyCharge => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/ChargeEmpty";
 
         public override string Texture => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/LivingCoreSpear";
 

@@ -10,5 +10,8 @@ namespace DivergencyMod.Players.ComboSystem
     {
         int[] ComboProjectiles { get; }
         string[] ComboProjectilesIcons { get; }
+        float[] ComboProjectilesDamageMultiplers { get; }
+        string FullCharge { get; }
+        string EmptyCharge { get; }
     }
 }
