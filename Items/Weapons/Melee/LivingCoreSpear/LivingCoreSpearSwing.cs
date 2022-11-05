@@ -216,37 +216,31 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Main.spriteBatch.End();
 
             var TrailTex = ModContent.Request<Texture2D>("DivergencyMod/Trails/MotionTrail").Value;
-            var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail").Value;
+            var TrailTex2 = ModContent.Request<Texture2D>("DivergencyMod/Trails/idktrail2").Value;
             var TrailTex3 = ModContent.Request<Texture2D>("DivergencyMod/Trails/gravytrail").Value;
             Color color = Color.Multiply(new(0.50f, 2.05f, 0.5f, 0), 80);
 
 
             if (SwordSlash == null)
             {
-                SwordSlash = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(14f), (p) => new Color(100, 255, 100, 10) * (1f - p));
-                SwordSlash.drawOffset = Projectile.Size / 1.9f;
+                SwordSlash = new TrailRenderer(TrailTex, TrailRenderer.DefaultPass, (p) => new Vector2(3f), (p) => new Color(100, 255, 100, 10) * (1f - p));
+                SwordSlash.drawOffset = Projectile.Size / 1.6f;
             }
             if (SwordSlash2 == null)
             {
-                SwordSlash2 = new TrailRenderer(TrailTex2, TrailRenderer.DefaultPass, (p) => new Vector2(35f), (p) => new Color(10, 150, 50, 50) * (1f - p));
-                SwordSlash2.drawOffset = Projectile.Size / 1.9f;
+                SwordSlash2 = new TrailRenderer(TrailTex2, TrailRenderer.DefaultPass, (p) => new Vector2(10f), (p) => new Color(10, 150, 50, 50) * (1f - p));
+                SwordSlash2.drawOffset = Projectile.Size / 1.6f;
 
             }
-            if (SwordSlash3 == null)
-            {
-                SwordSlash3 = new TrailRenderer(TrailTex3, TrailRenderer.DefaultPass, (p) => new Vector2(20f), (p) => new Color(10, 255, 50, 40) * (1f - p));
-                SwordSlash3.drawOffset = Projectile.Size / 2f;
-
-            }
+     
 
             Main.spriteBatch.Begin(SpriteSortMode.Texture, null, null, null, null, null, Main.GameViewMatrix.ZoomMatrix);
 
-            if (_initialized && Projectile.timeLeft <= 58)
+            if (_initialized && Projectile.timeLeft <= 70)
             {
                 SwordSlash.Draw(Projectile.oldPos);
                 SwordSlash2.Draw(Projectile.oldPos);
 
-                //SwordSlash3.Draw(Projectile.oldPos);
 
 
             }
