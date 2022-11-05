@@ -39,8 +39,6 @@ namespace DivergencyMod.Players.ComboSystem
             if (Player.HeldItem.ModItem as IComboSystem == null)
                 return;
 
-            Mod.Logger.Info(lastProjStyle == thisProjStyle && didHitThisProj == false);
-
             if (didHitThisProj == false)
             {
                 if (lastProjStyle == thisProjStyle)
@@ -102,7 +100,7 @@ namespace DivergencyMod.Players.ComboSystem
             if (currentProjectile != -1)
                 Main.projectile[currentProjectile].direction = Player.direction;
 
-            StyleResetTimer--;
+            StyleResetTimer += Math.Min(Math.Max((int)Math.Ceiling(Style), 1), MaxStyle); // make it drop x stlye
             if (StyleResetTimer <= 0)
             {
                 StyleResetTimer = 0;
