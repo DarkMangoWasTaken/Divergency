@@ -14,7 +14,6 @@ using Terraria.Utilities;
 using DivergencyMod.Base;
 using IL.Terraria.GameContent.RGB;
 using Terraria.ModLoader.Config;
-using SlackAPI;
 
 namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
 {

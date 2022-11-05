@@ -10,7 +10,6 @@ using Terraria.DataStructures;
 using DivergencyMod.NPCs.Forest;
 using ParticleLibrary;
 using DivergencyMod.Dusts.Particles;
-using MonoMod.Core.Utils;
 
 namespace DivergencyMod.Items.Weapons.Melee.Sacrony
 
