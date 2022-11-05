@@ -35,6 +35,9 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             1, 1, 1, 1, 1, 1
         };
 
+        public Vector3 ColorStart => new Vector3(1, 0, 0);
+        public Vector3 ColorEnd => new Vector3(0, 1, 0);
+
         public string FullCharge => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/ChargeFull";
         public string EmptyCharge => "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/ChargeEmpty";
 

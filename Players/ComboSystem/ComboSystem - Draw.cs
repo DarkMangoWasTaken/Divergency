@@ -110,10 +110,7 @@ namespace DivergencyMod.Players.ComboSystem
                 Rectangle back = new Rectangle(0, 0, maxWidth, 12);
                 Rectangle fill = new Rectangle(0, 0, width, 12);
 
-                Vector3 colorStart = new Vector3(1, 0, 0);
-                Vector3 colorEnd = new Vector3(0, 1, 0);
-
-                Vector3 resColor = colorStart + ((colorEnd - colorStart) / 100f * (float)width);
+                Vector3 resColor = comboItem.ColorStart + ((comboItem.ColorEnd - comboItem.ColorStart) / 100f * (float)width);
 
                 drawInfo.DrawDataCache.Add(new DrawData(Pixel, drawOriginPos, back, Color.Gray, 0f, barOrigin, 1f, SpriteEffects.None, 0));
                 drawInfo.DrawDataCache.Add(new DrawData(Pixel, drawOriginPos, fill, new Color(resColor), 0f, barOrigin, 1f, SpriteEffects.None, 0));

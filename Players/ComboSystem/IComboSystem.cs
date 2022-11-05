@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,7 @@ namespace DivergencyMod.Players.ComboSystem
         float[] ComboProjectilesDamageMultiplers { get; }
         string FullCharge { get; }
         string EmptyCharge { get; }
+        Vector3 ColorStart { get; }
+        Vector3 ColorEnd { get; }
     }
 }
