@@ -11,8 +11,8 @@ namespace DivergencyMod.Players.ComboSystem
 	// See Common/Systems/KeybindSystem for keybind registration.
 	public class ComboSystem : ModPlayer
     {
-        public static int StyleResetTimerMax = 200;
-        public static int MaxStyle = 6;
+        public static int StyleResetTimerMax = 420;
+        public static int MaxStyle = 4;
 
         public int StyleResetTimer = StyleResetTimerMax;
         public float Style = 1; // the style score

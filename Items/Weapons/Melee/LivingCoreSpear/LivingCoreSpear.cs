@@ -16,15 +16,15 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             ModContent.ProjectileType<LivingCoreSpearStab>(),
             ModContent.ProjectileType<LivingCoreSpearDash>(),
             ModContent.ProjectileType<LivingCoreSpearJump>(),
-            ModContent.ProjectileType<LivingCoreSpearSwing>(),
-            ModContent.ProjectileType<LivingCoreSpearSpin>(),
+             ModContent.ProjectileType<LivingCoreSpearSpin>(),
+             ModContent.ProjectileType<LivingCoreSpearSwing>(),
         };
 
         public string[] ComboProjectilesIcons => new string[] {
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Stab",
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Stab",
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Jump",
-            "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Slash",
+            "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Spin",
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Slash",
         };
 
@@ -63,7 +63,7 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             Item.autoReuse = true; // Allows the player to hold click to automatically use the item again. Most spears don't autoReuse, but it's possible when used in conjunction with CanUseItem()
 
             // Weapon Properties
-            Item.damage = 19;
+            Item.damage = 30;
             Item.knockBack = 6.5f;
             Item.noUseGraphic = true; // When true, the item's sprite will not be visible while the item is in use. This is true because the spear projectile is what's shown so we do not want to show the spear sprite as well.
             Item.DamageType = DamageClass.Melee;
