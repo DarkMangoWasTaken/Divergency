@@ -18,14 +18,12 @@ namespace DivergencyMod.Items.Weapons.Melee.LivingCoreSpear
             ModContent.ProjectileType<LivingCoreSpearJump>(),
             ModContent.ProjectileType<LivingCoreSpearSwing>(),
             ModContent.ProjectileType<LivingCoreSpearSpin>(),
-            ModContent.ProjectileType<LivingCoreSpearSpin>(),
         };
 
         public string[] ComboProjectilesIcons => new string[] {
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Stab",
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Stab",
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Jump",
-            "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Slash",
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Slash",
             "DivergencyMod/Items/Weapons/Melee/LivingCoreSpear/Slash",
         };

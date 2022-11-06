@@ -77,8 +77,8 @@ namespace DivergencyMod.NPCs.Forest
             {
                 case 0:
                     teleport ++;
-
-                    if(teleport >= 100)
+                    
+                    if(teleport >= 200)
                     {
                      
 
