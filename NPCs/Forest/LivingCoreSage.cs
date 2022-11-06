@@ -204,10 +204,11 @@ namespace DivergencyMod.NPCs.Forest
                 var fadeMult = 1f / NPCID.Sets.TrailCacheLength[Type];
                 for (int i = 0; i < NPC.oldPos.Length; i++)
                 {
-                    Main.spriteBatch.Draw(tex, NPC.oldPos[i] - Main.screenPosition + NPC.Size / 2, NPC.frame, Color.DarkGreen * (1f - fadeMult * i), NPC.rotation, NPC.Size / 2, NPC.scale, effects, 0f);
+                    Main.spriteBatch.Draw(tex, NPC.oldPos[i] - Main.screenPosition + NPC.Size / 2 + new Vector2(-100, 0), NPC.frame, Color.DarkGreen * (1f - fadeMult * i), NPC.rotation, NPC.Size / 2, NPC.scale, effects, 0f);
                 }
                 Texture2D a = TextureAssets.Npc[Type].Value;
-                Main.EntitySpriteDraw(a, NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, NPC.Size / 2, 1f, effects, 0);
+                Main.EntitySpriteDraw(a, NPC.Center - screenPos + new Vector2(-50,0), NPC.frame, Color.White, NPC.rotation, NPC.Size / 2, 1f, effects, 0);
+               
             }
             return false;
         }
