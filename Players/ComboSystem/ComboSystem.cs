@@ -121,6 +121,8 @@ namespace DivergencyMod.Players.ComboSystem
                     CurrentStyle++;
                     if (CurrentStyle >= comboItem.ComboProjectiles.Length)
                         CurrentStyle = 0;
+
+                    inactiveCharge = 0;
                 }
             }
             didCountMouseDown = Main.mouseRight;
