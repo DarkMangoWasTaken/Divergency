@@ -59,7 +59,7 @@ namespace DivergencyMod.Players.ComboSystem
                 drawInfo.DrawDataCache.Add(new DrawData(pStyleIcon, new Vector2(Main.screenWidth / 2-30f, Main.screenHeight / 2 + 50f), rect, Color.White, 0f, new Vector2(16f, 16f), 0.7f, SpriteEffects.None, 0));
 
                 // draw style charges
-                if (modPlr.currentProjectile != -1)
+                if (modPlr.currentProjectile != -1 && drawInfo.drawPlayer.statLife > 0)
                 {
                     IComboProjectile cp = Main.projectile[modPlr.currentProjectile].ModProjectile as IComboProjectile;
 

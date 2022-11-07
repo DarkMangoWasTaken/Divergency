@@ -17,7 +17,7 @@ namespace DivergencyMod.Helpers
     // Saving and loading these flags requires TagCompounds, a guide exists on the wiki: https://github.com/tModLoader/tModLoader/wiki/Saving-and-loading-using-TagCompound
     public class DownedHelper : ModSystem
     {
-        public static bool[] livingCoreRoomCompletionTracker = default;
+        public static bool[] livingCoreRoomCompletionTracker = { };
 
         public override void OnWorldLoad()
         {
